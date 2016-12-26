@@ -1,9 +1,10 @@
 #ifndef __MODULE_H__
 #define __MODULE_H__
 
+#include "parson.h"
+
 class Application;
 struct Collider;
-
 
 class Module
 {

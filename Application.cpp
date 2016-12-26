@@ -8,8 +8,6 @@
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
 
-#include "ModulePlayer.h"
-
 using namespace std;
 
 Application::Application()
@@ -21,9 +19,6 @@ Application::Application()
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(audio = new ModuleAudio());
-
-	// Game Modules
-	modules.push_back(player = new ModulePlayer(false));
 
 	// Modules to draw on top of game logic
 	modules.push_back(collision = new ModuleCollision((Module*) player));
@@ -51,7 +46,7 @@ bool Application::Init()
 	}
 
 	// Start the first scene --
-//	fade->FadeToBlack(scene_intro, nullptr, 3.0f);
+	//	fade->FadeToBlack(scene_intro, nullptr, 3.0f);
 
 	return ret;
 }
