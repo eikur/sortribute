@@ -7,9 +7,6 @@
 
 ModuleRender::ModuleRender()
 {
-	//camera.x = camera.y = 0;
-	//camera.w = m_screen_width * m_screen_size;
-	//camera.h = m_screen_height* m_screen_size;
 }
 
 // Destructor
@@ -24,7 +21,7 @@ bool ModuleRender::Init()
 
 	if (LoadConfigFromFile(CONFIG_FILE) == false)
 	{ 
-		LOG("ModuleRender: Unable to load configuration from file\n");
+		LOG("Renderer: Unable to load configuration from file\n");
 		ret = false;
 	}
 	else
@@ -163,7 +160,7 @@ bool ModuleRender::LoadConfigFromFile(const char* file_path)
 	m_screen_width = (int)json_object_dotget_number(json_object(root_value), "window.screen_width");
 	m_screen_height = (int)json_object_dotget_number(json_object(root_value), "window.screen_height");
 	m_screen_size = (int)json_object_dotget_number(json_object(root_value), "window.screen_size");
-	m_vsync = (bool)json_object_dotget_boolean(json_object(root_value), "window.vsync");
+	m_vsync = (json_object_dotget_boolean(json_object(root_value), "window.vsync") != 0) ? true : false;
 	
 	json_value_free(root_value);
 	

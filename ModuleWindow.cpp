@@ -26,7 +26,7 @@ bool ModuleWindow::Init()
 	}
 	else if (LoadConfigFromFile(CONFIG_FILE) == false)
 	{
-		LOG("Configuration load from JSON file failed\n");
+		LOG("Window: Unable to load configuration from file\n");
 		ret = false;
 	}
 	else
@@ -84,8 +84,8 @@ bool ModuleWindow::LoadConfigFromFile(const char* file_path)
 	m_screen_width = (int) json_object_dotget_number(json_object(root_value), "window.screen_width");
 	m_screen_height = (int)json_object_dotget_number(json_object(root_value), "window.screen_height");
 	m_screen_size = (int)json_object_dotget_number(json_object(root_value), "window.screen_size");
-	m_fullscreen = (bool) json_object_dotget_boolean(json_object(root_value), "window.fullscreen");
-	m_vsync = (bool) json_object_dotget_boolean(json_object(root_value), "window.vsync");
+	m_fullscreen = (json_object_dotget_boolean(json_object(root_value), "window.fullscreen") != 0) ? true : false;
+	m_vsync = (json_object_dotget_boolean(json_object(root_value), "window.vsync") != 0) ? true : false;
 	m_title = json_object_dotget_string(json_object(root_value), "window.title");
 	
 	json_value_free(root_value);

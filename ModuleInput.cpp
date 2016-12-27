@@ -30,6 +30,14 @@ bool ModuleInput::Init()
 		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
+	else
+	{
+		if (LoadConfigFromFile(CONFIG_FILE) == false)
+		{
+			LOG("Input: Unable to load from config file\n");
+			ret = false;
+		}
+	}
 
 	return ret;
 }
@@ -114,10 +122,10 @@ update_status ModuleInput::PreUpdate()
 			break;
 
 			case SDL_MOUSEMOTION:
-				mouse_motion.x = event.motion.xrel / 3;	// MOD!!! 3 = m_screen_size
-				mouse_motion.y = event.motion.yrel / 3;	// MOD!!! 3 = m_screen_size
-				mouse.x = event.motion.x / 3;				// MOD!!! 3 = m_screen_size
-				mouse.y = event.motion.y / 3;				// MOD!!! 3 = m_screen_size
+				mouse_motion.x = event.motion.xrel / m_screen_size;	
+				mouse_motion.y = event.motion.yrel / m_screen_size;	
+				mouse.x = event.motion.x / m_screen_size;			
+				mouse.y = event.motion.y / m_screen_size;			
 			break;
 		}
 	}
@@ -150,4 +158,22 @@ const iPoint& ModuleInput::GetMousePosition() const
 const iPoint& ModuleInput::GetMouseMotion() const
 {
 	return mouse_motion;
+}
+
+bool ModuleInput::LoadConfigFromFile(const char* file_path)
+{
+	JSON_Value *root_value = json_parse_file(file_path);
+	if (root_value == nullptr)
+		return false;
+
+	m_screen_size = (int)json_object_dotget_number(json_object(root_value), "window.screen_size");
+
+	json_value_free(root_value);
+
+	if (m_screen_size == 0)
+		return false;
+	else
+		return true;
+
+
 }
