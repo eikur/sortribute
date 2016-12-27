@@ -13,11 +13,9 @@ class ModuleAudio;
 class ModuleFadeToBlack;
 class ModuleCollision;
 class ModuleParticles;
+class ModuleFonts;
 
-// Game modules ---
-class ModulePlayer;
-class ModuleSceneIntro;
-class ModuleSceneSpace;
+
 
 class Application
 {
@@ -39,11 +37,9 @@ public:
 	ModuleFadeToBlack* fade;
 	ModuleCollision* collision;
 	ModuleParticles* particles;
+	ModuleFonts* fonts;
 
 	// Game modules ---
-	ModulePlayer* player;
-	ModuleSceneIntro* scene_intro;
-	ModuleSceneSpace* scene_space;
 
 private:
 

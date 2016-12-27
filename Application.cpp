@@ -7,6 +7,7 @@
 #include "ModuleFadeToBlack.h"
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
+#include "ModuleFonts.h"
 
 using namespace std;
 
@@ -21,9 +22,9 @@ Application::Application()
 	modules.push_back(audio = new ModuleAudio());
 
 	// Modules to draw on top of game logic
-	modules.push_back(collision = new ModuleCollision((Module*) player));
 	modules.push_back(particles = new ModuleParticles());
 	modules.push_back(fade = new ModuleFadeToBlack());
+	modules.push_back(fonts = new ModuleFonts());
 }
 
 Application::~Application()
