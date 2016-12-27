@@ -1,5 +1,8 @@
 #include "Globals.h"
+#include "Application.h"
 #include "ModuleFonts.h"
+#include "ModuleTextures.h"
+#include "ModuleRender.h"
 
 ModuleFonts::ModuleFonts()
 {
@@ -19,7 +22,7 @@ bool ModuleFonts::Init()
 	}
 	else
 	{
-		// do stuff
+		graphics = App->textures->Load(asset_file.c_str());
 	}
 	return res;
 }
@@ -27,6 +30,8 @@ bool ModuleFonts::Init()
 bool ModuleFonts::CleanUp()
 {
 	LOG("Fonts: Unloading fonts\n");
+
+	App->textures->Unload(graphics);
 
 	for (std::vector<Font*>::iterator it = m_fonts.begin(); it != m_fonts.end(); ++it)
 		RELEASE(*it);
@@ -85,9 +90,31 @@ bool ModuleFonts::LoadConfigFromFile(const char* file_path)
 	return true;
 }
 
-void ModuleFonts::Print(int x, int y, int font_id, const char* text) const
+void ModuleFonts::Print(int x, int y, int font_id, const std::string text) const
 {	
+	// find selected font
+	std::vector<Font*>::const_iterator it;
 
+	for (it = m_fonts.cbegin(); it != m_fonts.cend(); ++it)
+		if ((*it)->id == font_id)
+			break;
+
+	// draw the fonts
+	int i = 0;
+	int i_max = text.length() + 1;
+	int lut_i;
+
+	SDL_Rect *i_rect;
+	i_rect->y = (*it)->rect->y;
+	i_rect->w = (*it)->rect->w;
+	i_rect->h = (*it)->rect->h;
+	
+	for (i = 0; i < i_max; ++i)
+	{
+		lut_i = (*it)->lookup_table.find(text.at(i));
+		i_rect->x = lut_i * (*it)->pixels_per_element;
+		App->renderer->Blit(graphics, x+i*(*it)->pixels_per_element, y, i_rect, 1.0f);
+	}
 }
 
 /*---------------------------------------------------------*/

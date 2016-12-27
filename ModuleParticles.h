@@ -8,7 +8,6 @@
 #include "Point.h"
 #include "ModuleCollision.h"
 #include "ModuleAudio.h"
-#include "ModuleCollision.h"
 
 struct SDL_Texture;
 

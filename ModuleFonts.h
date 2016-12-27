@@ -1,8 +1,10 @@
 #ifndef __MODULEFONTS_H__
 #define __MODULEFONTS_H__
 
-#include "Module.h"
 #include <vector>
+#include <stdlib.h>
+#include "Module.h"
+
 
 struct SDL_Texture;
 
@@ -28,7 +30,7 @@ public:
 	bool CleanUp();
 
 
-	void Print(int x, int y, int font_id, const char* text) const;
+	void Print(int x, int y, int font_id, const std::string text) const;
 	
 private:
 	SDL_Texture* graphics = nullptr;
