@@ -16,7 +16,6 @@ struct Particle
 {
 	bool to_delete = false;
 
-	// TODO 1: Fill in the structure with all the properties you need for each particle
 	unsigned int fx;
 	iPoint		position;
 	Animation*	animation;
@@ -25,7 +24,6 @@ struct Particle
 	int time_to_live;
 	int age;
 
-	// TODO 11: Add an optional collider to each particle
 	Collider* collider = nullptr;
 	bool has_collider = false;
 	
