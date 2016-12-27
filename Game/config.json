@@ -1,10 +1,24 @@
 {
 	"window": {
-		"screen_height": 257,
+		"screen_height": 224,
 		"screen_width": 320,
 		"screen_size": 3,
 		"title": "Streets of Rage Tribute",
 		"fullscreen": false,
-   	    "vsync": true
+		"vsync": true
+	},
+	"fonts": {
+		"file": "Assets/hud.png",
+		"rect": [
+					[  0, 32,  80, 16],
+					[104, 39, 144,  8],
+					[  0, 50, 132, 14]
+		],
+		"lookup_table": [
+			"0123456789",
+			"ARESUPT 0123456789",
+			"ROUND SATPE"
+		],
+		"ppc": [8,8,12]		
 	}
 }
