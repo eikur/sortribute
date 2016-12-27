@@ -28,7 +28,7 @@ bool ModuleFonts::CleanUp()
 {
 	LOG("Fonts: Unloading fonts\n");
 
-	for (std::vector<Font*>::iterator it = m_fonts.begin; it != m_fonts.end; ++it)
+	for (std::vector<Font*>::iterator it = m_fonts.begin(); it != m_fonts.end(); ++it)
 		RELEASE(*it);
 	m_fonts.clear();
 	
