@@ -16,6 +16,6 @@ public:
 	
 
 private:
-	int *font_ids = nullptr;
+	int *m_font_ids = nullptr;
 };
 #endif	// __MODULEFONTS_H__
