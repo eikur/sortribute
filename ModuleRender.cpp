@@ -7,9 +7,9 @@
 
 ModuleRender::ModuleRender()
 {
-	camera.x = camera.y = 0;
-	camera.w = SCREEN_WIDTH * SCREEN_SIZE;
-	camera.h = SCREEN_HEIGHT* SCREEN_SIZE;
+	//camera.x = camera.y = 0;
+	//camera.w = m_screen_width * m_screen_size;
+	//camera.h = m_screen_height* m_screen_size;
 }
 
 // Destructor
@@ -21,19 +21,31 @@ bool ModuleRender::Init()
 {
 	LOG("Creating Renderer context");
 	bool ret = true;
-	Uint32 flags = 0;
 
-	if(VSYNC == true)
-	{
-		flags |= SDL_RENDERER_PRESENTVSYNC;
-	}
-
-	renderer = SDL_CreateRenderer(App->window->m_window, -1, flags);
-	
-	if(renderer == nullptr)
-	{
-		LOG("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
+	if (LoadConfigFromFile(CONFIG_FILE) == false)
+	{ 
+		LOG("ModuleRender: Unable to load configuration from file\n");
 		ret = false;
+	}
+	else
+	{
+		camera.x = camera.y = 0;
+		camera.w = m_screen_width * m_screen_size;
+		camera.h = m_screen_height* m_screen_size;
+
+		Uint32 flags = 0;
+		if (m_vsync == true)
+		{
+			flags |= SDL_RENDERER_PRESENTVSYNC;
+		}
+
+		renderer = SDL_CreateRenderer(App->window->m_window, -1, flags);
+
+		if (renderer == nullptr)
+		{
+			LOG("Renderer could not be created! SDL_Error: %s\n", SDL_GetError());
+			ret = false;
+		}
 	}
 
 	return ret;
@@ -92,8 +104,8 @@ bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, f
 {
 	bool ret = true;
 	SDL_Rect rect;
-	rect.x = (int)(camera.x * speed) + x * SCREEN_SIZE;
-	rect.y = (int)(camera.y * speed) + y * SCREEN_SIZE;
+	rect.x = (int)(camera.x * speed) + x * m_screen_size;
+	rect.y = (int)(camera.y * speed) + y * m_screen_size;
 
 	if(section != NULL)
 	{
@@ -105,8 +117,8 @@ bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, f
 		SDL_QueryTexture(texture, NULL, NULL, &rect.w, &rect.h);
 	}
 
-	rect.w *= SCREEN_SIZE;
-	rect.h *= SCREEN_SIZE;
+	rect.w *= m_screen_size;
+	rect.h *= m_screen_size;
 
 	if(SDL_RenderCopy(renderer, texture, section, &rect) != 0)
 	{
@@ -127,10 +139,10 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 	SDL_Rect rec(rect);
 	if (use_camera)
 	{
-		rec.x = (int)(camera.x + rect.x * SCREEN_SIZE);
-		rec.y = (int)(camera.y + rect.y * SCREEN_SIZE);
-		rec.w *= SCREEN_SIZE;
-		rec.h *= SCREEN_SIZE;
+		rec.x = (int)(camera.x + rect.x * m_screen_size);
+		rec.y = (int)(camera.y + rect.y * m_screen_size);
+		rec.w *= m_screen_size;
+		rec.h *= m_screen_size;
 	}
 
 	if (SDL_RenderFillRect(renderer, &rec) != 0)
@@ -140,4 +152,24 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 	}
 
 	return ret;
+}
+
+bool ModuleRender::LoadConfigFromFile(const char* file_path)
+{
+	JSON_Value *root_value = json_parse_file(file_path);
+	if (root_value == nullptr)
+		return false;
+
+	m_screen_width = (int)json_object_dotget_number(json_object(root_value), "window.screen_width");
+	m_screen_height = (int)json_object_dotget_number(json_object(root_value), "window.screen_height");
+	m_screen_size = (int)json_object_dotget_number(json_object(root_value), "window.screen_size");
+	m_vsync = (bool)json_object_dotget_boolean(json_object(root_value), "window.vsync");
+	
+	json_value_free(root_value);
+	
+	if (m_screen_width == 0 || m_screen_height == 0 || m_screen_size == 0)
+		return false;
+	else
+		return true;
+	return true;
 }

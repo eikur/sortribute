@@ -42,4 +42,7 @@ typedef unsigned int uint;
                               \
 	 }
 
+//config file
+#define CONFIG_FILE "config.json"
+
 #endif //__GLOBALS_H__
