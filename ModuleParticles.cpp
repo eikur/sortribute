@@ -5,6 +5,7 @@
 #include "ModuleTextures.h"
 #include "ModuleRender.h"
 #include "ModuleCollision.h"
+#include "ModuleFonts.h"
 
 #include "SDL/include/SDL_timer.h"
 
@@ -54,6 +55,8 @@ update_status ModuleParticles::Update()
 			++it;
 		}
 	}
+
+	
 
 	return UPDATE_CONTINUE;
 }

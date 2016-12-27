@@ -101,18 +101,18 @@ void ModuleFonts::Print(int x, int y, int font_id, const std::string text) const
 
 	// draw the fonts
 	int i = 0;
-	int i_max = text.length() + 1;
+	int i_max = text.length();
 	int lut_i;
 
-	SDL_Rect *i_rect;
+	SDL_Rect *i_rect = new SDL_Rect();
 	i_rect->y = (*it)->rect->y;
-	i_rect->w = (*it)->rect->w;
+	i_rect->w = (*it)->pixels_per_element;
 	i_rect->h = (*it)->rect->h;
 	
 	for (i = 0; i < i_max; ++i)
 	{
 		lut_i = (*it)->lookup_table.find(text.at(i));
-		i_rect->x = lut_i * (*it)->pixels_per_element;
+		i_rect->x = (*it)->rect->x + lut_i * (*it)->pixels_per_element;
 		App->renderer->Blit(graphics, x+i*(*it)->pixels_per_element, y, i_rect, 1.0f);
 	}
 }

@@ -62,7 +62,10 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="ModuleFonts.h">
-      <Filter>Game Modules</Filter>
+      <Filter>Core Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -103,7 +106,7 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="ModuleFonts.cpp">
-      <Filter>Game Modules</Filter>
+      <Filter>Core Modules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

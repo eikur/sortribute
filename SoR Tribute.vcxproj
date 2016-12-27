@@ -85,6 +85,7 @@
     <ClInclude Include="ModuleWindow.h" />
     <ClInclude Include="parson.h" />
     <ClInclude Include="Point.h" />
+    <ClInclude Include="Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
