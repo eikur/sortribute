@@ -1,6 +1,7 @@
 #ifndef __MODULE_H__
 #define __MODULE_H__
 
+#include <string>
 #include "parson.h"
 
 class Application;
@@ -67,8 +68,12 @@ public:
 		return true; 
 	}
 
+	virtual bool LoadConfigFromFile(const char* file_path)
+	{
+		return true;
+	}
 	// Callbacks ---
-	virtual void HandleCollision(Collider* first, Collider* second) {}
+	
 
 private:
 	bool active = true;

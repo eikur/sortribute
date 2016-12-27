@@ -46,7 +46,7 @@ update_status ModuleCollision::Update()
 				if (collision_matrix[(*it)->type][(*it2)->type] == 1)
 				{
 					LOG("Collided");
-					report_to->HandleCollision((*it), (*it2));
+					//report_to->HandleCollision((*it), (*it2));
 					
 				}
 			}
