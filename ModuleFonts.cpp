@@ -33,9 +33,9 @@ bool ModuleFonts::CleanUp()
 
 	App->textures->Unload(graphics);
 
-	for (std::vector<Font*>::iterator it = m_fonts.begin(); it != m_fonts.end(); ++it)
+	for (std::vector<Font*>::iterator it = fonts.begin(); it != fonts.end(); ++it)
 		RELEASE(*it);
-	m_fonts.clear();
+	fonts.clear();
 	
 	return true;
 
@@ -80,7 +80,7 @@ bool ModuleFonts::LoadConfigFromFile(const char* file_path)
 		
 		tmp->pixels_per_element = (int) json_array_get_number(j_ppe, i);
 
-		m_fonts.push_back(new Font(*tmp));
+		fonts.push_back(new Font(*tmp));
 	}
 
 	delete tmp;
@@ -95,7 +95,7 @@ void ModuleFonts::Print(int x, int y, int font_id, const std::string text) const
 	// find selected font
 	std::vector<Font*>::const_iterator it;
 
-	for (it = m_fonts.cbegin(); it != m_fonts.cend(); ++it)
+	for (it = fonts.cbegin(); it != fonts.cend(); ++it)
 		if ((*it)->id == font_id)
 			break;
 

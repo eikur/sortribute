@@ -27,7 +27,6 @@ public:
 		return SDL_GetTicks() - ticks_start;
 	}
 
-
 private:
 	unsigned int ticks_start = 0;
 	unsigned int ticks_pause = 0;

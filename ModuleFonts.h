@@ -35,6 +35,6 @@ public:
 private:
 	SDL_Texture* graphics = nullptr;
 	std::string asset_file = "";
-	std::vector<Font*> m_fonts;
+	std::vector<Font*> fonts;
 };
 #endif	// __MODULEFONTS_H__
