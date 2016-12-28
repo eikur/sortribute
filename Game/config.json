@@ -2,7 +2,7 @@
 	"window": {
 		"screen_height": 224,
 		"screen_width": 320,
-		"screen_size": 3,
+		"screen_size": 2,
 		"title": "Streets of Rage Tribute",
 		"fullscreen": false,
 		"vsync": true
@@ -30,7 +30,7 @@
 			"section":[0,0,3844,192]
 		},
 		"foreground": {
-			"position":[-772,32],
+			"position":[-604,32],
 			"section":[0,528,3072,104]
 		}		
 	}

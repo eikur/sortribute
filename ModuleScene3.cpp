@@ -5,6 +5,7 @@
 #include "ModuleAudio.h"
 #include "Animation.h"
 #include "ModuleScene3.h"
+#include "ModuleWindow.h"
 
 ModuleScene3::ModuleScene3(bool active) : Module(active)
 {
@@ -39,8 +40,8 @@ bool ModuleScene3::Start()
 update_status ModuleScene3::Update()
 {
 	//Draw everything
-	App->renderer->Blit(graphics, foreground_pos.x, foreground_pos.y, &foreground_section);
-	App->renderer->Blit(graphics, background_pos.x, background_pos.y, &background_section);
+	App->renderer->Blit(graphics, foreground_pos.x, foreground_pos.y, &foreground_section, (float) (foreground_section.w - App->window->m_screen_width) / (float)(background_section.w - App->window->m_screen_width));
+	App->renderer->Blit(graphics, background_pos.x, background_pos.y, &background_section, 1.0F);
 	return UPDATE_CONTINUE;
 }
 
