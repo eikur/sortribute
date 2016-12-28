@@ -87,4 +87,3 @@ bool Application::CleanUp()
 
 	return ret;
 }
-

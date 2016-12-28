@@ -42,6 +42,15 @@ update_status ModuleScene3::Update()
 	//Draw everything
 	App->renderer->Blit(graphics, foreground_pos.x, foreground_pos.y, &foreground_section, (float) (foreground_section.w - App->window->m_screen_width) / (float)(background_section.w - App->window->m_screen_width));
 	App->renderer->Blit(graphics, background_pos.x, background_pos.y, &background_section, 1.0F);
+	App->renderer->Blit(graphics, wave_sand_pos.x, wave_sand_pos.y, &(wave_sand.GetCurrentFrame()), 1.0F);			// wet sand painted first
+	App->renderer->Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);	// waves painted last
+	return UPDATE_CONTINUE;
+}
+
+update_status ModuleScene3::PostUpdate()
+{
+
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -58,6 +67,7 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 	JSON_Value *root_value = json_parse_file(file_path);
 	JSON_Array *j_array_pos; 
 	JSON_Array *j_array_section;
+	JSON_Array *j_array_tmp;
 
 	if (root_value == nullptr)
 		return false;
@@ -97,9 +107,44 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 	json_array_clear(j_array_section);
 
 	//wave_sand load
+	j_array_pos = json_object_dotget_array(json_object(root_value), "scene3.wave_sand.position");
+	j_array_section = json_object_dotget_array(json_object(root_value), "scene3.wave_sand.section");
 
+	wave_sand_pos.x = (int)json_array_get_number(j_array_pos, 0);
+	wave_sand_pos.y = (int)json_array_get_number(j_array_pos, 1);
+	
+	for (int i = 0; i < (int) json_array_get_count(j_array_section); ++i)
+	{
+		j_array_tmp = json_array_get_array(j_array_section, i);
+		wave_sand.frames.push_back({ (int)json_array_get_number(j_array_tmp, 0), (int)json_array_get_number(j_array_tmp, 1), (int)json_array_get_number(j_array_tmp, 2), (int)json_array_get_number(j_array_tmp, 3) });
+		json_array_clear(j_array_tmp);
+	}
 
+	wave_sand.speed = (float)json_object_dotget_number(json_object(root_value), "scene3.wave_sand.speed");
 
+	json_array_clear(j_array_pos);
+	json_array_clear(j_array_section);
+
+	//wave_splash load
+	j_array_pos = json_object_dotget_array(json_object(root_value), "scene3.wave_splash.position");
+	j_array_section = json_object_dotget_array(json_object(root_value), "scene3.wave_splash.section");
+
+	wave_splash_pos.x = (int)json_array_get_number(j_array_pos, 0);
+	wave_splash_pos.y = (int)json_array_get_number(j_array_pos, 1);
+
+	for (int i = 0; i < (int)json_array_get_count(j_array_section); ++i)
+	{
+		j_array_tmp = json_array_get_array(j_array_section, i);
+		wave_splash.frames.push_back({ (int)json_array_get_number(j_array_tmp, 0), (int)json_array_get_number(j_array_tmp, 1), (int)json_array_get_number(j_array_tmp, 2), (int)json_array_get_number(j_array_tmp, 3) });
+		json_array_clear(j_array_tmp);
+	}
+
+	wave_splash.speed = (float)json_object_dotget_number(json_object(root_value), "scene3.wave_splash.speed");
+
+	json_array_clear(j_array_pos);
+	json_array_clear(j_array_section);
+
+	// clean all and exit
 	json_value_free(root_value);
 
 	if (graphics == nullptr || music_path == "")

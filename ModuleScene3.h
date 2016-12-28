@@ -18,6 +18,7 @@ public:
 	bool Init();
 	bool Start();
 	update_status Update();
+	update_status PostUpdate();
 	bool CleanUp();
 	
 	bool LoadConfigFromFile(const char* file_path);
