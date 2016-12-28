@@ -86,11 +86,12 @@ bool ModuleWindow::LoadConfigFromFile(const char* file_path)
 	m_screen_size = (int)json_object_dotget_number(json_object(root_value), "window.screen_size");
 	m_fullscreen = (json_object_dotget_boolean(json_object(root_value), "window.fullscreen") != 0) ? true : false;
 	m_vsync = (json_object_dotget_boolean(json_object(root_value), "window.vsync") != 0) ? true : false;
-	m_title = json_object_dotget_string(json_object(root_value), "window.title");
+	if (json_object_dothas_value_of_type(json_object(root_value), "window.title", JSONString))
+		m_title = json_object_dotget_string(json_object(root_value), "window.title");
 	
 	json_value_free(root_value);
 	
-	if (m_screen_width == 0 || m_screen_height == 0 || m_screen_size == 0)
+	if (m_screen_width == 0 || m_screen_height == 0 || m_screen_size == 0 || m_title == "")
 		return false;
 	else 
 		return true;

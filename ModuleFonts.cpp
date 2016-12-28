@@ -59,9 +59,14 @@ bool ModuleFonts::LoadConfigFromFile(const char* file_path)
 	}
 
 	//get the path to the asset
-	asset_file = json_object_dotget_string(json_object(root_value), "fonts.file");
+	if (json_object_dothas_value_of_type(json_object(root_value), "fonts.file", JSONString))
+		asset_file = json_object_dotget_string(json_object(root_value), "fonts.file");
+	if (asset_file == "") {
+		json_value_free(root_value);
+		return false;
+	}
 
-	//get each fonts 
+	//get the fonts 
 	j_rects = json_object_dotget_array(json_object(root_value), "fonts.rects");
 	j_lookup = json_object_dotget_array(json_object(root_value), "fonts.lookup_table");
 	j_ppe = json_object_dotget_array(json_object(root_value), "fonts.ppe");
@@ -76,16 +81,17 @@ bool ModuleFonts::LoadConfigFromFile(const char* file_path)
 		tmp->rect->x = (int)json_array_get_number(j_rect, 0);
 		tmp->rect->y = (int)json_array_get_number(j_rect, 1);
 		tmp->rect->w = (int)json_array_get_number(j_rect, 2);
-		tmp->rect->h = (int)json_array_get_number(j_rect,  3);
-		
+		tmp->rect->h = (int)json_array_get_number(j_rect, 3);
+
 		tmp->lookup_table = json_array_get_string(j_lookup, i);
-		
-		tmp->pixels_per_element = (int) json_array_get_number(j_ppe, i);
+
+		tmp->pixels_per_element = (int)json_array_get_number(j_ppe, i);
 
 		fonts.push_back(new Font(*tmp));
 	}
 
 	delete tmp;
+
 	json_value_free(root_value);
 
 	return true;

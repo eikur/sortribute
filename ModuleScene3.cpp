@@ -52,7 +52,8 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 	if (root_value == nullptr)
 		return false;
 
-	graphics = App->textures->Load(json_object_dotget_string(json_object(root_value), "scene3.graphics_file"));
+	if (json_object_dothas_value_of_type(json_object(root_value), "scene3.graphics_file", JSONString))
+		graphics = App->textures->Load(json_object_dotget_string(json_object(root_value), "scene3.graphics_file"));
 	
 	if (json_object_dothas_value_of_type(json_object(root_value), "scene3.music_file",JSONString))
 		music_path = json_object_dotget_string(json_object(root_value), "scene3.music_file");
@@ -61,7 +62,8 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 
 	if (graphics == nullptr || music_path == "")
 	{
-		graphics = nullptr;	
+		if (graphics != nullptr)
+			App->textures->Unload(graphics);
 		return false;
 	}
 	
