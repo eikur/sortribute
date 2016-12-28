@@ -14,8 +14,7 @@ class ModuleFadeToBlack;
 class ModuleCollision;
 class ModuleParticles;
 class ModuleFonts;
-
-
+class ModuleScene3;
 
 class Application
 {
@@ -38,8 +37,9 @@ public:
 	ModuleCollision* collision;
 	ModuleParticles* particles;
 	ModuleFonts* fonts;
-
 	// Game modules ---
+	ModuleScene3* scene3;
+
 
 private:
 

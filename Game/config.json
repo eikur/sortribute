@@ -21,5 +21,9 @@
 			"ROUND SATPE"
 		],
 		"ppe": [8, 8, 12]
+	},
+	"scene3": {
+		"graphics_file": "Assets/moonbeach.png",
+		"music_file": "Assets/music_stage3.ogg"
 	}
 }

@@ -53,8 +53,10 @@ bool ModuleFonts::LoadConfigFromFile(const char* file_path)
 		return false;
 
 	int total = (int) json_object_dotget_number(json_object(root_value), "fonts.total");
-	if (total == 0)
+	if (total == 0) {
+		json_value_free(root_value);
 		return false;
+	}
 
 	//get the path to the asset
 	asset_file = json_object_dotget_string(json_object(root_value), "fonts.file");
@@ -85,7 +87,6 @@ bool ModuleFonts::LoadConfigFromFile(const char* file_path)
 
 	delete tmp;
 	json_value_free(root_value);
-
 
 	return true;
 }

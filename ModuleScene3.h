@@ -4,9 +4,10 @@
 #include "Module.h"
 struct SDL_Texture;
 
-class ModuleScene3 : Module 
+class ModuleScene3 : public Module 
 {
 public:
+
 	ModuleScene3(bool active = true);
 	~ModuleScene3();
 
@@ -18,8 +19,12 @@ public:
 	bool LoadConfigFromFile(const char* file_path);
 
 private:
+
 	SDL_Texture* graphics = nullptr;
-	uint music = 0;
+	std::string music_path = "";
+	uint fx_rain = 0;
+	uint fx_waves = 0;
+
 };
 
 

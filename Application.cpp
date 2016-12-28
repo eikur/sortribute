@@ -8,6 +8,7 @@
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
 #include "ModuleFonts.h"
+#include "ModuleScene3.h"
 
 using namespace std;
 
@@ -25,6 +26,10 @@ Application::Application()
 	modules.push_back(particles = new ModuleParticles());
 	modules.push_back(fade = new ModuleFadeToBlack());
 	modules.push_back(fonts = new ModuleFonts());
+
+	//Specific game modules
+	modules.push_back(scene3 = new ModuleScene3());
+
 }
 
 Application::~Application()
