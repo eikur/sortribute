@@ -1,12 +1,25 @@
 #ifndef __ENTITY_H__
 #define __ENTITY_H__
 
-class Entity {
+class Entity 
+{
+public:
+	enum Types
+	{
+		player,
+		unknown
+	};
 
-public: 
-	Entity(){}
-	~Entity(){}
+private:
+	Types m_type;
+
+public:
+	Entity(Types type) : m_type(type)
+	{}
+
+	virtual ~Entity()
+	{}
 
 };
 
-#endif __ENTITY_H__
+#endif // __ENTITY_H__

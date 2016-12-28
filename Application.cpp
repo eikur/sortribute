@@ -9,6 +9,7 @@
 #include "ModuleParticles.h"
 #include "ModuleFonts.h"
 #include "ModuleScene3.h"
+#include "EntityManager.h"
 
 using namespace std;
 
@@ -30,6 +31,7 @@ Application::Application()
 	//Specific game modules
 	modules.push_back(scene3 = new ModuleScene3(false));
 	modules.push_back(fade = new ModuleFadeToBlack());
+	modules.push_back(manager = new EntityManager());
 
 }
 

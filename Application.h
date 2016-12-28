@@ -15,6 +15,7 @@ class ModuleCollision;
 class ModuleParticles;
 class ModuleFonts;
 class ModuleScene3;
+class EntityManager;
 
 class Application
 {
@@ -39,6 +40,7 @@ public:
 	ModuleFonts* fonts = nullptr;
 	// Game modules ---
 	ModuleScene3* scene3 = nullptr;
+	EntityManager* manager = nullptr;
 
 
 private:
