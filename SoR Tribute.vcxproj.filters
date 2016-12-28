@@ -70,6 +70,12 @@
     <ClInclude Include="ModuleScene3.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
+    <ClInclude Include="EntityManager.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Entity.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -112,6 +118,9 @@
       <Filter>Core Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleScene3.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="EntityManager.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
   </ItemGroup>
