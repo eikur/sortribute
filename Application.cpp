@@ -22,13 +22,14 @@ Application::Application()
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(audio = new ModuleAudio());
 
-	// Modules to draw on top of game logic
-	modules.push_back(particles = new ModuleParticles());
-	modules.push_back(fade = new ModuleFadeToBlack());
 	modules.push_back(fonts = new ModuleFonts());
 
+	// Modules to draw on top of game logic
+	modules.push_back(particles = new ModuleParticles());
+	
 	//Specific game modules
-	modules.push_back(scene3 = new ModuleScene3());
+	modules.push_back(scene3 = new ModuleScene3(false));
+	modules.push_back(fade = new ModuleFadeToBlack());
 
 }
 
@@ -52,7 +53,7 @@ bool Application::Init()
 	}
 
 	// Start the first scene --
-	//	fade->FadeToBlack(scene_intro, nullptr, 3.0f);
+	fade->FadeToBlack(scene3, nullptr, 5.0F);
 
 	return ret;
 }

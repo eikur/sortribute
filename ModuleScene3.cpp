@@ -1,5 +1,6 @@
 #include "Globals.h"
 #include "Application.h"
+#include "ModuleRender.h"
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "ModuleScene3.h"
@@ -28,6 +29,7 @@ bool ModuleScene3::Init()
 bool ModuleScene3::Start()
 {
 	LOG("Scene3: Starting MoonBeach\n");
+	App->audio->PlayMusic(music_path.c_str(), 1.0F);
 	return true;
 }
 
@@ -35,6 +37,8 @@ bool ModuleScene3::Start()
 
 update_status ModuleScene3::Update()
 {
+	//Draw everything
+	App->renderer->Blit(graphics, back_x, back_y, NULL);
 	return UPDATE_CONTINUE;
 }
 
@@ -57,6 +61,9 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 	
 	if (json_object_dothas_value_of_type(json_object(root_value), "scene3.music_file",JSONString))
 		music_path = json_object_dotget_string(json_object(root_value), "scene3.music_file");
+
+	back_x = (int)json_object_dotget_number(json_object(root_value), "scene3.x");
+	back_y = (int)json_object_dotget_number(json_object(root_value), "scene3.y");
 
 	json_value_free(root_value);
 

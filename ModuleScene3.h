@@ -8,6 +8,7 @@ class ModuleScene3 : public Module
 {
 public:
 
+
 	ModuleScene3(bool active = true);
 	~ModuleScene3();
 
@@ -24,6 +25,9 @@ private:
 	std::string music_path = "";
 	uint fx_rain = 0;
 	uint fx_waves = 0;
+
+	int back_x = 0;
+	int back_y = 0;
 
 };
 
