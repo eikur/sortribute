@@ -2,6 +2,7 @@
 #define __MODULESCENE3_H__
 
 #include "Module.h"
+class Animation;
 struct SDL_Texture;
 
 class ModuleScene3 : public Module 
@@ -22,6 +23,9 @@ public:
 private:
 
 	SDL_Texture* graphics = nullptr;
+	Animation *wave_sand = nullptr;
+	Animation *wave_water = nullptr;
+
 	std::string music_path = "";
 	uint fx_rain = 0;
 	uint fx_waves = 0;

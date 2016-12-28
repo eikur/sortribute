@@ -3,6 +3,7 @@
 #include "ModuleRender.h"
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
+#include "Animation.h"
 #include "ModuleScene3.h"
 
 ModuleScene3::ModuleScene3(bool active) : Module(active)
