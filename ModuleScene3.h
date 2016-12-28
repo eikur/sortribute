@@ -2,13 +2,15 @@
 #define __MODULESCENE3_H__
 
 #include "Module.h"
+#include "Point.h"
+
 class Animation;
 struct SDL_Texture;
 
 class ModuleScene3 : public Module 
 {
-public:
 
+public:
 
 	ModuleScene3(bool active = true);
 	~ModuleScene3();
@@ -23,15 +25,20 @@ public:
 private:
 
 	SDL_Texture* graphics = nullptr;
-	Animation *wave_sand = nullptr;
-	Animation *wave_water = nullptr;
+	
+	SDL_Rect background_section;
+	iPoint background_pos = iPoint(0, 0);
+
+	SDL_Rect foreground_section;
+	iPoint foreground_pos = iPoint(0, 0);
+
+	Animation wave_sand;
+	iPoint wave_sand_pos = iPoint(0, 0);
+
+	Animation wave_splash;
+	iPoint wave_splash_pos = iPoint(0, 0);
 
 	std::string music_path = "";
-	uint fx_rain = 0;
-	uint fx_waves = 0;
-
-	int back_x = 0;
-	int back_y = 0;
 
 };
 

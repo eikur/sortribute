@@ -39,7 +39,8 @@ bool ModuleScene3::Start()
 update_status ModuleScene3::Update()
 {
 	//Draw everything
-	App->renderer->Blit(graphics, back_x, back_y, NULL);
+	App->renderer->Blit(graphics, foreground_pos.x, foreground_pos.y, &foreground_section);
+	App->renderer->Blit(graphics, background_pos.x, background_pos.y, &background_section);
 	return UPDATE_CONTINUE;
 }
 
@@ -54,6 +55,9 @@ bool ModuleScene3::CleanUp()
 bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 {
 	JSON_Value *root_value = json_parse_file(file_path);
+	JSON_Array *j_array_pos; 
+	JSON_Array *j_array_section;
+
 	if (root_value == nullptr)
 		return false;
 
@@ -63,8 +67,37 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 	if (json_object_dothas_value_of_type(json_object(root_value), "scene3.music_file",JSONString))
 		music_path = json_object_dotget_string(json_object(root_value), "scene3.music_file");
 
-	back_x = (int)json_object_dotget_number(json_object(root_value), "scene3.x");
-	back_y = (int)json_object_dotget_number(json_object(root_value), "scene3.y");
+	//background load
+	j_array_pos = json_object_dotget_array(json_object(root_value), "scene3.background.position");
+	j_array_section = json_object_dotget_array(json_object(root_value), "scene3.background.section");
+
+	background_pos.x = (int)json_array_get_number(j_array_pos, 0);
+	background_pos.y = (int)json_array_get_number(j_array_pos, 1);
+	background_section.x = (int)json_array_get_number(j_array_section, 0);
+	background_section.y = (int)json_array_get_number(j_array_section, 1);
+	background_section.w = (int)json_array_get_number(j_array_section, 2);
+	background_section.h= (int)json_array_get_number(j_array_section, 3);
+
+	json_array_clear(j_array_pos);
+	json_array_clear(j_array_section);
+
+	//foreground load
+	j_array_pos = json_object_dotget_array(json_object(root_value), "scene3.foreground.position");
+	j_array_section = json_object_dotget_array(json_object(root_value), "scene3.foreground.section");
+
+	foreground_pos.x = (int)json_array_get_number(j_array_pos, 0);
+	foreground_pos.y = (int)json_array_get_number(j_array_pos, 1);
+	foreground_section.x = (int)json_array_get_number(j_array_section, 0);
+	foreground_section.y = (int)json_array_get_number(j_array_section, 1);
+	foreground_section.w = (int)json_array_get_number(j_array_section, 2);
+	foreground_section.h = (int)json_array_get_number(j_array_section, 3);
+
+	json_array_clear(j_array_pos);
+	json_array_clear(j_array_section);
+
+	//wave_sand load
+
+
 
 	json_value_free(root_value);
 

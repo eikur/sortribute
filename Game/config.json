@@ -25,7 +25,13 @@
 	"scene3": {
 		"graphics_file": "Assets/moonbeach.png",
 		"music_file": "Assets/music_stage3.ogg",
-		"x" : -772,
-		"y" : 32
+		"background": {
+			"position":[-772, 32],
+			"section":[0,0,3844,192]
+		},
+		"foreground": {
+			"position":[-772,32],
+			"section":[0,528,3072,104]
+		}		
 	}
 }
