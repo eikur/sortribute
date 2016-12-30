@@ -71,6 +71,7 @@ protected:
 // Graphics and animations
 	SDL_Texture *graphics;
 	Animation *current_animation = nullptr;
+	iPoint sprite_offset = iPoint(0, 0);
 
 	Animation idle;
 	Animation walk;

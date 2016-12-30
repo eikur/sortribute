@@ -15,6 +15,7 @@ bool Player::Update()
 	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 	{
 		position.y -= speed.y;
+		
 	}
 	else
 	{
@@ -51,7 +52,7 @@ bool Player::Update()
 	}
 	
 	//draw after computing the logic
-	App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), 1.0F, !facing_right);
+	App->renderer->Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, !facing_right);
 	return true;
 }
 
@@ -83,6 +84,11 @@ bool Player::LoadFromConfigFile(const char* file_path)
 
 	health = (int)json_object_dotget_number(root_object, "player.health");
 	
+	j_array = json_object_dotget_array(root_object, "player.sprite_offset");
+	sprite_offset.x = (int)json_array_get_number(j_array, 0);
+	sprite_offset.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
 	idle.speed = (float)json_object_dotget_number(root_object, "player.idle.speed");
 	j_array = json_object_dotget_array(root_object, "player.idle.frames");
 	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
