@@ -23,20 +23,29 @@ bool Player::Update()
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 	{
 		position.x -= speed.x;
+		facing_right = false;
 	}
-
 	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 	{
 		position.x += speed.x;
+		facing_right = true;
 	}
+
 	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_IDLE && App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_IDLE && App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_IDLE && App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_IDLE)
+	{
+		if (current_animation != &idle)
+			idle.Reset();
 		current_animation = &idle;
+	}
 	else
+	{
+		if (current_animation != &walk)
+			walk.Reset();
 		current_animation = &walk;
-	
+	}
 	
 	//draw after computing the logic
-	App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), 1.0F);
+	App->renderer->Blit(graphics, position.x, position.y, &(current_animation->GetCurrentFrame()), 1.0F, !facing_right);
 	return true;
 }
 

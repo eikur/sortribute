@@ -57,6 +57,7 @@ protected:
 	iPoint position = iPoint(0, 0);
 	int z_jump = 0;
 	iPoint speed = iPoint(0, 0);
+	bool facing_right = true;
 
 // health & damage variables
 	int health = 0;
