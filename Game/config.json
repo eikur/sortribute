@@ -2,7 +2,7 @@
 	"window": {
 		"screen_height": 224,
 		"screen_width": 320,
-		"screen_size": 2,
+		"screen_size": 1,
 		"title": "Streets of Rage Tribute",
 		"fullscreen": false,
 		"vsync": true
@@ -47,6 +47,7 @@
 	},
 	"player": {
 		"graphics_file": "Assets/axel.png",
+		"speed" : [2,1],
 		"health" : 100,
 		"idle": {
 			"frames": [[0,0, 42,64],[0,0, 42,64],[0,0, 42,64],[0,0, 42,64],[0,0, 42,64],[0,0, 42,64],[42,0, 42,64],[84,0, 42,64]],

@@ -4,7 +4,7 @@
 #include "parson.h"
 #include "Point.h"
 #include "Globals.h"
-class Animation;
+#include "Animation.h"
 struct SDL_Texture;
 
 
@@ -52,8 +52,11 @@ public:
 
 protected:
 	Types m_type = Types::unknown;
+
+//move variables
 	iPoint position = iPoint(0, 0);
 	int z_jump = 0;
+	iPoint speed = iPoint(0, 0);
 
 // health & damage variables
 	int health = 0;
@@ -66,33 +69,34 @@ protected:
 
 // Graphics and animations
 	SDL_Texture *graphics;
+	Animation *current_animation = nullptr;
 
-	Animation *idle = nullptr;
-	Animation *walk = nullptr;
-	Animation *take_item = nullptr;
+	Animation idle;
+	Animation walk;
+	Animation take_item;
 
-	Animation *attack1 = nullptr;
-	Animation *attack2 = nullptr;
-	Animation *attack3 = nullptr;
-	Animation *attack_back = nullptr;
+	Animation attack1;
+	Animation attack2;
+	Animation attack3;
+	Animation attack_back;
 
-	Animation *jump = nullptr;
-	Animation *jump_attack = nullptr;
+	Animation jump;
+	Animation jump_attack;
 
-	Animation *holding_front = nullptr;
-	Animation *holding_front_attack = nullptr;
-	Animation *holding_front_attack2 = nullptr;
-	Animation *holding_back = nullptr;
-	Animation *throwing_front = nullptr;
-	Animation *throwing_back = nullptr;
-	Animation *holding_swap = nullptr;
+	Animation holding_front;
+	Animation holding_front_attack;
+	Animation holding_front_attack2;
+	Animation holding_back;
+	Animation throwing_front;
+	Animation throwing_back;
+	Animation holding_swap;
 	
-	Animation *being_hold = nullptr;
-	Animation *being_hold_attack = nullptr;
-	Animation *being_thrown = nullptr;
-	Animation *being_hit = nullptr;
-	Animation *being_knocked = nullptr;
-	Animation *standing_up = nullptr;
+	Animation being_hold;
+	Animation being_hold_attack;
+	Animation being_thrown;
+	Animation being_hit;
+	Animation being_knocked;
+	Animation standing_up;
 // sounds
 	unsigned int fx_voice = 0;
 	unsigned int fx_jump = 0;
