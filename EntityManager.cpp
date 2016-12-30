@@ -7,6 +7,8 @@ EntityManager::EntityManager(){}
 EntityManager::~EntityManager() {}
 
 update_status EntityManager::Update() {
+	for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
+		(*it)->Update();
 	return UPDATE_CONTINUE;
 }
 

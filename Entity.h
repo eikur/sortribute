@@ -5,6 +5,7 @@
 #include "Point.h"
 #include "Globals.h"
 class Animation;
+struct SDL_Texture;
 
 
 class Entity 
@@ -49,7 +50,7 @@ public:
 		return true;
 	}
 
-private:
+protected:
 	Types m_type = Types::unknown;
 	iPoint position = iPoint(0, 0);
 	int z_jump = 0;
@@ -63,7 +64,9 @@ private:
 	int front_throw_dmg = 0;
 	int back_throw_dmg = 0;
 
-// Animations
+// Graphics and animations
+	SDL_Texture *graphics;
+
 	Animation *idle = nullptr;
 	Animation *walk = nullptr;
 	Animation *take_item = nullptr;

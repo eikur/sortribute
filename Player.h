@@ -9,6 +9,8 @@ public:
 	Player();
 	~Player();
 
+	bool Update();
+
 	bool LoadFromConfigFile(const char* file_path);
 };
 

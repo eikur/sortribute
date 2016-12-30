@@ -6,6 +6,7 @@
 #include "Animation.h"
 #include "ModuleScene3.h"
 #include "ModuleWindow.h"
+#include "EntityManager.h"
 
 ModuleScene3::ModuleScene3(bool active) : Module(active)
 {
@@ -32,6 +33,7 @@ bool ModuleScene3::Start()
 {
 	LOG("Scene3: Starting MoonBeach\n");
 	App->audio->PlayMusic(music_path.c_str(), 1.0F);
+	App->manager->CreateEntity(Entity::Types::player);
 	return true;
 }
 
