@@ -50,6 +50,15 @@
 		}
 		
 	},
+	"manager":
+	{
+		"hud":
+		{		
+			"graphics_file": "Assets/hud.png",
+			"section": [0,0,320,32]
+		}
+	},
+	
 	"player": {
 		"graphics_file": "Assets/axel.png",
 		"speed" : [3,1],

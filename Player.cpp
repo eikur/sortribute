@@ -12,66 +12,59 @@ Player::~Player(){}
 
 bool Player::Update( const bool upd_logic)
 {
+	if (IsAlive() == false)
+	{
+		//die
+		return true;
+	}
 	if (upd_logic)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
+
+		iPoint move_speed = iPoint(0, 0);
+
+		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+			move_speed.y -= speed.y;
+		else
+			if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+				move_speed.y += speed.y;
+
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 		{
-			attack1.Reset();
-			current_animation = &attack1;
+			move_speed.x -= speed.x;
+			facing_right = false;
 		}
 		else
 		{
-			if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+			if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 			{
-				if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-				{
-					position.y -= speed.y;
-					if (current_animation != &walk)
-						walk.Reset();
-					current_animation = &walk;
-
-				}
-				else
-				{
-					if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-					{
-						position.y += speed.y;
-						if (current_animation != &walk)
-							walk.Reset();
-						current_animation = &walk;
-					}
-				}
-				if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-				{
-					position.x -= speed.x;
-					facing_right = false;
-					if (current_animation != &walk)
-						walk.Reset();
-					current_animation = &walk;
-				}
-				else
-				{
-					if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-					{
-						position.x += speed.x;
-						facing_right = true;
-						if (current_animation != &walk)
-							walk.Reset();
-						current_animation = &walk;
-					}
-				}
+				move_speed.x += speed.x;
+				facing_right = true;
 			}
-			else
+		}
+
+		if (move_speed.IsZero())
+		{
+			if (current_animation != &idle)
 			{
-				if (current_animation != &idle)
-					idle.Reset();
 				current_animation = &idle;
+				current_animation->Reset();
+			}
+		}
+		else
+		{
+			position += move_speed;
+
+			if (current_animation != &walk)
+			{
+				current_animation = &walk;
+				current_animation->Reset();
 			}
 		}
 	}
 
-	//draw after computing the logic
+	//draw the sprites after the logic calculations
 	App->renderer->Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, !facing_right);
+	
 	return true;
 }
 

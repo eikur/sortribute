@@ -40,9 +40,9 @@ public:
 		return true;
 	}
 
-	virtual bool IsDead()
+	virtual bool IsAlive()
 	{
-		return health <= 0;
+		return health > 0;
 	}
 
 	virtual bool LoadFromConfigFile(const char* file_path) 
@@ -55,9 +55,10 @@ protected:
 
 //move variables
 	iPoint position = iPoint(0, 0);
-	int z_jump = 0;
 	iPoint speed = iPoint(0, 0);
-	bool facing_right = true;
+	int	ground_y = 0;
+	bool grounded = true;
+
 
 // health & damage variables
 	int health = 0;
@@ -72,6 +73,7 @@ protected:
 	SDL_Texture *graphics;
 	Animation *current_animation = nullptr;
 	iPoint sprite_offset = iPoint(0, 0);
+	bool facing_right = true;
 
 	Animation idle;
 	Animation walk;

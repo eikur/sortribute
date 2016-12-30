@@ -6,6 +6,7 @@
 
 class Animation;
 struct SDL_Texture;
+class Player;
 
 class ModuleScene3 : public Module 
 {
@@ -22,6 +23,10 @@ public:
 	bool CleanUp();
 	
 	bool LoadConfigFromFile(const char* file_path);
+
+
+public:
+	Player* player;
 
 private:
 
