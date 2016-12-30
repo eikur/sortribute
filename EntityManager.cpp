@@ -1,14 +1,35 @@
 #include "Globals.h"
 #include "EntityManager.h"
 #include "Player.h"
+#include "Timer.h"
 
-EntityManager::EntityManager(){}
+EntityManager::EntityManager(){
 
-EntityManager::~EntityManager() {}
+}
 
+EntityManager::~EntityManager() {
+}
+
+bool EntityManager::Init()
+{
+	logic_timer = new Timer();
+	return true;
+}
 update_status EntityManager::Update() {
+
+	unsigned int a = logic_timer->ElapsedTimeMsec();
+	if (logic_timer->ElapsedTimeMsec() >= upd_logic_ms_cycle)
+		upd_logic = true;
+
 	for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
-		(*it)->Update();
+		(*it)->Update( upd_logic );
+
+	if (upd_logic == true)
+	{
+		logic_timer->ReStart();
+		upd_logic = false; 
+	}
+
 	return UPDATE_CONTINUE;
 }
 
@@ -44,6 +65,7 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 			entities.push_back(ret);
 		}
 	}
+	delete logic_timer;
 
 	return ret;
 }

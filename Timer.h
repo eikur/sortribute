@@ -22,6 +22,11 @@ public:
 		ticks_pause = 0;
 	}
 
+	void ReStart() {
+		Stop();
+		Start();
+	}
+
 	unsigned int ElapsedTimeMsec()
 	{
 		return SDL_GetTicks() - ticks_start;

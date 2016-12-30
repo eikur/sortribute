@@ -35,9 +35,9 @@ public:
 
 	}
 
-	virtual bool Update()
+	virtual bool Update( const bool upd_logic = false)
 	{
-		return true; 
+		return true;
 	}
 
 	virtual bool IsDead()
