@@ -11,6 +11,8 @@ public:
 	EntityManager();
 	~EntityManager();
 
+	update_status Update();
+
 	Entity* CreateEntity(Entity::Types type);
 
 private:

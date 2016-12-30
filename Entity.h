@@ -1,8 +1,11 @@
 #ifndef __ENTITY_H__
 #define __ENTITY_H__
 
+#include "parson.h"
 #include "Point.h"
+#include "Globals.h"
 class Animation;
+
 
 class Entity 
 {
@@ -21,9 +24,29 @@ public:
 	virtual ~Entity()
 	{}
 
+	virtual bool Init()
+	{
+		if (LoadFromConfigFile(CONFIG_FILE) == false)
+		{
+			return false;
+		}
+		return true;
+
+	}
+
+	virtual bool Update()
+	{
+		return true; 
+	}
+
 	virtual bool IsDead()
 	{
 		return health <= 0;
+	}
+
+	virtual bool LoadFromConfigFile(const char* file_path) 
+	{
+		return true;
 	}
 
 private:

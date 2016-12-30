@@ -9,6 +9,7 @@ public:
 	Player();
 	~Player();
 
+	bool LoadFromConfigFile(const char* file_path);
 };
 
 #endif // __PLAYER_H__

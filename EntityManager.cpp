@@ -6,6 +6,11 @@ EntityManager::EntityManager(){}
 
 EntityManager::~EntityManager() {}
 
+update_status EntityManager::Update() {
+	return UPDATE_CONTINUE;
+}
+
+
 Entity* EntityManager::CreateEntity(Entity::Types type)
 {
 	static_assert(Entity::Types::unknown == 1, "code needs update");
@@ -17,7 +22,17 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 	}
 
 	if (ret != nullptr)
-		entities.push_back(ret);
+	{
+		if (ret->Init() == false)
+		{
+			delete ret;
+			ret = nullptr;
+		}
+		else
+		{
+			entities.push_back(ret);
+		}
+	}
 
 	return ret;
 }
