@@ -36,8 +36,8 @@ public:
 	bool LoadConfigFromFile(const char* file_path);
 	bool CleanUp();
 
-
 	void Print(int x, int y, int font_id, const std::string text) const;
+	std::string GetPrintableValue(int value, int desired_length) const;
 	
 private:
 	SDL_Texture* graphics = nullptr;

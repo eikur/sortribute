@@ -3,6 +3,7 @@
 #include "ModuleRender.h"
 #include "ModuleTextures.h"
 #include "ModuleInput.h"
+#include "ModuleFonts.h"
 
 #include "Player.h"
 
@@ -63,9 +64,45 @@ bool Player::Update( const bool upd_logic)
 	}
 
 	//draw the sprites after the logic calculations
+
 	App->renderer->Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, !facing_right);
-	
+// Print values in the hud	
+	App->fonts->Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, App->fonts->GetPrintableValue(score, 6));
+	App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(help,1));
+	App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(lives, 1));
+//Cheat codes
+	CheatCodes();
 	return true;
+}
+
+
+void Player::AddScore(int addition)
+{
+	if ((score + addition) >= 999999) {
+		score = 999999;
+		return;
+	}
+	if (score < 50000 && (score+addition)>=50000)
+	{ 
+		lives += 1;
+		//sound missing	
+	}
+	score += addition;
+}
+
+void Player::ModifyLives(int mod_to_add)
+{
+	lives += mod_to_add;
+	if (lives> 9)
+	{
+		lives = 9;
+		return;
+	}
+	if (lives<= 0)
+	{
+		lives = 0;
+		//Game over
+	}
 }
 
 bool Player::LoadFromConfigFile(const char* file_path)
@@ -133,10 +170,36 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	
 	position = iPoint(50, 150);
 
+// print out variables to hud
+
+	j_array = json_object_dotget_array(root_object, "hud.score_pos");
+	hud_score_pos.x = (int)json_array_get_number(j_array, 0);
+	hud_score_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
+
+	j_array = json_object_dotget_array(root_object, "hud.lives_pos");
+	hud_lives_pos.x = (int)json_array_get_number(j_array, 0);
+	hud_lives_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
+	j_array = json_object_dotget_array(root_object, "hud.help_pos");
+	hud_help_pos.x = (int)json_array_get_number(j_array, 0);
+	hud_help_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
 
 
 	json_value_free(root_value);
 	
 	return true;
 
+}
+
+void Player::CheatCodes() {
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_REPEAT)
+		AddScore(1000);
+	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+		ModifyLives(+1);
+	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN && help < 9)
+		help += 1;
 }

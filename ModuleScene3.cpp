@@ -46,11 +46,13 @@ update_status ModuleScene3::PreUpdate()
 	App->renderer->Blit(graphics, middleground_pos.x, middleground_pos.y, &middleground_section, (float)(middleground_section.w - App->window->m_screen_width) / (float)(foreground_section.w - App->window->m_screen_width));
 	App->renderer->Blit(graphics, foreground_pos.x, foreground_pos.y, &foreground_section, 1.0F);
 	App->renderer->Blit(graphics, wave_sand_pos.x, wave_sand_pos.y, &(wave_sand.GetCurrentFrame()), 1.0F);			
+	App->renderer->Blit(hud_graphics, 0, 0, &hud_section, 0.0F);
 	return UPDATE_CONTINUE;
 }
 update_status ModuleScene3::Update()
 {
 	App->renderer->Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);	// waves painted last
+	
 	return UPDATE_CONTINUE;
 }
 
@@ -64,23 +66,27 @@ bool ModuleScene3::CleanUp()
 
 bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 {
-	JSON_Value *root_value = json_parse_file(file_path);
+	JSON_Value *root_value;
+	JSON_Object *root_object;
 	JSON_Array *j_array_pos; 
 	JSON_Array *j_array_section;
 	JSON_Array *j_array_tmp;
 
+	root_value = json_parse_file(file_path);
 	if (root_value == nullptr)
 		return false;
+	else
+		root_object = json_object(root_value);
 
-	if (json_object_dothas_value_of_type(json_object(root_value), "scene3.graphics_file", JSONString))
-		graphics = App->textures->Load(json_object_dotget_string(json_object(root_value), "scene3.graphics_file"));
+	if (json_object_dothas_value_of_type(root_object, "scene3.graphics_file", JSONString))
+		graphics = App->textures->Load(json_object_dotget_string(root_object, "scene3.graphics_file"));
 	
-	if (json_object_dothas_value_of_type(json_object(root_value), "scene3.music_file",JSONString))
-		music_path = json_object_dotget_string(json_object(root_value), "scene3.music_file");
+	if (json_object_dothas_value_of_type(root_object, "scene3.music_file",JSONString))
+		music_path = json_object_dotget_string(root_object, "scene3.music_file");
 
 	//background load
-	j_array_pos = json_object_dotget_array(json_object(root_value), "scene3.background.position");
-	j_array_section = json_object_dotget_array(json_object(root_value), "scene3.background.section");
+	j_array_pos = json_object_dotget_array(root_object, "scene3.background.position");
+	j_array_section = json_object_dotget_array(root_object, "scene3.background.section");
 
 	background_pos.x = (int)json_array_get_number(j_array_pos, 0);
 	background_pos.y = (int)json_array_get_number(j_array_pos, 1);
@@ -93,8 +99,8 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 	json_array_clear(j_array_section);
 
 	//middleground load 
-	j_array_pos = json_object_dotget_array(json_object(root_value), "scene3.middleground.position");
-	j_array_section = json_object_dotget_array(json_object(root_value), "scene3.middleground.section");
+	j_array_pos = json_object_dotget_array(root_object, "scene3.middleground.position");
+	j_array_section = json_object_dotget_array(root_object, "scene3.middleground.section");
 
 	middleground_pos.x = (int)json_array_get_number(j_array_pos, 0);
 	middleground_pos.y = (int)json_array_get_number(j_array_pos, 1);
@@ -107,8 +113,8 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 	json_array_clear(j_array_section);
 
 	//foreground load
-	j_array_pos = json_object_dotget_array(json_object(root_value), "scene3.foreground.position");
-	j_array_section = json_object_dotget_array(json_object(root_value), "scene3.foreground.section");
+	j_array_pos = json_object_dotget_array(root_object, "scene3.foreground.position");
+	j_array_section = json_object_dotget_array(root_object, "scene3.foreground.section");
 
 	foreground_pos.x = (int)json_array_get_number(j_array_pos, 0);
 	foreground_pos.y = (int)json_array_get_number(j_array_pos, 1);
@@ -121,8 +127,8 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 	json_array_clear(j_array_section);
 
 	//wave_sand load
-	j_array_pos = json_object_dotget_array(json_object(root_value), "scene3.wave_sand.position");
-	j_array_section = json_object_dotget_array(json_object(root_value), "scene3.wave_sand.section");
+	j_array_pos = json_object_dotget_array(root_object, "scene3.wave_sand.position");
+	j_array_section = json_object_dotget_array(root_object, "scene3.wave_sand.section");
 
 	wave_sand_pos.x = (int)json_array_get_number(j_array_pos, 0);
 	wave_sand_pos.y = (int)json_array_get_number(j_array_pos, 1);
@@ -134,14 +140,14 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 		json_array_clear(j_array_tmp);
 	}
 
-	wave_sand.speed = (float)json_object_dotget_number(json_object(root_value), "scene3.wave_sand.speed");
+	wave_sand.speed = (float)json_object_dotget_number(root_object, "scene3.wave_sand.speed");
 
 	json_array_clear(j_array_pos);
 	json_array_clear(j_array_section);
 
 	//wave_splash load
-	j_array_pos = json_object_dotget_array(json_object(root_value), "scene3.wave_splash.position");
-	j_array_section = json_object_dotget_array(json_object(root_value), "scene3.wave_splash.section");
+	j_array_pos = json_object_dotget_array(root_object, "scene3.wave_splash.position");
+	j_array_section = json_object_dotget_array(root_object, "scene3.wave_splash.section");
 
 	wave_splash_pos.x = (int)json_array_get_number(j_array_pos, 0);
 	wave_splash_pos.y = (int)json_array_get_number(j_array_pos, 1);
@@ -153,10 +159,24 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 		json_array_clear(j_array_tmp);
 	}
 
-	wave_splash.speed = (float)json_object_dotget_number(json_object(root_value), "scene3.wave_splash.speed");
+	wave_splash.speed = (float)json_object_dotget_number(root_object, "scene3.wave_splash.speed");
 
 	json_array_clear(j_array_pos);
 	json_array_clear(j_array_section);
+
+	// hud load
+	if (json_object_dothas_value_of_type(root_object, "hud.graphics_file", JSONString))
+		hud_graphics = App->textures->Load(json_object_dotget_string(root_object, "hud.graphics_file"));
+	if (hud_graphics == nullptr)
+	{
+		json_value_free(root_value);
+		return false;
+	}
+
+	j_array_tmp = json_object_dotget_array(root_object, "hud.section");
+	hud_section = { (int)json_array_get_number(j_array_tmp,0),(int)json_array_get_number(j_array_tmp,1),(int)json_array_get_number(j_array_tmp,2),(int)json_array_get_number(j_array_tmp,3) };
+	json_array_clear(j_array_tmp);
+
 
 	// clean all and exit
 	json_value_free(root_value);

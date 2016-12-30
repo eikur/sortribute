@@ -126,6 +126,21 @@ void ModuleFonts::Print(int x, int y, int font_id, const std::string text) const
 	delete i_rect;
 }
 
+std::string ModuleFonts::GetPrintableValue(int value, int desired_length) const
+{
+	std::string ret = "";
+	std::string tmp = std::to_string(value);
+
+	int current_length = tmp.length();
+
+	for (int i = current_length; i < desired_length; ++i)
+	{
+		ret.append("0");
+	}
+	ret.append(tmp);
+	return ret;
+}
+
 /*---------------------------------------------------------*/
 
 Font::Font()
