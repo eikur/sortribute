@@ -55,7 +55,11 @@
 		"hud":
 		{		
 			"graphics_file": "Assets/hud.png",
-			"section": [0,0,320,32]
+			"section": [0,0,320,32],
+			"score_pos" : [40, 7],
+			"time_pos" : [152,8],
+			"life_pos": [96,8],
+			"help_pos": [96,8]
 		}
 	},
 	

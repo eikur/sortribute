@@ -6,7 +6,8 @@
 #include "Entity.h"
 
 class Timer;
-class Font;
+
+struct Font;
 struct SDL_Texture;
 
 class EntityManager: public Module {
@@ -27,8 +28,9 @@ public:
 private:
 	SDL_Texture *hud_graphics = nullptr;
 	SDL_Rect hud_section = SDL_Rect();
-	//Font* font_small = nullptr;
-	//Font* font_big = nullptr;
+	iPoint hud_score_pos = iPoint(0, 0);
+	iPoint hud_help_pos = iPoint(0, 0);
+	iPoint hud_time_pos = iPoint(0, 0);
 
 	std::list<Entity*> entities;
 	

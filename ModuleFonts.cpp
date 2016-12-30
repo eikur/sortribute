@@ -120,7 +120,7 @@ void ModuleFonts::Print(int x, int y, int font_id, const std::string text) const
 	{
 		lut_i = (*it)->lookup_table.find(text.at(i));
 		i_rect->x = (*it)->rect->x + lut_i * (*it)->pixels_per_element;
-		App->renderer->Blit(graphics, x+i*(*it)->pixels_per_element, y, i_rect, 1.0f);
+		App->renderer->Blit(graphics, x+i*(*it)->pixels_per_element, y, i_rect, 0.0f);
 	}
 }
 

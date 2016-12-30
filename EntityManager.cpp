@@ -4,6 +4,7 @@
 #include "ModuleTextures.h"
 #include "Player.h"
 #include "Timer.h"
+#include "ModuleFonts.h"
 
 #include "EntityManager.h"
 
@@ -34,7 +35,10 @@ update_status EntityManager::PreUpdate()
 
 update_status EntityManager::Update() 
 {
-	App->renderer->Blit(hud_graphics, 0, 0, &hud_section, 0.0F);	
+	App->renderer->Blit(hud_graphics, 0, 0, &hud_section, 0.0F);
+	App->fonts->Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, "064900");
+	App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, "1");
+	App->fonts->Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, "39");
 
 	unsigned int a = logic_timer->ElapsedTimeMsec();
 	if (logic_timer->ElapsedTimeMsec() >= upd_logic_ms_cycle)
@@ -113,6 +117,23 @@ bool EntityManager::LoadConfigFromFile(const char* file_path)
 
 	j_array = json_object_dotget_array(root_object, "manager.hud.section");
 	hud_section = { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
+	json_array_clear(j_array);
+
+	j_array = json_object_dotget_array(root_object, "manager.hud.score_pos");
+	hud_score_pos.x = (int)json_array_get_number(j_array, 0);
+	hud_score_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
+	j_array = json_object_dotget_array(root_object, "manager.hud.time_pos");
+	hud_time_pos.x = (int)json_array_get_number(j_array, 0);
+	hud_time_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
+	j_array = json_object_dotget_array(root_object, "manager.hud.help_pos");
+	hud_help_pos.x = (int)json_array_get_number(j_array, 0);
+	hud_help_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
 	
 	json_value_free(root_value);
 	return true;

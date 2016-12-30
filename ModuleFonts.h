@@ -22,6 +22,13 @@ struct Font {
 class ModuleFonts : public Module
 {
 public:
+	enum Fonts {
+		hud_big, 
+		hud_small,
+		scene_overlap
+	};
+
+public:
 	ModuleFonts();
 	~ModuleFonts();
 
