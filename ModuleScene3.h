@@ -17,8 +17,8 @@ public:
 
 	bool Init();
 	bool Start();
+	update_status PreUpdate();
 	update_status Update();
-	update_status PostUpdate();
 	bool CleanUp();
 	
 	bool LoadConfigFromFile(const char* file_path);
@@ -29,6 +29,9 @@ private:
 	
 	SDL_Rect background_section;
 	iPoint background_pos = iPoint(0, 0);
+
+	SDL_Rect middleground_section;
+	iPoint middleground_pos = iPoint(0, 0);
 
 	SDL_Rect foreground_section;
 	iPoint foreground_pos = iPoint(0, 0);

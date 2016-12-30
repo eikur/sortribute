@@ -16,19 +16,25 @@ bool Player::Update()
 	{
 		position.y -= speed.y;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+	else
 	{
-		position.y += speed.y;
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		{
+			position.y += speed.y;
+		}
 	}
 	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 	{
 		position.x -= speed.x;
 		facing_right = false;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+	else
 	{
-		position.x += speed.x;
-		facing_right = true;
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		{
+			position.x += speed.x;
+			facing_right = true;
+		}
 	}
 
 	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_IDLE && App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_IDLE && App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_IDLE && App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_IDLE)

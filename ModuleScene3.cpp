@@ -39,20 +39,18 @@ bool ModuleScene3::Start()
 
 
 
-update_status ModuleScene3::Update()
+update_status ModuleScene3::PreUpdate()
 {
-	//Draw everything
-	App->renderer->Blit(graphics, foreground_pos.x, foreground_pos.y, &foreground_section, (float) (foreground_section.w - App->window->m_screen_width) / (float)(background_section.w - App->window->m_screen_width));
-	App->renderer->Blit(graphics, background_pos.x, background_pos.y, &background_section, 1.0F);
-	App->renderer->Blit(graphics, wave_sand_pos.x, wave_sand_pos.y, &(wave_sand.GetCurrentFrame()), 1.0F);			// wet sand painted first
-	App->renderer->Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);	// waves painted last
+	//Draw everything except wave_splash
+	App->renderer->Blit(graphics, background_pos.x, background_pos.y, &background_section, (float)(background_section.w - App->window->m_screen_width) / (float)(foreground_section.w - App->window->m_screen_width));
+	App->renderer->Blit(graphics, middleground_pos.x, middleground_pos.y, &middleground_section, (float)(middleground_section.w - App->window->m_screen_width) / (float)(foreground_section.w - App->window->m_screen_width));
+	App->renderer->Blit(graphics, foreground_pos.x, foreground_pos.y, &foreground_section, 1.0F);
+	App->renderer->Blit(graphics, wave_sand_pos.x, wave_sand_pos.y, &(wave_sand.GetCurrentFrame()), 1.0F);			
 	return UPDATE_CONTINUE;
 }
-
-update_status ModuleScene3::PostUpdate()
+update_status ModuleScene3::Update()
 {
-
-	
+	App->renderer->Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);	// waves painted last
 	return UPDATE_CONTINUE;
 }
 
@@ -90,6 +88,20 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 	background_section.y = (int)json_array_get_number(j_array_section, 1);
 	background_section.w = (int)json_array_get_number(j_array_section, 2);
 	background_section.h= (int)json_array_get_number(j_array_section, 3);
+
+	json_array_clear(j_array_pos);
+	json_array_clear(j_array_section);
+
+	//middleground load 
+	j_array_pos = json_object_dotget_array(json_object(root_value), "scene3.middleground.position");
+	j_array_section = json_object_dotget_array(json_object(root_value), "scene3.middleground.section");
+
+	middleground_pos.x = (int)json_array_get_number(j_array_pos, 0);
+	middleground_pos.y = (int)json_array_get_number(j_array_pos, 1);
+	middleground_section.x = (int)json_array_get_number(j_array_section, 0);
+	middleground_section.y = (int)json_array_get_number(j_array_section, 1);
+	middleground_section.w = (int)json_array_get_number(j_array_section, 2);
+	middleground_section.h = (int)json_array_get_number(j_array_section, 3);
 
 	json_array_clear(j_array_pos);
 	json_array_clear(j_array_section);

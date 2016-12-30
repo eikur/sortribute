@@ -29,9 +29,10 @@ Application::Application()
 	modules.push_back(particles = new ModuleParticles());
 	
 	//Specific game modules
+	modules.push_back(manager = new EntityManager());
 	modules.push_back(scene3 = new ModuleScene3(false));
 	modules.push_back(fade = new ModuleFadeToBlack());
-	modules.push_back(manager = new EntityManager());
+	
 
 }
 

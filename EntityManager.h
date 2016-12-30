@@ -12,6 +12,7 @@ public:
 	~EntityManager();
 
 	update_status Update();
+	bool CleanUp();
 
 	Entity* CreateEntity(Entity::Types type);
 

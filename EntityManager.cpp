@@ -12,7 +12,16 @@ update_status EntityManager::Update() {
 	return UPDATE_CONTINUE;
 }
 
+bool EntityManager::CleanUp()
+{
+	LOG("EntityManager: Removing entities from application\n");
 
+	for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
+		delete *it;
+	entities.clear();
+
+	return true;
+}
 Entity* EntityManager::CreateEntity(Entity::Types type)
 {
 	static_assert(Entity::Types::unknown == 1, "code needs update");

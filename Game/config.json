@@ -2,7 +2,7 @@
 	"window": {
 		"screen_height": 224,
 		"screen_width": 320,
-		"screen_size": 1,
+		"screen_size": 2,
 		"title": "Streets of Rage Tribute",
 		"fullscreen": false,
 		"vsync": true
@@ -26,13 +26,18 @@
 		"graphics_file": "Assets/moonbeach.png",
 		"music_file": "Assets/music_stage3.ogg",
 		"background": {
+			"position":[-604,32],
+			"section":[0,552,3072,64]
+		},
+		"middleground": {
+			"position":[-684,96],
+			"section":[0,616,3444,40]
+		},		
+		"foreground": {
 			"position":[-772, 32],
 			"section":[0,0,3844,192]
 		},
-		"foreground": {
-			"position":[-604,32],
-			"section":[0,552,3072,104]
-		},
+
 		"wave_sand": {
 			"position":[-772, 192],
 			"section":[[0,192,3844,32],[0,224,3844,32],[0,256,3844,32],[0,288,3844,32],[0,320,3844,32]],
