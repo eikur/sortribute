@@ -122,6 +122,8 @@ void ModuleFonts::Print(int x, int y, int font_id, const std::string text) const
 		i_rect->x = (*it)->rect->x + lut_i * (*it)->pixels_per_element;
 		App->renderer->Blit(graphics, x+i*(*it)->pixels_per_element, y, i_rect, 0.0f);
 	}
+
+	delete i_rect;
 }
 
 /*---------------------------------------------------------*/

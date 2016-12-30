@@ -58,9 +58,10 @@
 			"section": [0,0,320,32],
 			"score_pos" : [40, 7],
 			"time_pos" : [152,8],
-			"life_pos": [96,8],
-			"help_pos": [96,8]
-		}
+			"lives_pos": [96,8],
+			"help_pos": [136,8]
+		},
+		"lives" : 3
 	},
 	
 	"player": {
