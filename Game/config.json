@@ -25,6 +25,7 @@
 	"scene3": {
 		"graphics_file": "Assets/moonbeach.png",
 		"music_file": "Assets/music_stage3.ogg",
+		"fx_waves": "Assets/fx_waves.ogg",
 		"background": {
 			"position":[-604,32],
 			"section":[0,552,3072,64]
@@ -77,7 +78,11 @@
 			"frames": [[80,80, 80,80],[0,80, 80,80],[0,80, 80,80]],
 			"speed" : 0.3
 		},
-		"voice_fx_file": "Assets/fx_voice_axel.png"
+		"fx":{
+			"voice": "Assets/fx_voice_axel.wav",
+			"life_up": "Assets/fx_life_up.wav"
+		}
+		
 	}
 	
 }

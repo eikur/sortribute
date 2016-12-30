@@ -4,7 +4,7 @@
 #include "ModuleTextures.h"
 #include "ModuleInput.h"
 #include "ModuleFonts.h"
-
+#include "ModuleAudio.h"
 #include "Player.h"
 
 
@@ -64,17 +64,20 @@ bool Player::Update( const bool upd_logic)
 	}
 
 	//draw the sprites after the logic calculations
-
 	App->renderer->Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, !facing_right);
-// Print values in the hud	
-	App->fonts->Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, App->fonts->GetPrintableValue(score, 6));
-	App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(help,1));
-	App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(lives, 1));
-//Cheat codes
+
+	// miscelaneous
+	PrintStatus();
 	CheatCodes();
+	
 	return true;
 }
 
+void Player::PrintStatus() {
+	App->fonts->Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, App->fonts->GetPrintableValue(score, 6));
+	App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(help, 1));
+	App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(lives, 1));
+}
 
 void Player::AddScore(int addition)
 {
@@ -84,8 +87,7 @@ void Player::AddScore(int addition)
 	}
 	if (score < 50000 && (score+addition)>=50000)
 	{ 
-		lives += 1;
-		//sound missing	
+		ModifyLives(+1);
 	}
 	score += addition;
 }
@@ -101,8 +103,9 @@ void Player::ModifyLives(int mod_to_add)
 	if (lives<= 0)
 	{
 		lives = 0;
-		//Game over
+		return;		//Game over
 	}
+	App->audio->PlayFx(fx_extra_life);
 }
 
 bool Player::LoadFromConfigFile(const char* file_path)
@@ -169,6 +172,10 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	json_array_clear(j_array);
 	
 	position = iPoint(50, 150);
+	
+	if (json_object_dothas_value_of_type(root_object, "player.fx.life_up", JSONString))
+		fx_extra_life = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.life_up"));
+	
 
 // print out variables to hud
 

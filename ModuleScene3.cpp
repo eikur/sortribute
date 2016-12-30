@@ -33,7 +33,9 @@ bool ModuleScene3::Start()
 {
 	LOG("Scene3: Starting MoonBeach\n");
 	App->audio->PlayMusic(music_path.c_str(), 1.0F);
+	App->audio->PlayFx(fx_waves);
 	App->manager->CreateEntity(Entity::Types::player);
+	
 	return true;
 }
 
@@ -83,6 +85,10 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 	
 	if (json_object_dothas_value_of_type(root_object, "scene3.music_file",JSONString))
 		music_path = json_object_dotget_string(root_object, "scene3.music_file");
+
+	if (json_object_dothas_value_of_type(root_object, "scene3.fx_waves", JSONString))
+		fx_waves = App->audio->LoadFx(json_object_dotget_string(root_object, "scene3.fx_waves"));
+
 
 	//background load
 	j_array_pos = json_object_dotget_array(root_object, "scene3.background.position");
@@ -163,6 +169,8 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 
 	json_array_clear(j_array_pos);
 	json_array_clear(j_array_section);
+
+
 
 	// hud load
 	if (json_object_dothas_value_of_type(root_object, "hud.graphics_file", JSONString))

@@ -15,6 +15,8 @@ private:
 	void AddScore(int addition);
 	void ModifyLives(int mod_to_add);
 
+	void PrintStatus();
+
 	bool LoadFromConfigFile(const char* file_path);
 	void CheatCodes();
 

@@ -52,6 +52,7 @@ private:
 	SDL_Rect hud_section = SDL_Rect();
 
 	std::string music_path = "";
+	unsigned int fx_waves = 0;
 
 };
 

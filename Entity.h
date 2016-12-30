@@ -5,8 +5,9 @@
 #include "Point.h"
 #include "Globals.h"
 #include "Animation.h"
-struct SDL_Texture;
 
+struct Collider;
+struct SDL_Texture;
 
 class Entity 
 {
@@ -68,6 +69,10 @@ protected:
 	int attack_back_dmg = 0;
 	int front_throw_dmg = 0;
 	int back_throw_dmg = 0;
+
+// Colliders
+	Collider *attack_collider = nullptr;
+	Collider *hit_collider = nullptr;
 
 // Graphics and animations
 	SDL_Texture *graphics;
