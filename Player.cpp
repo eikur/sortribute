@@ -11,73 +11,83 @@
 Player::Player() : Entity(Types::player) {}
 Player::~Player(){}
 
-bool Player::Update( const bool upd_logic)
+bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
-	if (IsAlive() == false)
-	{
-		//die
-		return true;
-	}
 	if (upd_logic)
 	{
-
-		iPoint move_speed = iPoint(0, 0);
-
-		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-			move_speed.y -= speed.y;
-		else
-			if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-				move_speed.y += speed.y;
-
-		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		if (IsAlive() == false)
 		{
-			move_speed.x -= speed.x;
-			facing_right = false;
-		}
-		else
-		{
-			if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+
+			if (current_animation!= &being_knocked)
 			{
-				move_speed.x += speed.x;
-				facing_right = true;
-			}
-		}
-
-		if (move_speed.IsZero())
-		{
-			if (current_animation != &idle)
-			{
-				current_animation = &idle;
+				current_animation = &being_knocked;
 				current_animation->Reset();
 			}
+			ModifyLives(-1);
+			if (lives > 0)
+			{
+				LOG("Reraise!\n");
+			}//ReRaise();}
+			else
+			{
+				LOG("Die...\n");
+			} 		//	Die();
 		}
 		else
 		{
-			position += move_speed;
 
-			if (current_animation != &walk)
+			iPoint move_speed = iPoint(0, 0);
+
+			if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+				move_speed.y -= speed.y;
+			else
+				if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+					move_speed.y += speed.y;
+
+			if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 			{
-				current_animation = &walk;
-				current_animation->Reset();
+				move_speed.x -= speed.x;
+				facing_right = false;
+			}
+			else
+			{
+				if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+				{
+					move_speed.x += speed.x;
+					facing_right = true;
+				}
+			}
+
+			if (move_speed.IsZero())
+			{
+				if (current_animation != &idle)
+				{
+					current_animation = &idle;
+					current_animation->Reset();
+				}
+			}
+			else
+			{
+				position += move_speed;
+
+				if (current_animation != &walk)
+				{
+					current_animation = &walk;
+					current_animation->Reset();
+				}
 			}
 		}
 	}
-
 	//draw the sprites after the logic calculations
 	App->renderer->Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, !facing_right);
 
 	// miscelaneous
-	PrintStatus();
 	CheatCodes();
 	
 	return true;
 }
 
-void Player::PrintStatus() {
-	App->fonts->Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, App->fonts->GetPrintableValue(score, 6));
-	App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(help, 1));
-	App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(lives, 1));
-}
+
 
 void Player::AddScore(int addition)
 {
@@ -105,8 +115,10 @@ void Player::ModifyLives(int mod_to_add)
 		lives = 0;
 		return;		//Game over
 	}
-	App->audio->PlayFx(fx_extra_life);
+	if (mod_to_add > 0)
+		App->audio->PlayFx(fx_extra_life);
 }
+
 
 bool Player::LoadFromConfigFile(const char* file_path)
 {
@@ -175,26 +187,6 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	
 	if (json_object_dothas_value_of_type(root_object, "player.fx.life_up", JSONString))
 		fx_extra_life = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.life_up"));
-	
-
-// print out variables to hud
-
-	j_array = json_object_dotget_array(root_object, "hud.score_pos");
-	hud_score_pos.x = (int)json_array_get_number(j_array, 0);
-	hud_score_pos.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-
-
-	j_array = json_object_dotget_array(root_object, "hud.lives_pos");
-	hud_lives_pos.x = (int)json_array_get_number(j_array, 0);
-	hud_lives_pos.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "hud.help_pos");
-	hud_help_pos.x = (int)json_array_get_number(j_array, 0);
-	hud_help_pos.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-
 
 	json_value_free(root_value);
 	
@@ -209,4 +201,6 @@ void Player::CheatCodes() {
 		ModifyLives(+1);
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN && help < 9)
 		help += 1;
+	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+		health = 0;
 }

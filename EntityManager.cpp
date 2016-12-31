@@ -9,7 +9,7 @@
 
 #include "EntityManager.h"
 
-EntityManager::EntityManager(){
+EntityManager::EntityManager(bool active): Module(active){
 
 }
 
@@ -30,24 +30,22 @@ bool EntityManager::Init()
 
 update_status EntityManager::Update() 
 {
-	// draw HUD
-	App->fonts->Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(time_left, 2));
-	//App->fonts->Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, GetPrintableValue(score, 6));
-	//App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, GetPrintableValue(help,1));
-	
-	//App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, GetPrintableValue(lives, 1));
+	PrintStatus();
 
-	// Update all entities
-	unsigned int a = logic_timer->ElapsedTimeMsec();
-	if (logic_timer->ElapsedTimeMsec() >= upd_logic_ms_cycle)
+	//Elapsed time
+	unsigned int msec_increase = logic_timer->ElapsedTimeMsec() - elapsed_msec;
+	elapsed_msec += msec_increase;
+	if (elapsed_msec >= upd_logic_msec)
 		upd_logic = true;
 
+	//Update all entities
 	for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
-		(*it)->Update( upd_logic );
+		(*it)->Update(elapsed_msec, upd_logic );
 
 	if (upd_logic == true)
 	{
 		logic_timer->ReStart();
+		elapsed_msec = 0;
 		upd_logic = false; 
 	}
 
@@ -108,8 +106,35 @@ bool EntityManager::LoadConfigFromFile(const char* file_path)
 	hud_time_pos.y = (int)json_array_get_number(j_array, 1);
 	json_array_clear(j_array);
 
+	j_array = json_object_dotget_array(root_object, "hud.score_pos");
+	hud_score_pos.x = (int)json_array_get_number(j_array, 0);
+	hud_score_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
+
+	j_array = json_object_dotget_array(root_object, "hud.lives_pos");
+	hud_lives_pos.x = (int)json_array_get_number(j_array, 0);
+	hud_lives_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
+	j_array = json_object_dotget_array(root_object, "hud.help_pos");
+	hud_help_pos.x = (int)json_array_get_number(j_array, 0);
+	hud_help_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
+
 	json_value_free(root_value);
 	return true;
+}
+
+
+void EntityManager::PrintStatus() const
+{
+	// draw HUD
+	App->fonts->Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, App->fonts->GetPrintableValue(player->score , 6));
+	App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(player->help, 1));
+	App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(player->lives, 1));
+	App->fonts->Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(time_left, 2));
 }
 
 void EntityManager::SetTimeLeft(int new_time) {

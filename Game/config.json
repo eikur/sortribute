@@ -65,6 +65,13 @@
 		"graphics_file": "Assets/axel.png",
 		"speed" : [3,1],
 		"health" : 100,
+		"dmg":{
+			"attack1": 8,
+			"attack2": 8, 
+			"attack3": 12,
+			"attack_back": 12,
+			"throw": 20
+		},
 		"sprite_offset": [-20,-40],
 		"idle": {
 			"frames": [[0,0, 80,80],[0,0, 80,80],[0,0, 80,80],[0,0, 80,80],[0,0, 80,80],[0,0, 80,80],[80,0, 80,80],[160,0, 80,80]],

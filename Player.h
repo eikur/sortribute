@@ -9,24 +9,14 @@ public:
 	Player();
 	~Player();
 
-	bool Update( const bool upd_logic);
+	bool Update( unsigned int msec_elapsed, const bool upd_logic = false);
 	
 private:
 	void AddScore(int addition);
 	void ModifyLives(int mod_to_add);
 
-	void PrintStatus();
-
 	bool LoadFromConfigFile(const char* file_path);
 	void CheatCodes();
-
-private:
-	int score = 0;
-	int lives = 1;
-	int help = 1;
-	iPoint hud_score_pos = iPoint(0, 0);
-	iPoint hud_help_pos = iPoint(0, 0);
-	iPoint hud_lives_pos = iPoint(0, 0);
 
 };
 

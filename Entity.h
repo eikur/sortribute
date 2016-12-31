@@ -36,7 +36,7 @@ public:
 
 	}
 
-	virtual bool Update( const bool upd_logic = false)
+	virtual bool Update( unsigned int msec_elapsed, const bool upd_logic = false)
 	{
 		return true;
 	}
@@ -50,6 +50,11 @@ public:
 	{
 		return true;
 	}
+
+public: 
+	int lives = 3;
+	int score = 0;
+	int help = 3;
 
 protected:
 	Types m_type = Types::unknown;
@@ -67,8 +72,7 @@ protected:
 	int attack2_dmg = 0;
 	int attack3_dmg = 0;
 	int attack_back_dmg = 0;
-	int front_throw_dmg = 0;
-	int back_throw_dmg = 0;
+	int throw_dmg = 0;
 
 // Colliders
 	Collider *attack_collider = nullptr;
