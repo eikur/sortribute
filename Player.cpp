@@ -13,16 +13,18 @@ Player::~Player(){}
 
 bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
+	LOG("****************** msec_increase : %d , logic: %s", msec_elapsed, (upd_logic? "true":"false"));
 	if (upd_logic)
 	{
 		if (IsAlive() == false)
 		{
-
+			/*
 			if (current_animation!= &being_knocked)
 			{
 				current_animation = &being_knocked;
 				current_animation->Reset();
 			}
+			*/
 			ModifyLives(-1);
 			if (lives > 0)
 			{

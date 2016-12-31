@@ -38,7 +38,7 @@ private:
 
 	Timer *logic_timer = nullptr;
 	unsigned int elapsed_msec = 0;
-	unsigned int upd_logic_msec = 20;
+	unsigned int upd_logic_msec = 50;
 	bool upd_logic = false;
 
 	iPoint hud_time_pos = iPoint(0, 0);

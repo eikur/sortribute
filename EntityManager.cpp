@@ -33,20 +33,21 @@ update_status EntityManager::Update()
 	PrintStatus();
 
 	//Elapsed time
-	unsigned int msec_increase = logic_timer->ElapsedTimeMsec() - elapsed_msec;
+	unsigned int msec_increase = logic_timer->DeltaTime();
 	elapsed_msec += msec_increase;
+
 	if (elapsed_msec >= upd_logic_msec)
 		upd_logic = true;
 
 	//Update all entities
 	for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
-		(*it)->Update(elapsed_msec, upd_logic );
+		(*it)->Update(msec_increase, upd_logic );
 
 	if (upd_logic == true)
 	{
-		logic_timer->ReStart();
 		elapsed_msec = 0;
-		upd_logic = false; 
+		upd_logic = false;
+		logic_timer->ReStart();
 	}
 
 	return UPDATE_CONTINUE;
