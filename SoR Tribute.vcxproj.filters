@@ -129,5 +129,8 @@
     <ClCompile Include="Player.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Entity.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

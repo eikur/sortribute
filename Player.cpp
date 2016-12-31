@@ -13,15 +13,9 @@ Player::~Player(){}
 
 bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
-if (IsAlive() == false)
+	if (IsAlive() == false)
 	{
-		/*
-		if (current_animation!= &being_knocked)
-		{
-			current_animation = &being_knocked;
-			current_animation->Reset();
-		}
-		*/
+		//UpdateCurrentAnimation(being_knocked);
 		ModifyLives(-1);
 		if (lives > 0)
 		{
@@ -34,83 +28,98 @@ if (IsAlive() == false)
 	}
 	else
 	{
-		if (AllowAnimationInterruption() == false)
+		if (upd_logic == true)
 		{
-			//update remaining time
-			blocking_animation_remaining_cycles -= 1;
-			if (blocking_animation_remaining_cycles <= 0)
-				blocking_animation_remaining_cycles = 0;
-		}
-		else
-		{
-			if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
+			if (blocking_animation_remaining_cycles >= 0)
+				blocking_animation_remaining_cycles -= 1;
+			
+			if (grounded == false)	
 			{
-				if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN) // back attack
+				jump_remaining_cycles -= 1;
+				grounded = (jump_remaining_cycles <= 0) ? true : false;
+				if (grounded == true)
+					App->audio->PlayFx(fx_landing_jump);
+			}
+		}
+		
+		if (AllowAnimationInterruption())
+		{
+			move_speed = iPoint(0, 0);
+			if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+				move_speed.y -= speed.y;
+			else
+				if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+					move_speed.y += speed.y;
+
+			if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+			{
+				move_speed.x -= speed.x;
+				facing_right = false;
+			}
+			else
+			{
+				if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 				{
-					blocking_animation_remaining_cycles = attacks_duration;
-					if (current_animation != &attack_back)
-					{
-						current_animation = &attack_back;
-						current_animation->Reset();
-					}
+					move_speed.x += speed.x;
+					facing_right = true;
 				}
-				else
+			}
+
+			if (grounded == false)
+			{
+				// air move! 
+				if (upd_logic)
 				{
-					blocking_animation_remaining_cycles = attacks_duration;
-					if (current_animation != &attack1)
-					{
-						current_animation = &attack1;
-						current_animation->Reset();
-					}
+					if (move_speed.IsZero() == false)
+						position.x += move_speed.x > 0 ? 1 : -1;
+					//position.y -= 1;
+
 				}
 			}
 			else
 			{
-				if (upd_logic)
+				if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
 				{
-					iPoint move_speed = iPoint(0, 0);
-					if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-						move_speed.y -= speed.y;
-					else
-						if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-							move_speed.y += speed.y;
-
-					if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+					grounded = false;
+					ground_y = position.y;
+					jump_remaining_cycles = jump_duration;
+					blocking_animation_remaining_cycles = 6;
+					UpdateCurrentAnimation(jump);
+					App->audio->PlayFx(fx_jump);
+				}
+				else if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
+				{
+					if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN) // back attack
 					{
-						move_speed.x -= speed.x;
-						facing_right = false;
+						blocking_animation_remaining_cycles = attacks_duration;
+						UpdateCurrentAnimation(attack_back);
 					}
-					else
+					else  //combo attacks 
 					{
-						if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+						blocking_animation_remaining_cycles = attacks_duration;
+						UpdateCurrentAnimation(attack1);
+					}
+					App->audio->PlayFx(fx_attack_miss);
+				}
+				else
+				{
+					if (upd_logic)
+					{
+						if (move_speed.IsZero())
 						{
-							move_speed.x += speed.x;
-							facing_right = true;
+							UpdateCurrentAnimation(idle);
 						}
-					}
-
-					if (move_speed.IsZero())
-					{
-						if (current_animation != &idle)
+						else
 						{
-							current_animation = &idle;
-							current_animation->Reset();
-						}
-					}
-					else
-					{
-						position += move_speed;
-
-						if (current_animation != &walk)
-						{
-							current_animation = &walk;
-							current_animation->Reset();
+							position += move_speed;
+							UpdateCurrentAnimation(walk);
 						}
 					}
 				}
 			}
 		}
 	}
+
 
 	//draw the sprites after the logic calculations
 	if (facing_right) 
@@ -120,7 +129,7 @@ if (IsAlive() == false)
 
 	// miscelaneous
 	CheatCodes();
-	
+
 	return true;
 }
 
@@ -188,6 +197,12 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	health = (int)json_object_dotget_number(root_object, "player.health");
 	//load lives and such
 
+
+	//animation durations
+	attacks_duration = (int)json_object_dotget_number(root_object, "player.duration.attacks");
+	jump_duration = (int)json_object_dotget_number(root_object, "player.duration.jump");
+
+
 	//sprite_offsets
 	j_array = json_object_dotget_array(root_object, "player.sprite_offset");
 	sprite_offset.x = (int)json_array_get_number(j_array, 0);
@@ -232,6 +247,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	}
 	json_array_clear(j_array);
 
+
 	//attack1 animation
 	attack1.speed = (float)json_object_dotget_number(root_object, "player.attack1.speed");
 	j_array = json_object_dotget_array(root_object, "player.attack1.frames");
@@ -254,13 +270,28 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	}
 	json_array_clear(j_array);
 
-	
-	attacks_duration = (int)json_object_dotget_number(root_object, "player.attacks_duration");
+	//attack3 animation
+	attack3.speed = (float)json_object_dotget_number(root_object, "player.attack3.speed");
+	j_array = json_object_dotget_array(root_object, "player.attack3.frames");
+	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
+	{
+		j_array_inner = json_array_get_array(j_array, i);
+		attack3.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
+		json_array_clear(j_array_inner);
+	}
+	json_array_clear(j_array);
 	
 	position = iPoint(50, 200);
 	
+	// fx sound load
 	if (json_object_dothas_value_of_type(root_object, "player.fx.life_up", JSONString))
 		fx_extra_life = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.life_up"));
+	if (json_object_dothas_value_of_type(root_object, "player.fx.attack_miss", JSONString))
+		fx_attack_miss = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.attack_miss"));
+	if (json_object_dothas_value_of_type(root_object, "player.fx.jump", JSONString))
+		fx_jump = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.jump"));
+	if (json_object_dothas_value_of_type(root_object, "player.fx.jump_land", JSONString))
+		fx_landing_jump= App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.jump_land"));
 
 	json_value_free(root_value);
 	

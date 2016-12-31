@@ -20,38 +20,19 @@ public:
 
 
 public:
-	Entity(Types type) : m_type(type)
-	{}
+	Entity(Types type);
+	virtual ~Entity();
 
-	virtual ~Entity()
-	{}
-
-	virtual bool Init()
-	{
-		if (LoadFromConfigFile(CONFIG_FILE) == false)
-		{
-			return false;
-		}
-		return true;
-
-	}
-
-	virtual bool Update( unsigned int msec_elapsed, const bool upd_logic = false)
-	{
-		return true;
-	}
+	virtual bool Init();
+	virtual bool Update(unsigned int msec_elapsed, const bool upd_logic = false);
 
 protected:
-	virtual bool IsAlive()	
-	{
-		return health > 0;
-	}
-	virtual bool AllowAnimationInterruption()
-	{ 
-		return blocking_animation_remaining_cycles <= 0;
-	}
-	
-	virtual bool LoadFromConfigFile(const char* file_path) 	{return true;}
+	virtual bool IsAlive();
+
+	virtual bool AllowAnimationInterruption();
+	virtual void UpdateCurrentAnimation(Animation& new_anim);
+
+	virtual bool LoadFromConfigFile(const char* file_path);
 
 public: 
 	int lives = 3;
@@ -64,9 +45,25 @@ protected:
 //move variables
 	iPoint position = iPoint(0, 0);
 	iPoint speed = iPoint(0, 0);
+	iPoint move_speed = iPoint(0, 0);
 	int	ground_y = 0;
 	bool grounded = true;
 
+// jumping control
+	int jump_remaining_cycles = 0;
+	int jump_duration = 0;
+
+//animation blocking	
+	int blocking_animation_remaining_cycles = 0;
+	int attacks_duration = 0;
+	int take_item_duration = 0;
+	int throwing_duration = 0;
+	int holding_swap_duration = 0;
+	int being_hold_attack_duration = 0;
+	int being_thrown_duration = 0;
+	int being_hit_duration = 0;
+	int being_knocked_duration = 0;
+	int standing_up_duration = 0;
 
 // health & damage variables
 	int health = 0;
@@ -82,7 +79,7 @@ protected:
 
 // Graphics and animations
 	SDL_Texture *graphics;
-	Animation *current_animation = nullptr;
+	Animation * current_animation = nullptr;
 	iPoint sprite_offset = iPoint(0, 0);
 	iPoint sprite_offset_flip = iPoint(0, 0);
 	bool facing_right = true;
@@ -114,17 +111,6 @@ protected:
 	Animation being_knocked;
 	Animation standing_up;
 
-// timings
-	int blocking_animation_remaining_cycles = 0;
-	int attacks_duration = 0;
-	int take_item_duration = 0;
-	int throwing_duration = 0;
-	int holding_swap_duration = 0;
-	int being_hold_attack_duration = 0;
-	int being_thrown_duration = 0;
-	int being_hit_duration = 0;
-	int being_knocked_duration = 0;
-	int standing_up_duration = 0;
 
 // sounds
 	unsigned int fx_voice = 0;
