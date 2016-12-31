@@ -41,15 +41,17 @@ public:
 		return true;
 	}
 
-	virtual bool IsAlive()
+protected:
+	virtual bool IsAlive()	
 	{
 		return health > 0;
 	}
-
-	virtual bool LoadFromConfigFile(const char* file_path) 
-	{
-		return true;
+	virtual bool AllowAnimationInterruption()
+	{ 
+		return blocking_animation_remaining_cycles <= 0;
 	}
+	
+	virtual bool LoadFromConfigFile(const char* file_path) 	{return true;}
 
 public: 
 	int lives = 3;
@@ -82,6 +84,7 @@ protected:
 	SDL_Texture *graphics;
 	Animation *current_animation = nullptr;
 	iPoint sprite_offset = iPoint(0, 0);
+	iPoint sprite_offset_flip = iPoint(0, 0);
 	bool facing_right = true;
 
 	Animation idle;
@@ -110,6 +113,19 @@ protected:
 	Animation being_hit;
 	Animation being_knocked;
 	Animation standing_up;
+
+// timings
+	int blocking_animation_remaining_cycles = 0;
+	int attacks_duration = 0;
+	int take_item_duration = 0;
+	int throwing_duration = 0;
+	int holding_swap_duration = 0;
+	int being_hold_attack_duration = 0;
+	int being_thrown_duration = 0;
+	int being_hit_duration = 0;
+	int being_knocked_duration = 0;
+	int standing_up_duration = 0;
+
 // sounds
 	unsigned int fx_voice = 0;
 	unsigned int fx_jump = 0;

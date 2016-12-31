@@ -47,10 +47,6 @@ private:
 	Animation wave_splash;
 	iPoint wave_splash_pos = iPoint(0, 0);
 
-//hud
-	SDL_Texture *hud_graphics = nullptr;
-	SDL_Rect hud_section = SDL_Rect();
-
 	std::string music_path = "";
 	unsigned int fx_waves = 0;
 

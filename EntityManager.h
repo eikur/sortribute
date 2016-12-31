@@ -22,9 +22,8 @@ public:
 	bool CleanUp();
 
 	Entity* CreateEntity(Entity::Types type);
-	void SetTimeLeft(int new_time);
 
-	void PrintStatus() const;
+	void PrintStatus();
 	bool LoadConfigFromFile(const char* file_path); 
 
 public:
@@ -37,10 +36,13 @@ private:
 
 
 	Timer *logic_timer = nullptr;
-	unsigned int elapsed_msec = 0;
-	unsigned int upd_logic_msec = 50;
+	int elapsed_msec = 0;
+	int upd_logic_msec = 20;
 	bool upd_logic = false;
 
+	//hud
+	SDL_Texture *hud_graphics = nullptr;
+	SDL_Rect hud_section = SDL_Rect();
 	iPoint hud_time_pos = iPoint(0, 0);
 	iPoint hud_score_pos = iPoint(0, 0);
 	iPoint hud_help_pos = iPoint(0, 0);

@@ -49,7 +49,6 @@ update_status ModuleScene3::PreUpdate()
 	App->renderer->Blit(graphics, middleground_pos.x, middleground_pos.y, &middleground_section, (float)(middleground_section.w - App->window->m_screen_width) / (float)(foreground_section.w - App->window->m_screen_width));
 	App->renderer->Blit(graphics, foreground_pos.x, foreground_pos.y, &foreground_section, 1.0F);
 	App->renderer->Blit(graphics, wave_sand_pos.x, wave_sand_pos.y, &(wave_sand.GetCurrentFrame()), 1.0F);			
-	App->renderer->Blit(hud_graphics, 0, 0, &hud_section, 0.0F);
 	return UPDATE_CONTINUE;
 }
 update_status ModuleScene3::Update()
@@ -170,22 +169,6 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 
 	json_array_clear(j_array_pos);
 	json_array_clear(j_array_section);
-
-
-
-	// hud load
-	if (json_object_dothas_value_of_type(root_object, "hud.graphics_file", JSONString))
-		hud_graphics = App->textures->Load(json_object_dotget_string(root_object, "hud.graphics_file"));
-	if (hud_graphics == nullptr)
-	{
-		json_value_free(root_value);
-		return false;
-	}
-
-	j_array_tmp = json_object_dotget_array(root_object, "hud.section");
-	hud_section = { (int)json_array_get_number(j_array_tmp,0),(int)json_array_get_number(j_array_tmp,1),(int)json_array_get_number(j_array_tmp,2),(int)json_array_get_number(j_array_tmp,3) };
-	json_array_clear(j_array_tmp);
-
 
 	// clean all and exit
 	json_value_free(root_value);
