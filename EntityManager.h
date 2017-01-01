@@ -22,6 +22,7 @@ public:
 	bool CleanUp();
 
 	Entity* CreateEntity(Entity::Types type);
+	int GetPlayerXPos();
 
 	void PrintStatus();
 	bool LoadConfigFromFile(const char* file_path); 
@@ -37,7 +38,7 @@ private:
 
 	Timer *logic_timer = nullptr;
 	int elapsed_msec = 0;
-	int upd_logic_msec = 20;
+	int upd_logic_msec = 10;
 	bool upd_logic = false;
 
 	//hud

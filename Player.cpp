@@ -75,7 +75,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				// air move! 
 				if (upd_logic)
 				{
-					position.x += move_speed.x;
+					UpdatePosition(move_speed);
 					position.y -= 1;
 				}
 				if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
@@ -143,8 +143,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 	if (facing_right)
 		App->renderer->Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, false);
 	else
-			App->renderer->Blit(graphics, position.x + sprite_offset_flip.x, position.y + sprite_offset_flip.y, &(current_animation->GetCurrentFrame()), 1.0F, true);
-
+		App->renderer->Blit(graphics, position.x + sprite_offset_flip.x, position.y + sprite_offset_flip.y, &(current_animation->GetCurrentFrame()), 1.0F, true);
 	// miscelaneous
 	CheatCodes();
 
@@ -184,7 +183,6 @@ void Player::ModifyLives(int mod_to_add)
 }
 
 void Player::UpdatePosition(const iPoint speed) {
-	
 	position += speed;
 	App->renderer->GetPlayerPositionLimits(position_limits);
 	int up = position_limits.y;
@@ -202,8 +200,6 @@ void Player::UpdatePosition(const iPoint speed) {
 	else
 		if (position.y > down)
 			position.y = down;
-
-
 }
 
 //------------------------------------------------------------------------

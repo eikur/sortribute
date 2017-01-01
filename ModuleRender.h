@@ -20,15 +20,17 @@ public:
 	update_status PostUpdate();
 	bool CleanUp();
 
-	//bool Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed = 1.0f);
 	bool Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed = 1.0f, bool flip = false);
 	bool DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uint8 a, bool use_camera = true);
 
 	// player tracking
-	void GetPlayerPositionLimits( SDL_Rect &player_limits);
+	void GetPlayerPositionLimits( SDL_Rect &player_limits) const;
+	void SetFollowTarget(int x_target);
 
 private:
+	void FollowTarget();
 	bool LoadConfigFromFile(const char* file_path);
+
 
 public:
 	SDL_Renderer* renderer = nullptr;
@@ -36,12 +38,15 @@ public:
 	bool locked = false;
 
 private:
+	int m_speed = 0;
+
 	int m_screen_height = 0;
 	int m_screen_size = 0;
 	int m_screen_width = 0;
 	bool m_vsync = true;
+	
 	int m_limit_margin = 0;
-
+	int target_xpos = 0;
 };
 
 #endif // __MODULERENDER_H__

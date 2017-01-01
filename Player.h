@@ -10,7 +10,7 @@ public:
 	~Player();
 
 	bool Update( unsigned int msec_elapsed, const bool upd_logic = false);
-	
+
 private:
 	void AddScore(int addition);
 	void ModifyLives(int mod_to_add);

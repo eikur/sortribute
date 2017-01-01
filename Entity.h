@@ -35,6 +35,9 @@ protected:
 	virtual bool LoadFromConfigFile(const char* file_path);
 
 public: 
+	iPoint position = iPoint(0, 0);
+	int	ground_y = 0;
+
 	int lives = 3;
 	int score = 0;
 	int help = 3;
@@ -43,10 +46,8 @@ protected:
 	Types m_type = Types::unknown;
 
 //move variables
-	iPoint position = iPoint(0, 0);
 	iPoint speed = iPoint(0, 0);
 	iPoint move_speed = iPoint(0, 0);
-	int	ground_y = 0;
 	bool grounded = true;
 
 // jumping control

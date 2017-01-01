@@ -89,6 +89,13 @@ bool EntityManager::CleanUp()
 }
 
 
+int EntityManager::GetPlayerXPos() {
+	if (player != nullptr)
+		return player->position.x;
+	else
+		return NULL;
+}
+
 void EntityManager::PrintStatus() 
 {
 	App->renderer->Blit(hud_graphics, 0, 0, &hud_section, 0.0F);

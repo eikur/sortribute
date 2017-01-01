@@ -3,6 +3,7 @@
 #include "ModuleRender.h"
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
+#include "EntityManager.h"
 #include "SDL/include/SDL.h"
 
 ModuleRender::ModuleRender()
@@ -58,16 +59,17 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
- 	int speed = 3;
-
 	if (locked == false)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_O) == KEY_REPEAT)
-			App->renderer->camera.x += speed;
-
-		if (App->input->GetKey(SDL_SCANCODE_P) == KEY_REPEAT)
-			App->renderer->camera.x -= speed;
+		SetFollowTarget(App->manager->GetPlayerXPos());
+		FollowTarget();
 	}
+
+	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_REPEAT)
+		App->renderer->camera.x += m_speed;
+
+	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_REPEAT)
+		App->renderer->camera.x -= m_speed;
 
 	return UPDATE_CONTINUE;
 }
@@ -93,7 +95,6 @@ bool ModuleRender::CleanUp()
 }
 
 // Blit to screen
-//bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed)
 bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, SDL_Rect* section, float speed, bool flip)
 {
 	bool ret = true;
@@ -153,9 +154,22 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 
 //---------------------------------------------------------------
 
-void ModuleRender::GetPlayerPositionLimits( SDL_Rect &player_limits )
+void ModuleRender::GetPlayerPositionLimits( SDL_Rect &player_limits ) const
 {
 	player_limits.x = (int) -camera.x/m_screen_size + m_limit_margin;
+}
+
+void ModuleRender::SetFollowTarget(int x_target) {
+	target_xpos = x_target;
+}
+
+void ModuleRender::FollowTarget()
+{
+	int camera_x_world_point = (int)(-camera.x / m_screen_size);
+	int camera_w_world = (int)(camera.w / m_screen_size);
+
+	if ((camera_x_world_point + camera_w_world / 2) < target_xpos)	// this causes jitter
+		camera.x = camera.x - m_speed;
 }
 
 bool ModuleRender::LoadConfigFromFile(const char* file_path)
@@ -169,7 +183,8 @@ bool ModuleRender::LoadConfigFromFile(const char* file_path)
 	m_screen_size = (int)json_object_dotget_number(json_object(root_value), "window.screen_size");
 	m_vsync = (json_object_dotget_boolean(json_object(root_value), "window.vsync") != 0) ? true : false;
 
-	m_limit_margin = (int)json_object_dotget_number(json_object(root_value), "renderer.camera.move_limit_margin");
+	m_limit_margin = (int)json_object_dotget_number(json_object(root_value), "renderer.camera.x_limit_margin");
+	m_speed = (int)json_object_dotget_number(json_object(root_value), "renderer.camera.speed");
 	
 	json_value_free(root_value);
 	
