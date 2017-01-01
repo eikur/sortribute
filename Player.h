@@ -14,6 +14,8 @@ public:
 private:
 	void AddScore(int addition);
 	void ModifyLives(int mod_to_add);
+	void ReRaise();
+	void Die();
 
 	void UpdatePosition(const iPoint speed);
 

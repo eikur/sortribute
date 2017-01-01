@@ -19,12 +19,12 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		ModifyLives(-1);
 		if (lives > 0)
 		{
-			LOG("Reraise!\n");
-		}//ReRaise();}
+			ReRaise();
+		}
 		else
 		{
-			LOG("Die...\n");
-		} 		//	Die();
+			Die();
+		}
 	}
 	else
 	{
@@ -180,6 +180,18 @@ void Player::ModifyLives(int mod_to_add)
 	}
 	if (mod_to_add > 0)
 		App->audio->PlayFx(fx_extra_life);
+}
+
+void Player::ReRaise()
+{
+	position.x = position_limits.x;
+	position.y = position_limits.y;
+	health = 100;
+}
+
+void Player::Die()
+{
+
 }
 
 void Player::UpdatePosition(const iPoint speed) {
@@ -366,5 +378,5 @@ void Player::CheatCodes() {
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN && help < 9)
 		help += 1;
 	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
-		health = 0;
+		health -= 100;
 }
