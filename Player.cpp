@@ -87,18 +87,27 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			{
 				if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
 				{
-					grounded = false;
-					ground_y = position.y;
+					if (App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT) // back attack
+					{
+						blocking_animation_remaining_cycles = attacks_duration;
+						UpdateCurrentAnimation(attack_back);
+						App->audio->PlayFx(fx_attack_miss);
+					}
+					else
+					{
+						grounded = false;
+						ground_y = position.y;
 
-					jump_remaining_cycles = jump_duration;
-					blocking_animation_remaining_cycles = 5;
-					
-					UpdateCurrentAnimation(jump);
-					App->audio->PlayFx(fx_jump);
+						jump_remaining_cycles = jump_duration;
+						blocking_animation_remaining_cycles = 5;
+
+						UpdateCurrentAnimation(jump);
+						App->audio->PlayFx(fx_jump);
+					}
 				}
 				else if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
 				{
-					if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN) // back attack
+					if (App->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT) // back attack
 					{
 						blocking_animation_remaining_cycles = attacks_duration;
 						UpdateCurrentAnimation(attack_back);
@@ -106,7 +115,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					else  //combo attacks 
 					{
 						blocking_animation_remaining_cycles = attacks_duration;
-						UpdateCurrentAnimation(attack3);
+						UpdateCurrentAnimation(attack1);
 					}
 					App->audio->PlayFx(fx_attack_miss);
 				}
@@ -296,6 +305,17 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	{
 		j_array_inner = json_array_get_array(j_array, i);
 		attack3.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
+		json_array_clear(j_array_inner);
+	}
+	json_array_clear(j_array);
+
+	//attack back animation
+	attack_back.speed = (float)json_object_dotget_number(root_object, "player.attack_back.speed");
+	j_array = json_object_dotget_array(root_object, "player.attack_back.frames");
+	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
+	{
+		j_array_inner = json_array_get_array(j_array, i);
+		attack_back.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
 		json_array_clear(j_array_inner);
 	}
 	json_array_clear(j_array);
