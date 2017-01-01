@@ -129,7 +129,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 						}
 						else
 						{
-							position += move_speed;
+							UpdatePosition(move_speed);
 							UpdateCurrentAnimation(walk);
 						}
 					}
@@ -183,7 +183,30 @@ void Player::ModifyLives(int mod_to_add)
 		App->audio->PlayFx(fx_extra_life);
 }
 
+void Player::UpdatePosition(const iPoint speed) {
+	
+	position += speed;
+	App->renderer->GetPlayerPositionLimits(position_limits);
+	int up = position_limits.y;
+	int down = up + position_limits.h;
+	int left = position_limits.x;
+	int right = left + position_limits.w;
 
+	if (position.x > right)
+		position.x = right;
+	else 
+		if (position.x < left )
+			position.x = left;
+	if (position.y < up)
+		position.y = up;
+	else
+		if (position.y > down)
+			position.y = down;
+
+
+}
+
+//------------------------------------------------------------------------
 bool Player::LoadFromConfigFile(const char* file_path)
 {
 	JSON_Value *root_value;

@@ -7,6 +7,11 @@
 		"fullscreen": false,
 		"vsync": true
 	},
+	"renderer":{
+		"camera": {
+			"move_limit_margin": 28
+		}
+	},
 	"fonts": {
 		"total": 3,
 		"file": "Assets/hud.png",

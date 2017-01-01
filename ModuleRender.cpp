@@ -58,20 +58,16 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
-	// debug camera
-	int speed = 4;
+ 	int speed = 3;
 
-	if(App->input->GetKey(SDL_SCANCODE_I) == KEY_REPEAT)
-		App->renderer->camera.y += speed;
+	if (locked == false)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_O) == KEY_REPEAT)
+			App->renderer->camera.x += speed;
 
-	if(App->input->GetKey(SDL_SCANCODE_K) == KEY_REPEAT)
-		App->renderer->camera.y -= speed;
-
-	if(App->input->GetKey(SDL_SCANCODE_J) == KEY_REPEAT)
-		App->renderer->camera.x += speed;
-
-	if(App->input->GetKey(SDL_SCANCODE_L) == KEY_REPEAT)
-		App->renderer->camera.x -= speed;
+		if (App->input->GetKey(SDL_SCANCODE_P) == KEY_REPEAT)
+			App->renderer->camera.x -= speed;
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -155,6 +151,13 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 	return ret;
 }
 
+//---------------------------------------------------------------
+
+void ModuleRender::GetPlayerPositionLimits( SDL_Rect &player_limits )
+{
+	player_limits.x = (int) -camera.x/m_screen_size + m_limit_margin;
+}
+
 bool ModuleRender::LoadConfigFromFile(const char* file_path)
 {
 	JSON_Value *root_value = json_parse_file(file_path);
@@ -165,6 +168,8 @@ bool ModuleRender::LoadConfigFromFile(const char* file_path)
 	m_screen_height = (int)json_object_dotget_number(json_object(root_value), "window.screen_height");
 	m_screen_size = (int)json_object_dotget_number(json_object(root_value), "window.screen_size");
 	m_vsync = (json_object_dotget_boolean(json_object(root_value), "window.vsync") != 0) ? true : false;
+
+	m_limit_margin = (int)json_object_dotget_number(json_object(root_value), "renderer.camera.move_limit_margin");
 	
 	json_value_free(root_value);
 	
