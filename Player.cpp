@@ -191,7 +191,7 @@ void Player::ReRaise()
 
 void Player::Die()
 {
-
+	//implement
 }
 
 void Player::UpdatePosition(const iPoint speed) {
@@ -244,9 +244,8 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	json_array_clear(j_array);
 	
 	//health
-	health = (int)json_object_dotget_number(root_object, "player.health");
-	//load lives and such
-
+	max_health = (int)json_object_dotget_number(root_object, "player.max_health");
+	health = max_health;
 
 	//animation durations
 	attacks_duration = (int)json_object_dotget_number(root_object, "player.duration.attacks");
@@ -378,5 +377,5 @@ void Player::CheatCodes() {
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN && help < 9)
 		help += 1;
 	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
-		health -= 100;
+		DecreaseHealth(10);
 }

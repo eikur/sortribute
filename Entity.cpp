@@ -21,6 +21,13 @@ bool Entity::Update(unsigned int msec_elapsed, const bool upd_logic)
 	return true;
 }
 
+void Entity::IncreaseHealth(int amount) {
+	health = MIN(health + amount, max_health);
+}
+void Entity::DecreaseHealth(int amount) {
+	health -= MAX(health - amount, 0);
+}
+
 bool Entity::IsAlive()
 {
 	return health > 0;

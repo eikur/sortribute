@@ -25,9 +25,12 @@ public:
 
 	virtual bool Init();
 	virtual bool Update(unsigned int msec_elapsed, const bool upd_logic = false);
+	virtual void IncreaseHealth(int amount);
+	virtual void DecreaseHealth(int amount);
 
 protected:
 	virtual bool IsAlive();
+
 
 	virtual bool AllowAnimationInterruption();
 	virtual void UpdateCurrentAnimation(Animation& new_anim);
@@ -68,6 +71,7 @@ protected:
 
 // health & damage variables
 	int health = 0;
+	int max_health = 0;
 	int attack1_dmg= 0;
 	int attack2_dmg = 0;
 	int attack3_dmg = 0;
