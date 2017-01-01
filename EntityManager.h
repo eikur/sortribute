@@ -35,7 +35,7 @@ private:
 	
 	int time_left = 50;
 
-
+	bool pause = false; 
 	Timer *logic_timer = nullptr;
 	int elapsed_msec = 0;
 	int upd_logic_msec = 10;

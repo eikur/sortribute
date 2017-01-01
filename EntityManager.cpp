@@ -57,22 +57,41 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 
 update_status EntityManager::Update() 
 {
-	//Elapsed time
-	elapsed_msec = logic_timer->ElapsedTimeMsec();
-
-	if (elapsed_msec >= upd_logic_msec)
-		upd_logic = true;
-
-	//Update all entities
-	for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
-		(*it)->Update(elapsed_msec, upd_logic );
-
-	if (upd_logic == true)
+	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
 	{
-		elapsed_msec = 0;
-		upd_logic = false;
-		logic_timer->ReStart();
+		pause = !pause;
+		if (pause)
+			logic_timer->Pause();
+		else
+			logic_timer->Resume();
+		//play pause fx
 	}
+
+	if (pause)
+	{
+		
+	}
+	else
+	{
+		//Elapsed time
+		elapsed_msec = logic_timer->ElapsedTimeMsec();
+
+		if (elapsed_msec >= upd_logic_msec)
+			upd_logic = true;
+
+		// paint functions and logic functions must be separated!
+		//Update all entities
+		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
+			(*it)->Update(elapsed_msec, upd_logic);
+		
+		if (upd_logic == true)
+		{
+			elapsed_msec = 0;
+			upd_logic = false;
+			logic_timer->ReStart();
+		}
+	}
+
 	PrintStatus();
 	return UPDATE_CONTINUE;
 }
