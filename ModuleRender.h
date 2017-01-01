@@ -25,10 +25,8 @@ public:
 
 	// player tracking
 	void GetPlayerPositionLimits( SDL_Rect &player_limits) const;
-	void SetFollowTarget(int x_target);
-
+	void MoveCamera(int x_pos, int x_speed);
 private:
-	void FollowTarget();
 	bool LoadConfigFromFile(const char* file_path);
 
 
@@ -46,7 +44,6 @@ private:
 	bool m_vsync = true;
 	
 	int m_limit_margin = 0;
-	int target_xpos = 0;
 };
 
 #endif // __MODULERENDER_H__

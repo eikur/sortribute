@@ -59,12 +59,7 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
-	if (locked == false)
-	{
-		SetFollowTarget(App->manager->GetPlayerXPos());
-		FollowTarget();
-	}
-
+	//debug camera
 	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_REPEAT)
 		App->renderer->camera.x += m_speed;
 
@@ -73,6 +68,7 @@ update_status ModuleRender::Update()
 
 	return UPDATE_CONTINUE;
 }
+
 
 update_status ModuleRender::PostUpdate()
 {
@@ -156,20 +152,16 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 
 void ModuleRender::GetPlayerPositionLimits( SDL_Rect &player_limits ) const
 {
-	player_limits.x = (int) -camera.x/m_screen_size + m_limit_margin;
+	player_limits.x = (int) -camera.x/m_screen_size + m_limit_margin;	// works but not ok
 }
 
-void ModuleRender::SetFollowTarget(int x_target) {
-	target_xpos = x_target;
-}
-
-void ModuleRender::FollowTarget()
-{
-	int camera_x_world_point = (int)(-camera.x / m_screen_size);
-	int camera_w_world = (int)(camera.w / m_screen_size);
-
-	if ((camera_x_world_point + camera_w_world / 2) < target_xpos)	// this causes jitter
-		camera.x = camera.x - m_speed;
+void ModuleRender::MoveCamera(int x_pos, int x_speed) {
+	if (locked == false)
+	{
+		int target_xpos_camera = x_pos * m_screen_size;
+		if ((-camera.x + camera.w / 2) < target_xpos_camera)
+			camera.x -= x_speed*m_screen_size;
+	}
 }
 
 bool ModuleRender::LoadConfigFromFile(const char* file_path)

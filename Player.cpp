@@ -200,6 +200,7 @@ void Player::UpdatePosition(const iPoint speed) {
 	else
 		if (position.y > down)
 			position.y = down;
+	App->renderer->MoveCamera(position.x, speed.x);
 }
 
 //------------------------------------------------------------------------
@@ -339,7 +340,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	}
 	json_array_clear(j_array);
 	
-	position = iPoint(50, 200);
+	position = iPoint(48, 200);
 	
 	// fx sound load
 	if (json_object_dothas_value_of_type(root_object, "player.fx.life_up", JSONString))
