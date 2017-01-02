@@ -42,7 +42,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 	}
 	else
 	{
-		move_speed = iPoint(0, 0);
+		move_speed = {0, 0};
 		if (upd_logic == true)
 		{
 			if (blocking_animation_remaining_msec > 0 )
@@ -53,6 +53,10 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				UpdateCurrentAnimation(&jump);
 				air_remaining_msec = jump_duration;
 				grounded = false;
+			}
+			if (blocking_animation_remaining_msec <= 0 && current_animation == &jump_prep)
+			{
+				UpdateCurrentAnimation(&idle);
 			}
 
 			if (grounded == false)	
@@ -87,7 +91,11 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				{
 					App->audio->PlayFx(fx_landing_jump);
 					UpdateCurrentAnimation(&jump_land, jump_prep_duration);
-					position.y = ground_y;
+					if (position.y != ground_y)
+					{
+						move_speed.y = ground_y - position.y;
+						UpdatePosition(move_speed);
+					}
 					grounded = true;
 				}
 			}
@@ -250,7 +258,7 @@ void Player::UpdatePosition(const iPoint new_speed) {
 		ground_y = position.y;
 
 	position += new_speed;
-	
+
 	App->renderer->GetPlayerPositionLimits(position_limits);
 	
 	int up = position_limits.y;
@@ -272,7 +280,15 @@ void Player::UpdatePosition(const iPoint new_speed) {
 				position.y = down;
 		ground_y = position.y;
 	}
-	// update colliders with the offset
+	
+	//apply offset to colliders
+	if (facing_right)
+		attack_collider->rect.x = position.x + attack_collider_offset.x;
+	else
+		attack_collider->rect.x = position.x + -(attack_collider_offset.x + attack_collider->rect.w);
+	attack_collider->rect.y = position.y + attack_collider_offset.y;
+	hit_collider->rect.x = position.x + hit_collider_offset.x;
+	hit_collider->rect.y = position.y + hit_collider_offset.y;
 }
 
 //------------------------------------------------------------------------
@@ -298,7 +314,8 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	}
 
 //----------------------- position and speed ---------------------------
-	position = iPoint(48, 170);
+	position = { 48, 170 };
+	ground_y = position.y;
 
 	//move speed
 	j_array = json_object_dotget_array(root_object, "player.speed");
@@ -317,14 +334,17 @@ bool Player::LoadFromConfigFile(const char* file_path)
 
 //----------------------- colliders ---------------------------
 	j_array = json_object_dotget_array(root_object, "player.colliders.hit");
+	hit_collider_offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
 	hit_collider = App->collision->AddCollider( 
-		{(int)json_array_get_number(j_array, 0) + position.x, (int)json_array_get_number(j_array, 1)+position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3)}, 
+		{hit_collider_offset.x + position.x, hit_collider_offset.y +position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3)}, 
 		colliderType::PLAYER);
+	
 	json_array_clear(j_array);
 
 	j_array = json_object_dotget_array(root_object, "player.colliders.attack");
+	attack_collider_offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
 	attack_collider = App->collision->AddCollider(
-		{(int)json_array_get_number(j_array, 0) + position.x, (int)json_array_get_number(j_array, 1) + position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3) },
+		{attack_collider_offset.x + position.x, attack_collider_offset.y + position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3) },
 		colliderType::PLAYER_ATTACK);
 	json_array_clear(j_array);
 

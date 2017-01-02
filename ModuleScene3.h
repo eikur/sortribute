@@ -33,19 +33,19 @@ private:
 	SDL_Texture* graphics = nullptr;
 	
 	SDL_Rect background_section;
-	iPoint background_pos = iPoint(0, 0);
+	iPoint background_pos = { 0,0 };
 
 	SDL_Rect middleground_section;
-	iPoint middleground_pos = iPoint(0, 0);
+	iPoint middleground_pos = { 0,0 };
 
 	SDL_Rect foreground_section;
-	iPoint foreground_pos = iPoint(0, 0);
+	iPoint foreground_pos = {0, 0};
 
 	Animation wave_sand;
-	iPoint wave_sand_pos = iPoint(0, 0);
+	iPoint wave_sand_pos = { 0, 0 };
 
 	Animation wave_splash;
-	iPoint wave_splash_pos = iPoint(0, 0);
+	iPoint wave_splash_pos = { 0, 0 };
 
 	std::string music_path = "";
 	unsigned int fx_waves = 0;

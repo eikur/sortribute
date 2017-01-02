@@ -39,7 +39,7 @@ protected:
 	virtual bool LoadFromConfigFile(const char* file_path);
 
 public: 
-	iPoint position = iPoint(0, 0);
+	iPoint position = {0, 0};
 	int	ground_y = 0;
 
 	int lives = 3;
@@ -50,8 +50,8 @@ protected:
 	Types m_type = Types::unknown;
 
 //move variables
-	iPoint speed = iPoint(0, 0);
-	iPoint move_speed = iPoint(0, 0);
+	iPoint speed = {0, 0};
+	iPoint move_speed = {0, 0};
 	bool grounded = true;
 
 // jumping control
@@ -84,12 +84,15 @@ protected:
 // Colliders
 	Collider *attack_collider = nullptr;
 	Collider *hit_collider = nullptr;
+	iPoint attack_collider_offset = {0, 0};
+	iPoint hit_collider_offset = {0, 0};
+
 
 // Graphics and animations
 	SDL_Texture *graphics;
 	Animation * current_animation = nullptr;
-	iPoint sprite_offset = iPoint(0, 0);
-	iPoint sprite_offset_flip = iPoint(0, 0);
+	iPoint sprite_offset = {0, 0};
+	iPoint sprite_offset_flip = {0, 0};
 	bool facing_right = true;
 
 	Animation idle;

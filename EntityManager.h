@@ -42,11 +42,11 @@ private:
 
 	//hud
 	SDL_Texture *hud_graphics = nullptr;
-	SDL_Rect hud_section = SDL_Rect();
-	iPoint hud_time_pos = iPoint(0, 0);
-	iPoint hud_score_pos = iPoint(0, 0);
-	iPoint hud_help_pos = iPoint(0, 0);
-	iPoint hud_lives_pos = iPoint(0, 0);
+	SDL_Rect hud_section = { 0,0,0,0 };
+	iPoint hud_time_pos = { 0,0 };
+	iPoint hud_score_pos = { 0,0 };
+	iPoint hud_help_pos = { 0,0 };
+	iPoint hud_lives_pos = { 0,0 };
 
 };
 

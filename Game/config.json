@@ -82,8 +82,8 @@
 			"throw": 20
 		},
 		"colliders": {
-			"attack": [11,-60,48,20],
-			"hit": [-11,-52,22,52]
+			"attack": [11,-52,48,32],
+			"hit": [-12,-52,22,52]
 		},
 		"sprite_offset": [-35,-80],
 		"sprite_offset_flip": [-61,-80],
