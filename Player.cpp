@@ -56,7 +56,8 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			{
 				if (air_remaining_msec > 0)
 				{
-					int frames_left = air_remaining_msec / 32;
+					int divisor = jump_duration / 16;
+					int frames_left = air_remaining_msec / divisor;
 					air_remaining_msec -= msec_elapsed;
 
 					switch (frames_left)
@@ -122,7 +123,8 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				}
 				if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
 				{
-					UpdateCurrentAnimation(&jump_attack);
+					App->audio->PlayFx(fx_voice);
+					UpdateCurrentAnimation(&jump_attack); 
 				}
 			}
 			else
@@ -426,6 +428,8 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	json_array_clear(j_array);
 
 	// fx sound load
+	if (json_object_dothas_value_of_type(root_object, "player.fx.voice", JSONString))
+		fx_voice = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.voice"));
 	if (json_object_dothas_value_of_type(root_object, "player.fx.life_up", JSONString))
 		fx_extra_life = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.life_up"));
 	if (json_object_dothas_value_of_type(root_object, "player.fx.attack_miss", JSONString))
