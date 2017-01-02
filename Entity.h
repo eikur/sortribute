@@ -8,6 +8,7 @@
 
 struct Collider;
 struct SDL_Texture;
+struct SDL_Rect;
 
 class Entity 
 {
@@ -33,7 +34,7 @@ protected:
 
 
 	virtual bool AllowAnimationInterruption();
-	virtual void UpdateCurrentAnimation(Animation *new_anim);
+	virtual void UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration = 0);
 
 	virtual bool LoadFromConfigFile(const char* file_path);
 
@@ -55,6 +56,7 @@ protected:
 
 // jumping control
 	int air_remaining_msec = 0;
+	int jump_prep_duration = 0;
 	int jump_duration = 0;
 
 //animation blocking	
@@ -102,6 +104,7 @@ protected:
 	Animation jump_prep;
 	Animation jump;
 	Animation jump_attack;
+	Animation jump_land;
 
 	Animation holding_front;
 	Animation holding_front_attack;
@@ -118,6 +121,7 @@ protected:
 	Animation being_knocked;
 	Animation standing_up;
 
+	SDL_Rect shadow;
 
 // sounds
 	unsigned int fx_voice = 0;

@@ -39,54 +39,67 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 	}
 	else
 	{
+		move_speed = iPoint(0, 0);
 		if (upd_logic == true)
 		{
-			if (blocking_animation_remaining_msec >= 0)
-				blocking_animation_remaining_msec -= 1;
-			
+			if (blocking_animation_remaining_msec > 0 )
+				blocking_animation_remaining_msec -= msec_elapsed;
+
+			if (blocking_animation_remaining_msec <= 0 && current_animation == &jump_prep)
+			{
+				UpdateCurrentAnimation(&jump);
+				air_remaining_msec = jump_duration;
+				grounded = false;
+			}
+
 			if (grounded == false)	
 			{
-				air_remaining_msec -= 1;
-				if (air_remaining_msec == 3)
+				air_remaining_msec -= msec_elapsed;
+				if (air_remaining_msec > 0)
+				{
+					// update positions :)
+				}
+				if (air_remaining_msec <= 0)
 				{
 					App->audio->PlayFx(fx_landing_jump);
-					UpdateCurrentAnimation(&jump);	
-					blocking_animation_remaining_msec = 2;
+					UpdateCurrentAnimation(&jump_land, jump_prep_duration);	
+					grounded = true;
 				}
-				grounded = (air_remaining_msec <= 0) ? true : false;	// vamos a darle el beneficio de la duda
-				
 			}
 		}
 		
 		if (AllowAnimationInterruption())
 		{
-			move_speed = iPoint(0, 0);
-			if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-				move_speed.y -= speed.y;
-			else
-				if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-					move_speed.y += speed.y;
+			if (grounded)
+			{
+				if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+					move_speed.y = -speed.y;
+				else
+					if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+						move_speed.y = speed.y;
+			}
 
 			if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
 			{
-				move_speed.x -= speed.x;
+				move_speed.x = -speed.x;
 				facing_right = false;
 			}
 			else
 			{
 				if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
 				{
-					move_speed.x += speed.x;
+					move_speed.x = speed.x;
 					facing_right = true;
 				}
 			}
 
-			if (grounded == false)
+			if (grounded == false)	// air logic
 			{
-				// air move! 
 				move_speed.y = 0;	// new calculations needed
 				if (upd_logic)
 				{
+					// re-calculate y pos
+					move_speed.y = -1;
 					UpdatePosition(move_speed);
 				}
 				if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
@@ -100,31 +113,25 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				{
 					if (App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT) // back attack
 					{
-						blocking_animation_remaining_msec = attacks_duration;
-						UpdateCurrentAnimation(&attack_back);
+						UpdateCurrentAnimation(&attack_back, attacks_duration);
 						App->audio->PlayFx(fx_attack_miss);
 					}
 					else
 					{
-						UpdateCurrentAnimation(&jump_prep);
-						blocking_animation_remaining_msec = 5;
-
-						//UpdateCurrentAnimation(&jump);
+						UpdateCurrentAnimation(&jump_prep, jump_prep_duration);
 						App->audio->PlayFx(fx_jump);
 					}
 				}
-				else if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
+				else if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN )
 				{
 					App->audio->PlayFx(fx_attack_miss);
 					if (App->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT) // back attack
 					{
-						blocking_animation_remaining_msec = attacks_duration;
-						UpdateCurrentAnimation(&attack_back);
+						UpdateCurrentAnimation(&attack_back, attacks_duration);
 					}
 					else  //combo attacks 
 					{
-						blocking_animation_remaining_msec = attacks_duration;
-						UpdateCurrentAnimation(&attack1);
+						UpdateCurrentAnimation(&attack1, attacks_duration);
 					}
 				}
 				else
@@ -151,10 +158,19 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		App->renderer->MoveCamera(position.x, speed.x);
 
 	if (facing_right)
+	{
 		App->renderer->Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, false);
+		if (grounded == false)	// print the shadow
+			App->renderer->Blit(graphics, position.x + sprite_offset.x, ground_y + sprite_offset.y, &shadow, 1.0f, false);
+	}
 	else
+	{
 		App->renderer->Blit(graphics, position.x + sprite_offset_flip.x, position.y + sprite_offset_flip.y, &(current_animation->GetCurrentFrame()), 1.0F, true);
+		if (grounded == false)	// print the shadow
+			App->renderer->Blit(graphics, position.x + sprite_offset_flip.x, ground_y + sprite_offset_flip.y, &shadow, 1.0f, true);
+	}
 
+	
 	// miscelaneous
 	CheatCodes();
 
@@ -206,8 +222,14 @@ void Player::Die()
 }
 
 void Player::UpdatePosition(const iPoint new_speed) {
+
+	if (grounded)
+		ground_y = position.y;
+
 	position += new_speed;
+	
 	App->renderer->GetPlayerPositionLimits(position_limits);
+	
 	int up = position_limits.y;
 	int down = up + position_limits.h;
 	int left = position_limits.x;
@@ -218,11 +240,15 @@ void Player::UpdatePosition(const iPoint new_speed) {
 	else 
 		if (position.x < left )
 			position.x = left;
-	if (position.y < up)
-		position.y = up;
-	else
-		if (position.y > down)
-			position.y = down;
+	if (grounded)
+	{
+		if (position.y < up)
+			position.y = up;
+		else
+			if (position.y > down)
+				position.y = down;
+		ground_y = position.y;
+	}
 }
 
 //------------------------------------------------------------------------
@@ -259,6 +285,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 
 	//animation durations
 	attacks_duration = (int)json_object_dotget_number(root_object, "player.duration.attacks");
+	jump_prep_duration = (int)json_object_dotget_number(root_object, "player.duration.jump_prep");
 	jump_duration = (int)json_object_dotget_number(root_object, "player.duration.jump");
 
 
@@ -328,6 +355,9 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	}
 	json_array_clear(j_array);
 	
+	//jump landing animation
+	jump_land = jump_prep;
+
 	//attack1 animation
 	attack1.speed = (float)json_object_dotget_number(root_object, "player.attack1.speed");
 	j_array = json_object_dotget_array(root_object, "player.attack1.frames");
@@ -372,8 +402,11 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	}
 	json_array_clear(j_array);
 	
-	position = iPoint(48, 200);
-	
+	//shadow
+	j_array = json_object_dotget_array(root_object, "player.shadow");
+	shadow = { (int)json_array_get_number(j_array,0), (int)json_array_get_number(j_array,1), (int)json_array_get_number(j_array,2), (int)json_array_get_number(j_array,3) };
+	json_array_clear(j_array);
+
 	// fx sound load
 	if (json_object_dothas_value_of_type(root_object, "player.fx.life_up", JSONString))
 		fx_extra_life = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.life_up"));
@@ -386,6 +419,9 @@ bool Player::LoadFromConfigFile(const char* file_path)
 
 	json_value_free(root_value);
 	
+
+	position = iPoint(48, 200);
+
 	return true;
 
 }

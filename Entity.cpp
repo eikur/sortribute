@@ -30,16 +30,17 @@ bool Entity::IsAlive()
 
 bool Entity::AllowAnimationInterruption()
 {
-	return blocking_animation_remaining_msec < 0;
+	return blocking_animation_remaining_msec <= 0;
 }
 
-void Entity::UpdateCurrentAnimation(Animation *new_anim)
+void Entity::UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration)
 {
 	if (current_animation != new_anim)
 	{
 		current_animation = new_anim;
 		current_animation->Reset();
 	}
+	blocking_animation_remaining_msec = block_anim_duration;
 
 }
 
