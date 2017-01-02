@@ -50,9 +50,9 @@ public:
 	}
 
 private:
-	unsigned int ticks_start = 0;
-	unsigned int ticks_pause = 0;
-	unsigned int ticks_last_call = 0;
+	Uint32 ticks_start = 0;
+	Uint32 ticks_pause = 0;
+	Uint32 ticks_last_call = 0;
 
 };
 

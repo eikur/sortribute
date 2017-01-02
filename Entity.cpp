@@ -38,11 +38,11 @@ bool Entity::AllowAnimationInterruption()
 	return blocking_animation_remaining_cycles < 0;
 }
 
-void Entity::UpdateCurrentAnimation(Animation& new_anim)
+void Entity::UpdateCurrentAnimation(Animation *new_anim)
 {
-	if (current_animation != &new_anim)
+	if (current_animation != new_anim)
 	{
-		current_animation = &new_anim;
+		current_animation = new_anim;
 		current_animation->Reset();
 	}
 

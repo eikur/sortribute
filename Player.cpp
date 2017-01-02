@@ -35,14 +35,14 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			
 			if (grounded == false)	
 			{
-				jump_remaining_cycles -= 1;
-				if (jump_remaining_cycles == 3)
+				air_remaining_cycles -= 1;
+				if (air_remaining_cycles == 3)
 				{
 					App->audio->PlayFx(fx_landing_jump);
-					UpdateCurrentAnimation(jump);	
+					UpdateCurrentAnimation(&jump);	
 					blocking_animation_remaining_cycles = 2;
 				}
-				grounded = (jump_remaining_cycles <= 0) ? true : false;
+				grounded = (air_remaining_cycles <= 0) ? true : false;	// vamos a darle el beneficio de la duda
 				
 			}
 		}
@@ -73,14 +73,14 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			if (grounded == false)
 			{
 				// air move! 
+				move_speed.y = 0;	// new calculations needed
 				if (upd_logic)
 				{
 					UpdatePosition(move_speed);
-					position.y -= 1;
 				}
 				if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
 				{
-					UpdateCurrentAnimation(jump_attack);
+					UpdateCurrentAnimation(&jump_attack);
 				}
 			}
 			else
@@ -90,34 +90,31 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					if (App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT) // back attack
 					{
 						blocking_animation_remaining_cycles = attacks_duration;
-						UpdateCurrentAnimation(attack_back);
+						UpdateCurrentAnimation(&attack_back);
 						App->audio->PlayFx(fx_attack_miss);
 					}
 					else
 					{
-						grounded = false;
-						ground_y = position.y;
-
-						jump_remaining_cycles = jump_duration;
+						UpdateCurrentAnimation(&jump_prep);
 						blocking_animation_remaining_cycles = 5;
 
-						UpdateCurrentAnimation(jump);
+						//UpdateCurrentAnimation(&jump);
 						App->audio->PlayFx(fx_jump);
 					}
 				}
 				else if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
 				{
+					App->audio->PlayFx(fx_attack_miss);
 					if (App->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT) // back attack
 					{
 						blocking_animation_remaining_cycles = attacks_duration;
-						UpdateCurrentAnimation(attack_back);
+						UpdateCurrentAnimation(&attack_back);
 					}
 					else  //combo attacks 
 					{
 						blocking_animation_remaining_cycles = attacks_duration;
-						UpdateCurrentAnimation(attack1);
+						UpdateCurrentAnimation(&attack1);
 					}
-					App->audio->PlayFx(fx_attack_miss);
 				}
 				else
 				{
@@ -125,12 +122,12 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					{
 						if (move_speed.IsZero())
 						{
-							UpdateCurrentAnimation(idle);
+							UpdateCurrentAnimation(&idle);
 						}
 						else
 						{
 							UpdatePosition(move_speed);
-							UpdateCurrentAnimation(walk);
+							UpdateCurrentAnimation(&walk);
 						}
 					}
 				}
@@ -283,6 +280,17 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	{
 		j_array_inner = json_array_get_array(j_array, i);
 		walk.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
+		json_array_clear(j_array_inner);
+	}
+	json_array_clear(j_array);
+
+	//jump preparation
+	jump_prep.speed = (float)json_object_dotget_number(root_object, "player.jump_prep.speed");
+	j_array = json_object_dotget_array(root_object, "player.jump_prep.frames");
+	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
+	{
+		j_array_inner = json_array_get_array(j_array, i);
+		jump_prep.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
 		json_array_clear(j_array_inner);
 	}
 	json_array_clear(j_array);

@@ -80,7 +80,8 @@
 		},
 		"duration": {
 			"attacks": 9,
-			"jump": 30
+			"jump_prep": 5,
+			"jump": 16
 		},
 		"sprite_offset": [-35,-80],
 		"sprite_offset_flip": [-61,-80],

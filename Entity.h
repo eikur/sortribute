@@ -33,7 +33,7 @@ protected:
 
 
 	virtual bool AllowAnimationInterruption();
-	virtual void UpdateCurrentAnimation(Animation& new_anim);
+	virtual void UpdateCurrentAnimation(Animation *new_anim);
 
 	virtual bool LoadFromConfigFile(const char* file_path);
 
@@ -54,7 +54,7 @@ protected:
 	bool grounded = true;
 
 // jumping control
-	int jump_remaining_cycles = 0;
+	int air_remaining_cycles = 0;
 	int jump_duration = 0;
 
 //animation blocking	
