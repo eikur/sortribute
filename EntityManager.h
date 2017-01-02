@@ -22,10 +22,11 @@ public:
 	bool CleanUp();
 
 	Entity* CreateEntity(Entity::Types type);
-	int GetPlayerXPos();
 
+private:
 	void PrintStatus();
-	bool LoadConfigFromFile(const char* file_path); 
+	bool LoadConfigFromFile(const char* file_path);
+	void CheatCodes();
 
 public:
 	Entity* player = nullptr;

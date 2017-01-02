@@ -2,11 +2,12 @@
 #define __PLAYER_H__
 
 #include "Entity.h"
+class EntityManager;
 
 class Player : public Entity {
 
 public: 
-	Player();
+	Player( EntityManager* parent);
 	~Player();
 	
 	bool Init();
@@ -25,6 +26,7 @@ private:
 
 private: 
 	SDL_Rect position_limits = { 28, 162, 264, 55 };	// initial margins
+	EntityManager *parent = nullptr;
 };
 
 #endif // __PLAYER_H__

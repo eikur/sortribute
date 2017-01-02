@@ -16,6 +16,7 @@ public:
 	enum Types
 	{
 		player,
+		npc_garcia,
 		unknown
 	};
 
@@ -26,12 +27,11 @@ public:
 
 	virtual bool Init();
 	virtual bool Update(unsigned int msec_elapsed, const bool upd_logic = false);
-	virtual void IncreaseHealth(int amount);
-	virtual void DecreaseHealth(int amount);
 
 protected:
 	virtual bool IsAlive();
-
+	virtual void IncreaseHealth(int amount);
+	virtual void DecreaseHealth(int amount);
 
 	virtual bool AllowAnimationInterruption();
 	virtual void UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration = 0);

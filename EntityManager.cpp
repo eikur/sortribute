@@ -2,10 +2,12 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "ModuleTextures.h"
-#include "Player.h"
 #include "ModuleTimer.h"
 #include "ModuleFonts.h"
 #include "ModuleInput.h"
+
+#include "Player.h"
+#include "EnemyGarcia.h"
 
 #include "EntityManager.h"
 
@@ -29,12 +31,13 @@ bool EntityManager::Init()
 
 Entity* EntityManager::CreateEntity(Entity::Types type)
 {
-	static_assert(Entity::Types::unknown == 1, "code needs update");
+	static_assert(Entity::Types::unknown == 2, "code needs update");
 	Entity* ret = nullptr;
 
 	switch (type)
 	{
-	case Entity::Types::player: ret = new Player(); break;
+	case Entity::Types::player: ret = new Player(this); break;
+	case Entity::Types::npc_garcia: ret = new EnemyGarcia(this); break;
 	}
 
 	if (ret != nullptr)
@@ -76,10 +79,12 @@ update_status EntityManager::Update()
 			upd_logic = true;
 
 		// paint functions and logic functions must be separated!
-		//Update all entities
+		//Update all entities' logic
 		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
 			(*it)->Update(elapsed_msec, upd_logic);
 		
+
+		// paint all entities by order!
 		if (upd_logic == true)
 		{
 			elapsed_msec = 0;
@@ -89,6 +94,8 @@ update_status EntityManager::Update()
 	}
 
 	PrintStatus();
+	CheatCodes();
+
 	return UPDATE_CONTINUE;
 }
 
@@ -103,13 +110,6 @@ bool EntityManager::CleanUp()
 	return true;
 }
 
-
-int EntityManager::GetPlayerXPos() {
-	if (player != nullptr)
-		return player->position.x;
-	else
-		return NULL;
-}
 
 void EntityManager::PrintStatus() 
 {
@@ -169,7 +169,15 @@ bool EntityManager::LoadConfigFromFile(const char* file_path)
 	return true;
 }
 
-
+void EntityManager::CheatCodes()
+{
+	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN)
+	{
+		Entity *a = (Entity*) CreateEntity(Entity::Types::npc_garcia);
+		a->position.y = player->ground_y;
+		a->position.x = player->position.x + 150;
+	}
+}
 
 
 

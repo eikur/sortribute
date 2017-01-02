@@ -3,7 +3,6 @@
 #include "ModuleRender.h"
 #include "ModuleTextures.h"
 #include "ModuleInput.h"
-#include "ModuleFonts.h"
 #include "ModuleAudio.h"
 #include "ModuleCollision.h"
 
@@ -11,7 +10,7 @@
 
 
 
-Player::Player() : Entity(Types::player) {}
+Player::Player(EntityManager* parent) : Entity(Types::player), parent(parent) {}
 Player::~Player(){}
 
 bool Player::Init()
