@@ -41,19 +41,19 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 	{
 		if (upd_logic == true)
 		{
-			if (blocking_animation_remaining_cycles >= 0)
-				blocking_animation_remaining_cycles -= 1;
+			if (blocking_animation_remaining_msec >= 0)
+				blocking_animation_remaining_msec -= 1;
 			
 			if (grounded == false)	
 			{
-				air_remaining_cycles -= 1;
-				if (air_remaining_cycles == 3)
+				air_remaining_msec -= 1;
+				if (air_remaining_msec == 3)
 				{
 					App->audio->PlayFx(fx_landing_jump);
 					UpdateCurrentAnimation(&jump);	
-					blocking_animation_remaining_cycles = 2;
+					blocking_animation_remaining_msec = 2;
 				}
-				grounded = (air_remaining_cycles <= 0) ? true : false;	// vamos a darle el beneficio de la duda
+				grounded = (air_remaining_msec <= 0) ? true : false;	// vamos a darle el beneficio de la duda
 				
 			}
 		}
@@ -100,14 +100,14 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				{
 					if (App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT) // back attack
 					{
-						blocking_animation_remaining_cycles = attacks_duration;
+						blocking_animation_remaining_msec = attacks_duration;
 						UpdateCurrentAnimation(&attack_back);
 						App->audio->PlayFx(fx_attack_miss);
 					}
 					else
 					{
 						UpdateCurrentAnimation(&jump_prep);
-						blocking_animation_remaining_cycles = 5;
+						blocking_animation_remaining_msec = 5;
 
 						//UpdateCurrentAnimation(&jump);
 						App->audio->PlayFx(fx_jump);
@@ -118,12 +118,12 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					App->audio->PlayFx(fx_attack_miss);
 					if (App->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT) // back attack
 					{
-						blocking_animation_remaining_cycles = attacks_duration;
+						blocking_animation_remaining_msec = attacks_duration;
 						UpdateCurrentAnimation(&attack_back);
 					}
 					else  //combo attacks 
 					{
-						blocking_animation_remaining_cycles = attacks_duration;
+						blocking_animation_remaining_msec = attacks_duration;
 						UpdateCurrentAnimation(&attack1);
 					}
 				}

@@ -54,11 +54,12 @@ protected:
 	bool grounded = true;
 
 // jumping control
-	int air_remaining_cycles = 0;
+	int air_remaining_msec = 0;
 	int jump_duration = 0;
 
 //animation blocking	
-	int blocking_animation_remaining_cycles = 0;
+	int blocking_animation_remaining_msec = 0;
+
 	int attacks_duration = 0;
 	int take_item_duration = 0;
 	int throwing_duration = 0;
