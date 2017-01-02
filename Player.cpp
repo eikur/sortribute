@@ -186,7 +186,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 	// logic end
 	if (upd_logic)
 		App->renderer->MoveCamera(position.x, speed.x);
-
+	/*
 	if (facing_right)
 	{
 		App->renderer->Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, false);
@@ -199,8 +199,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		if (grounded == false)
 			App->renderer->Blit(graphics, position.x + sprite_offset_flip.x, ground_y + sprite_offset_flip.y, &shadow, 1.0f, true);
 	}
-
-	
+	*/
 	// miscelaneous
 	CheatCodes();
 

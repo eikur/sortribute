@@ -83,6 +83,9 @@ update_status EntityManager::Update()
 		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
 			(*it)->Update(elapsed_msec, upd_logic);
 		
+		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
+			(*it)->Draw();
+
 
 		// paint all entities by order!
 		if (upd_logic == true)

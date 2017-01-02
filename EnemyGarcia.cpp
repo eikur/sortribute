@@ -34,17 +34,6 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			facing_right = false;
 	}
 	UpdateCurrentAnimation(&idle);
-	
-	if (facing_right)
-	{
-		App->renderer->Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, false);
-	}
-	else
-	{
-		App->renderer->Blit(graphics, position.x + sprite_offset_flip.x, position.y + sprite_offset_flip.y, &(current_animation->GetCurrentFrame()), 1.0F, true);
-	}
-
-
 	return UPDATE_CONTINUE;
 }
 

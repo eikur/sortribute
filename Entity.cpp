@@ -1,3 +1,5 @@
+#include "Application.h"
+#include "ModuleRender.h"
 #include "Entity.h"
 
 Entity::Entity(Types type) : m_type(type)
@@ -13,6 +15,23 @@ bool Entity::Init()
 
 bool Entity::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
+	return true;
+}
+
+bool Entity::Draw()
+{
+	if (facing_right)
+	{
+		App->renderer->Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, false);
+		if (grounded == false)
+			App->renderer->Blit(graphics, position.x + sprite_offset.x, ground_y + sprite_offset.y, &shadow, 1.0f, false);
+	}
+	else
+	{
+		App->renderer->Blit(graphics, position.x + sprite_offset_flip.x, position.y + sprite_offset_flip.y, &(current_animation->GetCurrentFrame()), 1.0F, true);
+		if (grounded == false)
+			App->renderer->Blit(graphics, position.x + sprite_offset_flip.x, ground_y + sprite_offset_flip.y, &shadow, 1.0f, true);
+	}
 	return true;
 }
 

@@ -27,6 +27,7 @@ public:
 
 	virtual bool Init();
 	virtual bool Update(unsigned int msec_elapsed, const bool upd_logic = false);
+	virtual bool Draw();
 
 protected:
 	virtual bool IsAlive();
