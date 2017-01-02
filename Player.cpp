@@ -54,15 +54,36 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 
 			if (grounded == false)	
 			{
-				air_remaining_msec -= msec_elapsed;
 				if (air_remaining_msec > 0)
 				{
-					// update positions :)
+					int frames_left = air_remaining_msec / 32;
+					air_remaining_msec -= msec_elapsed;
+
+					switch (frames_left)
+					{
+					case 0:	 move_speed.y += 7; break;
+					case 1:	 move_speed.y += 6; break;
+					case 2:	 move_speed.y += 5; break;
+					case 3:	 move_speed.y += 5; break;
+					case 4:	 move_speed.y += 4; break;
+					case 5:	 move_speed.y += 3; break;
+					case 6:	 move_speed.y += 2; break;
+					case 7:  move_speed.y += 1; break;
+					case 8:  move_speed.y -= 1; break;
+					case 9:  move_speed.y -= 2; break;
+					case 10: move_speed.y -= 3; break;
+					case 11: move_speed.y -= 4; break;
+					case 12: move_speed.y -= 5; break;
+					case 13: move_speed.y -= 5; break;
+					case 14: move_speed.y -= 7; break;
+					case 15: move_speed.y -= 8; break;
+					}
 				}
 				if (air_remaining_msec <= 0)
 				{
 					App->audio->PlayFx(fx_landing_jump);
-					UpdateCurrentAnimation(&jump_land, jump_prep_duration);	
+					UpdateCurrentAnimation(&jump_land, jump_prep_duration);
+					position.y = ground_y;
 					grounded = true;
 				}
 			}
@@ -95,11 +116,8 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 
 			if (grounded == false)	// air logic
 			{
-				move_speed.y = 0;	// new calculations needed
 				if (upd_logic)
 				{
-					// re-calculate y pos
-					move_speed.y = -1;
 					UpdatePosition(move_speed);
 				}
 				if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
@@ -160,13 +178,13 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 	if (facing_right)
 	{
 		App->renderer->Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, false);
-		if (grounded == false)	// print the shadow
+		if (grounded == false)
 			App->renderer->Blit(graphics, position.x + sprite_offset.x, ground_y + sprite_offset.y, &shadow, 1.0f, false);
 	}
 	else
 	{
 		App->renderer->Blit(graphics, position.x + sprite_offset_flip.x, position.y + sprite_offset_flip.y, &(current_animation->GetCurrentFrame()), 1.0F, true);
-		if (grounded == false)	// print the shadow
+		if (grounded == false)
 			App->renderer->Blit(graphics, position.x + sprite_offset_flip.x, ground_y + sprite_offset_flip.y, &shadow, 1.0f, true);
 	}
 
