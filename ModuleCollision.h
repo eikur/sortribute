@@ -4,16 +4,12 @@
 #include<list>
 #include "Module.h"
 
-// TODO 9: Create a matrix of game specific types of collision for early discard
-// Example: lasers should not collide with lasers but should collider with walls
-// enemy shots will collide with other enemies ? and against walls ?
-
 enum colliderType {
 	PLAYER = 0,
-	PLAYER_SHOT,
-	WALLS,
+	PLAYER_ATTACK,
+	ITEMS,
 	ENEMY,
-	ENEMY_SHOT
+	ENEMY_ATTACK
 };
 
 struct Collider
@@ -22,12 +18,11 @@ struct Collider
 	bool to_delete = false;
 	colliderType type;
 
-	// TODO 10: Add a way to notify other classes that a collision happened
-	Module* report_to;
+	Module* report_to;	// TODO: change the reporting method 
 
 
 	Collider() {}
-	Collider(SDL_Rect rectangle, colliderType t) : // expand this call if you need to
+	Collider(SDL_Rect rectangle, colliderType t) : 
 		rect(rectangle), type(t)
 	{}
 
@@ -59,7 +54,7 @@ private:
 
 	std::list<Collider*> colliders;
 	bool debug = false;
-	int collision_matrix[5][5] = { { 0,0,1,1,1 },{ 0,0,1,1,0 },{ 1,1,0,1,1 },{ 1,1,1,0,0 },{ 1,0,1,0,0 } };
+	int collision_matrix[5][5] = { { 0,0,1,1,1 },{ 0,0,1,1,0 },{ 1,1,0,1,1 },{ 1,1,1,0,0 },{ 1,0,1,0,0 } };	// TODO: Load from file
 	Module* report_to;
 };
 

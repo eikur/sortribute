@@ -27,14 +27,14 @@ Application::Application()
 	modules.push_back(fonts = new ModuleFonts());
 	modules.push_back(timer = new ModuleTimer());
 
-	// Modules to draw on top of game logic
-	modules.push_back(particles = new ModuleParticles());
-	
 	//Specific game modules
 	modules.push_back(manager = new EntityManager(false));
 	modules.push_back(scene3 = new ModuleScene3(false));
 	modules.push_back(fade = new ModuleFadeToBlack());
-	
+
+	// Modules to draw on top of game logic	
+	modules.push_back(collision = new ModuleCollision(nullptr));	//TODO: check collision management
+	modules.push_back(particles = new ModuleParticles());
 
 }
 

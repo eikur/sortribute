@@ -76,8 +76,6 @@ Particle::Particle()
 	collider = new Collider();
 }
 
-// TODO 3: Fill in a copy constructor
-
 Particle::Particle(const Particle& p)
 {
 	animation = new Animation(*p.animation);
@@ -97,9 +95,7 @@ Particle::~Particle()
 
 bool Particle::Update()
 {
-	// This is the core of the particle functionality.
 	// Return false if the particle must be destroyed
-	//bool ret = true;
 
 	//death by age
 	++age;

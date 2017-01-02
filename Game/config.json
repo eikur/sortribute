@@ -13,6 +13,9 @@
 			"speed": 3
 		}
 	},
+	"collision":{
+		"matrix": [[ 0,0,1,1,1],[0,0,1,1,0],[1,1,0,1,1],[1,1,1,0,0],[1,0,1,0,0]]
+	},
 	"fonts": {
 		"total": 3,
 		"file": "Assets/hud.png",
@@ -77,6 +80,10 @@
 			"attack3": 12,
 			"attack_back": 12,
 			"throw": 20
+		},
+		"colliders": {
+			"attack": [11,-60,48,20],
+			"hit": [-11,-52,22,52]
 		},
 		"sprite_offset": [-35,-80],
 		"sprite_offset_flip": [-61,-80],

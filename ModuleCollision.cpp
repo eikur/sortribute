@@ -35,8 +35,6 @@ update_status ModuleCollision::PreUpdate()
 
 update_status ModuleCollision::Update()
 {
-	// TODO 8: Check collisions between all colliders. 
-	// After making it work, review that you are doing the minumum checks possible
 	for (list<Collider*>::const_iterator it = colliders.cbegin(); it != colliders.cend();++it )
 	{
 		for (list<Collider*>::const_iterator it2 = it; it2 != colliders.cend(); ++it2)	
@@ -65,7 +63,12 @@ update_status ModuleCollision::Update()
 void ModuleCollision::DebugDraw()
 {
 	for (list<Collider*>::iterator it = colliders.begin(); it != colliders.end(); ++it)
-		App->renderer->DrawQuad((*it)->rect, 255, 0, 0, 80);
+	{
+		if ((*it)->type == colliderType::PLAYER_ATTACK)
+			App->renderer->DrawQuad((*it)->rect, 0, 0, 255, 80);
+		else
+			App->renderer->DrawQuad((*it)->rect, 0, 255, 0, 80);
+	}
 }
 
 // Called before quitting
@@ -94,8 +97,6 @@ Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, colliderType type)
 
 bool Collider::CheckCollision(const SDL_Rect& r) const
 {
-	// TODO 7: Create by hand (avoid consulting the internet) a simple collision test
-	// Return true if the argument and the own rectangle are intersecting
 	bool collision;
 	if ((r.y + r.h <= rect.y))
 		collision = false;
