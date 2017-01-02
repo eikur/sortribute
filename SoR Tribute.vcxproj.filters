@@ -132,5 +132,8 @@
     <ClCompile Include="Entity.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

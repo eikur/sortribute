@@ -37,8 +37,8 @@ private:
 
 	bool pause = false; 
 	Timer *logic_timer = nullptr;
-	int elapsed_msec = 0;
-	int upd_logic_msec = 20;
+	Uint32 elapsed_msec = 0;
+	Uint32 upd_logic_msec = 20;
 	bool upd_logic = false;
 
 	//hud

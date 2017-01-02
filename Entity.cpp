@@ -8,12 +8,7 @@ Entity::~Entity()
 
 bool Entity::Init()
 {
-	if (LoadFromConfigFile(CONFIG_FILE) == false)
-	{
-		return false;
-	}
 	return true;
-
 }
 
 bool Entity::Update(unsigned int msec_elapsed, const bool upd_logic)

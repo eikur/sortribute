@@ -8,7 +8,8 @@ class Player : public Entity {
 public: 
 	Player();
 	~Player();
-
+	
+	bool Init();
 	bool Update( unsigned int msec_elapsed, const bool upd_logic = false);
 
 private:

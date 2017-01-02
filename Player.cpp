@@ -11,6 +11,17 @@
 Player::Player() : Entity(Types::player) {}
 Player::~Player(){}
 
+bool Player::Init()
+{
+	if (LoadFromConfigFile(CONFIG_FILE) == false)
+	{
+		LOG("Error loading player config from file");
+		return false;
+	}
+	UpdateCurrentAnimation(&idle);
+	return true;
+}
+
 bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
 	if (IsAlive() == false)

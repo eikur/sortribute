@@ -50,8 +50,6 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 			entities.push_back(ret);
 		}
 	}
-	delete logic_timer;
-
 	return ret;
 }
 
@@ -61,10 +59,9 @@ update_status EntityManager::Update()
 	{
 		pause = !pause;
 		if (pause)
-			logic_timer->Pause();
+			logic_timer->TimerPause();
 		else
-			logic_timer->Resume();
-		//play pause fx
+			logic_timer->TimerResume();
 	}
 
 	if (pause)
@@ -74,7 +71,7 @@ update_status EntityManager::Update()
 	else
 	{
 		//Elapsed time
-		elapsed_msec = logic_timer->ElapsedTimeMsec();
+		elapsed_msec += logic_timer->DeltaTime();
 
 		if (elapsed_msec >= upd_logic_msec)
 			upd_logic = true;
@@ -88,7 +85,7 @@ update_status EntityManager::Update()
 		{
 			elapsed_msec = 0;
 			upd_logic = false;
-			logic_timer->ReStart();
+			//logic_timer->Start();
 		}
 	}
 
@@ -104,6 +101,8 @@ bool EntityManager::CleanUp()
 		delete *it;
 	entities.clear();
 	
+	delete logic_timer;
+
 	return true;
 }
 
