@@ -174,8 +174,10 @@ void EntityManager::CheatCodes()
 	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN)
 	{
 		Entity *a = (Entity*) CreateEntity(Entity::Types::npc_garcia);
-		a->position.y = player->ground_y;
+		if (a != nullptr){
+		a->position.y = player->position.y;
 		a->position.x = player->position.x + 150;
+		}
 	}
 }
 
