@@ -260,7 +260,7 @@ void Player::UpdatePosition(const iPoint new_speed) {
 	position += new_speed;
 
 	App->renderer->GetPlayerPositionLimits(position_limits);
-	
+
 	int up = position_limits.y;
 	int down = up + position_limits.h;
 	int left = position_limits.x;
@@ -268,8 +268,8 @@ void Player::UpdatePosition(const iPoint new_speed) {
 
 	if (position.x > right)
 		position.x = right;
-	else 
-		if (position.x < left )
+	else
+		if (position.x < left)
 			position.x = left;
 	if (grounded)
 	{
@@ -280,14 +280,19 @@ void Player::UpdatePosition(const iPoint new_speed) {
 				position.y = down;
 		ground_y = position.y;
 	}
-	
+
 	//apply offset to colliders
 	if (facing_right)
+	{
 		attack_collider->rect.x = position.x + attack_collider_offset.x;
+		hit_collider->rect.x = position.x + hit_collider_offset.x;
+	}
 	else
+	{
 		attack_collider->rect.x = position.x + -(attack_collider_offset.x + attack_collider->rect.w);
-	attack_collider->rect.y = position.y + attack_collider_offset.y;
-	hit_collider->rect.x = position.x + hit_collider_offset.x;
+		hit_collider->rect.x = position.x - (hit_collider_offset.x + hit_collider->rect.w);
+	}
+	attack_collider->rect.y = position.y + attack_collider_offset.y;	
 	hit_collider->rect.y = position.y + hit_collider_offset.y;
 }
 
