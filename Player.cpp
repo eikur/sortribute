@@ -137,13 +137,16 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			}
 		}
 	}
+	
+	// logic end
+	if (upd_logic)
+		App->renderer->MoveCamera(position.x, speed.x);
 
-
-	//draw the sprites after the logic calculations
 	if (facing_right)
 		App->renderer->Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, false);
 	else
 		App->renderer->Blit(graphics, position.x + sprite_offset_flip.x, position.y + sprite_offset_flip.y, &(current_animation->GetCurrentFrame()), 1.0F, true);
+
 	// miscelaneous
 	CheatCodes();
 
@@ -194,8 +197,8 @@ void Player::Die()
 	//implement
 }
 
-void Player::UpdatePosition(const iPoint speed) {
-	position += speed;
+void Player::UpdatePosition(const iPoint new_speed) {
+	position += new_speed;
 	App->renderer->GetPlayerPositionLimits(position_limits);
 	int up = position_limits.y;
 	int down = up + position_limits.h;
@@ -212,7 +215,6 @@ void Player::UpdatePosition(const iPoint speed) {
 	else
 		if (position.y > down)
 			position.y = down;
-	App->renderer->MoveCamera(position.x, speed.x);
 }
 
 //------------------------------------------------------------------------

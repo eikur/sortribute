@@ -98,6 +98,7 @@ protected:
 	Animation attack3;
 	Animation attack_back;
 
+	Animation jump_prep;
 	Animation jump;
 	Animation jump_attack;
 

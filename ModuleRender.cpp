@@ -59,7 +59,12 @@ update_status ModuleRender::PreUpdate()
 // Called every draw update
 update_status ModuleRender::Update()
 {
-	//debug camera
+	//move camera
+	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
+	{
+		locked = !locked;
+	}
+
 	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_REPEAT)
 		App->renderer->camera.x += m_speed;
 
