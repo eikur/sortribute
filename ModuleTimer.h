@@ -4,11 +4,14 @@
 #include "SDL/include/SDL.h"
 #include "Module.h"
 
-class Timer : public Module{
+class ModuleTimer : public Module{
 
 public:
-	Timer();
-	~Timer();
+	ModuleTimer();
+	~ModuleTimer();
+
+	bool Start();
+	update_status Update();
 
 	void TimerStart();
 	void TimerStop();
@@ -21,6 +24,8 @@ public:
 private:
 	Uint32 m_ticks_start = 0;
 	Uint32 m_ticks_pause = 0;
+	Uint32 m_ticks_last_update = 0;
+	Uint32 m_delta_time = 0;
 
 	bool m_started;
 	bool m_paused;

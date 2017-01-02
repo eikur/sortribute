@@ -89,7 +89,7 @@
     <ClInclude Include="parson.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Point.h" />
-    <ClInclude Include="Timer.h" />
+    <ClInclude Include="ModuleTimer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
@@ -109,7 +109,7 @@
     <ClCompile Include="ModuleWindow.cpp" />
     <ClCompile Include="parson.c" />
     <ClCompile Include="Player.cpp" />
-    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="ModuleTimer.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

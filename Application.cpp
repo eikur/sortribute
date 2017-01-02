@@ -10,6 +10,7 @@
 #include "ModuleFonts.h"
 #include "ModuleScene3.h"
 #include "EntityManager.h"
+#include "ModuleTimer.h"
 
 using namespace std;
 
@@ -24,6 +25,7 @@ Application::Application()
 	modules.push_back(audio = new ModuleAudio());
 
 	modules.push_back(fonts = new ModuleFonts());
+	modules.push_back(timer = new ModuleTimer());
 
 	// Modules to draw on top of game logic
 	modules.push_back(particles = new ModuleParticles());

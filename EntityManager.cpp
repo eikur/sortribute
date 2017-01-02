@@ -3,7 +3,7 @@
 #include "ModuleRender.h"
 #include "ModuleTextures.h"
 #include "Player.h"
-#include "Timer.h"
+#include "ModuleTimer.h"
 #include "ModuleFonts.h"
 #include "ModuleInput.h"
 
@@ -18,7 +18,6 @@ EntityManager::~EntityManager() {
 
 bool EntityManager::Init()
 {
-	logic_timer = new Timer();
 	if (LoadConfigFromFile(CONFIG_FILE) == false)
 	{
 		LOG("Entity Manager: failed to initialise\n");
@@ -59,9 +58,9 @@ update_status EntityManager::Update()
 	{
 		pause = !pause;
 		if (pause)
-			logic_timer->TimerPause();
+			App->timer->TimerPause();
 		else
-			logic_timer->TimerResume();
+			App->timer->TimerResume();
 	}
 
 	if (pause)
@@ -71,7 +70,7 @@ update_status EntityManager::Update()
 	else
 	{
 		//Elapsed time
-		elapsed_msec += logic_timer->DeltaTime();
+		elapsed_msec += App->timer->DeltaTime();
 
 		if (elapsed_msec >= upd_logic_msec)
 			upd_logic = true;
@@ -100,8 +99,6 @@ bool EntityManager::CleanUp()
 	for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
 		delete *it;
 	entities.clear();
-	
-	delete logic_timer;
 
 	return true;
 }

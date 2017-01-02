@@ -64,9 +64,6 @@
     <ClInclude Include="ModuleFonts.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
-    <ClInclude Include="Timer.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleScene3.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
@@ -78,6 +75,9 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Game Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleTimer.h">
+      <Filter>Core Modules</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -132,8 +132,8 @@
     <ClCompile Include="Entity.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
-    <ClCompile Include="Timer.cpp">
-      <Filter>Utils</Filter>
+    <ClCompile Include="ModuleTimer.cpp">
+      <Filter>Core Modules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
