@@ -5,6 +5,7 @@
 #include "ModuleTimer.h"
 #include "ModuleFonts.h"
 #include "ModuleInput.h"
+#include "ModuleCollision.h"
 
 #include "Player.h"
 #include "EnemyGarcia.h"
@@ -18,6 +19,7 @@ EntityManager::EntityManager(bool active): Module(active){
 EntityManager::~EntityManager() {
 }
 
+// ----- Module basic functions --------
 bool EntityManager::Init()
 {
 	if (LoadConfigFromFile(CONFIG_FILE) == false)
@@ -27,32 +29,6 @@ bool EntityManager::Init()
 	}
 	else 
 		return true;
-}
-
-Entity* EntityManager::CreateEntity(Entity::Types type)
-{
-	static_assert(Entity::Types::unknown == 2, "code needs update");
-	Entity* ret = nullptr;
-
-	switch (type)
-	{
-	case Entity::Types::player: ret = new Player(this); break;
-	case Entity::Types::npc_garcia: ret = new EnemyGarcia(this); break;
-	}
-
-	if (ret != nullptr)
-	{
-		if (ret->Init() == false)
-		{
-			delete ret;
-			ret = nullptr;
-		}
-		else
-		{
-			entities.push_back(ret);
-		}
-	}
-	return ret;
 }
 
 update_status EntityManager::Update() 
@@ -108,6 +84,43 @@ bool EntityManager::CleanUp()
 	return true;
 }
 
+//---------------------- Entity Management ------------------
+Entity* EntityManager::CreateEntity(Entity::Types type)
+{
+	static_assert(Entity::Types::unknown == 2, "code needs update");
+	Entity* ret = nullptr;
+
+	switch (type)
+	{
+	case Entity::Types::player: ret = new Player(this); break;
+	case Entity::Types::npc_garcia: ret = new EnemyGarcia(this); break;
+	}
+
+	if (ret != nullptr)
+	{
+		if (ret->Init() == false)
+		{
+			delete ret;
+			ret = nullptr;
+		}
+		else
+		{
+			entities.push_back(ret);
+		}
+	}
+	return ret;
+}
+
+void EntityManager::HandleCollision(Collider* a, Collider* b)
+{
+	
+	LOG("Handling collisions!!");
+
+	
+
+}
+
+// -------------------------- Miscellaneous -------------------------------
 void EntityManager::PrintStatus() 
 {
 	App->renderer->Blit(hud_graphics, 0, 0, &hud_section, 0.0F);

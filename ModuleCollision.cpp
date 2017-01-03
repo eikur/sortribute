@@ -44,7 +44,7 @@ update_status ModuleCollision::Update()
 				if (collision_matrix[(*it)->type][(*it2)->type] == 1)
 				{
 					LOG("Collided");
-					//report_to->HandleCollision((*it), (*it2));
+					report_to->HandleCollision((*it), (*it2));
 					
 				}
 			}
@@ -88,9 +88,9 @@ bool ModuleCollision::CleanUp()
 	return true;
 }
 
-Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, colliderType type)
+Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, colliderType type, Entity& parent)
 {
-	Collider* ret = new Collider(rect, type);
+	Collider* ret = new Collider(rect, type, parent);
 
 	colliders.push_back(ret);
 

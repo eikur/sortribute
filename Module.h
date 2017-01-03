@@ -5,6 +5,7 @@
 #include "parson.h"
 
 class Application;
+class Entity;
 struct Collider;
 
 class Module
@@ -73,7 +74,8 @@ public:
 		return true;
 	}
 	// Callbacks ---
-	
+	virtual void HandleCollision(Collider* a, Collider* b)
+	{}
 
 private:
 	bool active = true;

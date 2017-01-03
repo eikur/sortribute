@@ -75,7 +75,7 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	hit_collider_offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
 	hit_collider = App->collision->AddCollider(
 	{ hit_collider_offset.x + position.x, hit_collider_offset.y + position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3) },
-		colliderType::ENEMY);
+		colliderType::ENEMY, *this);
 
 	json_array_clear(j_array);
 
@@ -83,7 +83,7 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	attack_collider_offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
 	attack_collider = App->collision->AddCollider(
 	{ attack_collider_offset.x + position.x, attack_collider_offset.y + position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3) },
-		colliderType::ENEMY_ATTACK);
+		colliderType::ENEMY_ATTACK, *this);
 	json_array_clear(j_array);
 
 //----------------------- animation duration ---------------------------

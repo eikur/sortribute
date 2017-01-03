@@ -18,12 +18,11 @@ struct Collider
 	bool to_delete = false;
 	colliderType type;
 
-	Module* report_to;	// TODO: change the reporting method 
-
+	Entity* parent = nullptr;
 
 	Collider() {}
-	Collider(SDL_Rect rectangle, colliderType t) : 
-		rect(rectangle), type(t)
+	Collider(SDL_Rect rectangle, colliderType t, Entity& parent) :
+		rect(rectangle), type(t), parent(&parent)
 	{}
 
 	void SetPos(int x, int y)
@@ -47,7 +46,7 @@ public:
 
 	bool CleanUp();
 
-	Collider* AddCollider(const SDL_Rect& rect, colliderType type);
+	Collider* AddCollider(const SDL_Rect& rect, colliderType type, Entity& parent);
 	void DebugDraw();
 
 private:
@@ -55,7 +54,7 @@ private:
 	std::list<Collider*> colliders;
 	bool debug = false;
 	int collision_matrix[5][5] = { { 0,0,1,1,1 },{ 0,0,1,1,0 },{ 1,1,0,1,1 },{ 1,1,1,0,0 },{ 1,0,1,0,0 } };	// TODO: Load from file
-	Module* report_to;
+	Module* report_to = nullptr;
 };
 
 #endif // __ModuleCollision_H__

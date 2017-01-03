@@ -25,7 +25,7 @@ public:
 	Entity* CreateEntity(Entity::Types type);
 
 private:
-//	bool OrderEntities(const Entity& comp, const Entity& reference);
+	void HandleCollision(Collider* a, Collider* b);
 
 	void PrintStatus();
 	bool LoadConfigFromFile(const char* file_path);
