@@ -27,6 +27,9 @@ private:
 private: 
 	SDL_Rect position_limits = { 28, 162, 264, 55 };	// initial margins
 	EntityManager *parent = nullptr;
+	int lives = 3;
+	int score = 0;
+	int help = 3;
 };
 
 #endif // __PLAYER_H__

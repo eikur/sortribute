@@ -11,6 +11,12 @@ class Player;
 struct Font;
 struct SDL_Texture;
 
+struct ptrEntityDepthComparison {
+	bool operator() (const Entity* left, const Entity* right) const {
+		return left->GetDepth() < right->GetDepth();
+	}
+};
+
 class EntityManager: public Module {
 
 public:
@@ -24,6 +30,8 @@ public:
 	Entity* CreateEntity(Entity::Types type);
 
 private:
+//	bool OrderEntities(const Entity& comp, const Entity& reference);
+
 	void PrintStatus();
 	bool LoadConfigFromFile(const char* file_path);
 	void CheatCodes();

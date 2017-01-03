@@ -13,12 +13,17 @@ bool Entity::Init()
 	return true;
 }
 
+//------------------- Updates ---------------------
 bool Entity::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
 	return true;
 }
 
-bool Entity::Draw()
+void Entity::UpdatePosition(const iPoint speed)
+{}
+
+//------------------- Draw to screen ---------------------
+bool Entity::Draw() const
 {
 	if (facing_right)
 	{
@@ -35,16 +40,22 @@ bool Entity::Draw()
 	return true;
 }
 
+int Entity::GetDepth() const {
+	return ground_y;
+}
+
+//----------------------------------------------------
+
+bool Entity::IsAlive()
+{
+	return health > 0;
+}
+
 void Entity::IncreaseHealth(int amount) {
 	health = MIN(health + amount, max_health);
 }
 void Entity::DecreaseHealth(int amount) {
 	health -= MAX(health - amount, 0);
-}
-
-bool Entity::IsAlive()
-{
-	return health > 0;
 }
 
 bool Entity::AllowAnimationInterruption()

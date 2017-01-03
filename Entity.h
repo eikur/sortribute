@@ -27,15 +27,19 @@ public:
 
 	virtual bool Init();
 	virtual bool Update(unsigned int msec_elapsed, const bool upd_logic = false);
-	virtual bool Draw();
+
+	virtual void UpdatePosition(const iPoint speed);
+
+	bool Draw() const;
+	int GetDepth() const;
 
 protected:
-	virtual bool IsAlive();
-	virtual void IncreaseHealth(int amount);
-	virtual void DecreaseHealth(int amount);
+	bool IsAlive();
+	void IncreaseHealth(int amount);
+	void DecreaseHealth(int amount);
 
-	virtual bool AllowAnimationInterruption();
-	virtual void UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration = 0);
+	bool AllowAnimationInterruption();
+	void UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration = 0);
 
 	virtual bool LoadFromConfigFile(const char* file_path);
 
@@ -43,9 +47,9 @@ public:
 	iPoint position = {0, 0};
 	int	ground_y = 0;
 
-	int lives = 3;
+	int lives = 0;
 	int score = 0;
-	int help = 3;
+	int help = 0;
 
 protected:
 	Types m_type = Types::unknown;

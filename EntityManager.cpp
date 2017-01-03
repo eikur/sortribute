@@ -72,19 +72,22 @@ update_status EntityManager::Update()
 	}
 	else
 	{
-		//Elapsed time
 		elapsed_msec += App->timer->DeltaTime();
 
 		if (elapsed_msec >= upd_logic_msec)
 			upd_logic = true;
 
-		// paint functions and logic functions must be separated!
-		//Update all entities' logic
 		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
 			(*it)->Update(elapsed_msec, upd_logic);
 		
+		//order
+		entities.sort(ptrEntityDepthComparison());
+		//draw
 		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
+		{
+			LOG("Entity depth: %d of type %d", (*it)->GetDepth(), (*it)->lives);
 			(*it)->Draw();
+		}
 
 
 		// paint all entities by order!
@@ -112,7 +115,6 @@ bool EntityManager::CleanUp()
 
 	return true;
 }
-
 
 void EntityManager::PrintStatus() 
 {
@@ -178,8 +180,9 @@ void EntityManager::CheatCodes()
 	{
 		Entity *a = (Entity*) CreateEntity(Entity::Types::npc_garcia);
 		if (a != nullptr){
-		a->position.y = player->position.y;
-		a->position.x = player->position.x + 150;
+			a->position.y = player->position.y;	
+			a->ground_y = player->position.y;
+			a->position.x = player->position.x + 150;
 		}
 	}
 }
