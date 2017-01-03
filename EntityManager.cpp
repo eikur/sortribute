@@ -175,7 +175,22 @@ void EntityManager::PrintStatus()
 	App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(player->help, 1));
 	App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(player->lives, 1));
 	App->fonts->Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(time_left, 2));
+	PrintPlayerHealth();
+
 }
+
+void EntityManager::PrintPlayerHealth()
+{
+	int max_pixels = 80;
+	int min_pixels = 2;
+	int sections_to_draw = player->health / min_pixels;
+	for (int i = 0; i < sections_to_draw; ++i)
+	{
+		App->renderer->Blit(hud_graphics, hud_health_pos.x + i*hud_health_section.w, hud_health_pos.y, &hud_health_section, 0.0F);
+	}
+}
+
+
 
 bool EntityManager::LoadConfigFromFile(const char* file_path)
 {
@@ -220,6 +235,15 @@ bool EntityManager::LoadConfigFromFile(const char* file_path)
 	j_array = json_object_dotget_array(root_object, "hud.help_pos");
 	hud_help_pos.x = (int)json_array_get_number(j_array, 0);
 	hud_help_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
+	j_array = json_object_dotget_array(root_object, "hud.health_pos");
+	hud_health_pos.x = (int)json_array_get_number(j_array, 0);
+	hud_health_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
+	j_array = json_object_dotget_array(root_object, "hud.health_section");
+	hud_health_section = { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
 	json_array_clear(j_array);
 
 	json_value_free(root_value);

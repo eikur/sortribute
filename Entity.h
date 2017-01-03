@@ -39,19 +39,19 @@ public:
 	bool Draw() const;
 	int GetDepth() const;
 
-protected:
-	bool IsAlive();
 	void IncreaseHealth(int amount);
 	void DecreaseHealth(int amount);
 
+protected:
+	bool IsAlive();
 	bool AllowAnimationInterruption();
-	
-
 	virtual bool LoadFromConfigFile(const char* file_path);
 
 public: 
 	iPoint position = {0, 0};
 
+	int health = 0;
+	int max_health = 0;
 	int lives = 1;
 	int score = 0;
 	int help = 0;
@@ -91,8 +91,6 @@ protected:
 	int standing_up_duration = 0;
 
 // health & damage variables
-	int health = 0;
-	int max_health = 0;
 	int attack1_dmg= 0;
 	int attack2_dmg = 0;
 	int attack3_dmg = 0;

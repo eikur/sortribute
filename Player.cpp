@@ -224,7 +224,7 @@ void Player::ReRaise()
 {
 	position.x = position_limits.x;
 	position.y = position_limits.y;
-	health = 100;
+	health = max_health;
 }
 
 void Player::Die()
@@ -476,12 +476,12 @@ bool Player::LoadFromConfigFile(const char* file_path)
 }
 
 void Player::CheatCodes() {
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_REPEAT)
-		AddScore(1000);
-	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 		ModifyLives(+1);
-	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN && help < 9)
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+		AddScore(1000);
+	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN && help < 9)
 		help += 1;
-	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
-		DecreaseHealth(10);
+	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+		DecreaseHealth(4);
 }

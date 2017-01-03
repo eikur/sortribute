@@ -65,15 +65,17 @@
 		"graphics_file": "Assets/hud.png",
 		"section": [0,0,320,32],
 		"score_pos" : [40, 7],
-		"time_pos" : [152,8],
+		"health_pos": [8,16],
+		"health_section": [88,32,2,6],
 		"lives_pos": [96,8],
-		"help_pos": [136,8]
+		"help_pos": [136,8],
+		"time_pos" : [152,8]
 	},
 	
 	"player": {
 		"graphics_file": "Assets/axel.png",
 		"speed" : [3,1],
-		"max_health" : 100,
+		"max_health" : 80,
 		"lives": 3,
 		"score": 0,
 		"help": 1,

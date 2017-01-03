@@ -78,7 +78,7 @@ void Entity::IncreaseHealth(int amount) {
 	health = MIN(health + amount, max_health);
 }
 void Entity::DecreaseHealth(int amount) {
-	health -= MAX(health - amount, 0);
+	health = MAX(health - amount, 0);
 }
 
 bool Entity::AllowAnimationInterruption()

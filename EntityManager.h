@@ -28,6 +28,8 @@ private:
 	void HandleCollision(Collider* a, Collider* b);
 
 	void PrintStatus();
+	void PrintPlayerHealth();
+
 	bool LoadConfigFromFile(const char* file_path);
 	void CheatCodes();
 
@@ -47,8 +49,10 @@ private:
 	//hud
 	SDL_Texture *hud_graphics = nullptr;
 	SDL_Rect hud_section = { 0,0,0,0 };
-	iPoint hud_time_pos = { 0,0 };
 	iPoint hud_score_pos = { 0,0 };
+	iPoint hud_health_pos = { 0,0 };
+	SDL_Rect hud_health_section{ 0,0,0,0 };
+	iPoint hud_time_pos = { 0,0 };
 	iPoint hud_help_pos = { 0,0 };
 	iPoint hud_lives_pos = { 0,0 };
 
