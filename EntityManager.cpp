@@ -80,22 +80,14 @@ update_status EntityManager::Update()
 		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
 			(*it)->Update(elapsed_msec, upd_logic);
 		
-		//order
-		entities.sort(ptrEntityDepthComparison());
-		//draw
+		entities.sort(Entity::ptrEntityDepthComparison());
 		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
-		{
-			LOG("Entity depth: %d of type %d", (*it)->GetDepth(), (*it)->lives);
 			(*it)->Draw();
-		}
 
-
-		// paint all entities by order!
 		if (upd_logic == true)
 		{
 			elapsed_msec = 0;
 			upd_logic = false;
-			//logic_timer->Start();
 		}
 	}
 

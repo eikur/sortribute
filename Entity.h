@@ -19,7 +19,11 @@ public:
 		npc_garcia,
 		unknown
 	};
-
+	struct ptrEntityDepthComparison {
+		bool operator() (const Entity* left, const Entity* right) const {
+			return left->GetDepth() < right->GetDepth();
+		}
+	};
 
 public:
 	Entity(Types type);
