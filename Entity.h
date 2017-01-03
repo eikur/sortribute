@@ -43,7 +43,7 @@ protected:
 	void DecreaseHealth(int amount);
 
 	bool AllowAnimationInterruption();
-	void UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration = 0);
+	void UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duration = 0, int fx_new_anim = -1 );
 
 	virtual bool LoadFromConfigFile(const char* file_path);
 

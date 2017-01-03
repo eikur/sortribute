@@ -88,8 +88,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				}
 				if (air_remaining_msec <= 0)
 				{
-					App->audio->PlayFx(fx_landing_jump);
-					UpdateCurrentAnimation(&jump_land, jump_prep_duration);
+					UpdateCurrentAnimation(&jump_land, jump_prep_duration, fx_landing_jump);
 					if (position.y != ground_y)
 					{
 						move_speed.y = ground_y - position.y;
@@ -133,8 +132,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				}
 				if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
 				{
-					App->audio->PlayFx(fx_voice);
-					UpdateCurrentAnimation(&jump_attack); 
+					UpdateCurrentAnimation(&jump_attack, 0, fx_voice);
 				}
 			}
 			else
@@ -143,25 +141,22 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				{
 					if (App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT) // back attack
 					{
-						UpdateCurrentAnimation(&attack_back, attacks_duration);
-						App->audio->PlayFx(fx_attack_miss);
+						UpdateCurrentAnimation(&attack_back, attacks_duration, fx_attack_miss);
 					}
 					else
 					{
-						UpdateCurrentAnimation(&jump_prep, jump_prep_duration);
-						App->audio->PlayFx(fx_jump);
+						UpdateCurrentAnimation(&jump_prep, jump_prep_duration, fx_jump);
 					}
 				}
 				else if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN )
 				{
-					App->audio->PlayFx(fx_attack_miss);
 					if (App->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT) // back attack
 					{
-						UpdateCurrentAnimation(&attack_back, attacks_duration);
+						UpdateCurrentAnimation(&attack_back, attacks_duration, fx_attack_miss);
 					}
 					else  //combo attacks 
 					{
-						UpdateCurrentAnimation(&attack1, attacks_duration);
+						UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
 					}
 				}
 				else

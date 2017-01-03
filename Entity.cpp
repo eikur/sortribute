@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "ModuleRender.h"
+#include "ModuleAudio.h"
 #include "Entity.h"
 
 Entity::Entity(Types type) : m_type(type)
@@ -63,15 +64,16 @@ bool Entity::AllowAnimationInterruption()
 	return blocking_animation_remaining_msec <= 0;
 }
 
-void Entity::UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration)
+void Entity::UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duration, int fx_new_anim )
 {
 	if (current_animation != new_anim)
 	{
 		current_animation = new_anim;
 		current_animation->Reset();
+		if (fx_new_anim != -1)
+			App->audio->PlayFx(fx_new_anim);
+		blocking_animation_remaining_msec = block_anim_duration;
 	}
-	blocking_animation_remaining_msec = block_anim_duration;
-
 }
 
 
