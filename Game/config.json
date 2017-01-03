@@ -91,9 +91,10 @@
 		"sprite_offset": [-35,-80],
 		"sprite_offset_flip": [-61,-80],
 		"duration": {
-			"attacks": 120,
+			"attacks": 160,
 			"jump_prep": 160,
-			"jump": 544
+			"jump": 544,
+			"hit_duration": 100
 		},
 		"idle": {
 			"frames": [[0,0, 96,80],[0,0, 96,80],[0,0, 96,80],[0,0, 96,80],[96,0, 96,80],[192,0, 96,80]],
@@ -137,6 +138,7 @@
 			"jump": "Assets/fx_jump.wav",
 			"jump_land": "Assets/fx_land.wav",
 			"attack_miss": "Assets/fx_attack_miss.wav",
+			"attack_hit": "Assets/fx_attack_hit.wav",
 			"life_up": "Assets/fx_life_up.wav"
 		}
 		
@@ -158,7 +160,7 @@
 		},
 		"duration": {
 			"attacks": 120,
-			"being_hit": 100,
+			"being_hit": 400,
 			"being_thrown": 200,
 			"being_knocked": 200,
 			"standing_up": 100

@@ -34,6 +34,7 @@ public:
 	virtual bool Update(unsigned int msec_elapsed, const bool upd_logic = false);
 
 	virtual void UpdatePosition(const iPoint new_speed);
+	void UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration = 0, int fx_new_anim = -1);
 
 	bool Draw() const;
 	int GetDepth() const;
@@ -44,26 +45,29 @@ protected:
 	void DecreaseHealth(int amount);
 
 	bool AllowAnimationInterruption();
-	void UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duration = 0, int fx_new_anim = -1 );
+	
 
 	virtual bool LoadFromConfigFile(const char* file_path);
 
 public: 
-//position
 	iPoint position = {0, 0};
-	int	ground_y = 0;
-//ingame varia
+
 	int lives = 1;
 	int score = 0;
 	int help = 0;
-// hittable
-	bool hittable = true;
 
+	bool hittable = true;
+	bool attacking = false;
+	Animation being_hit;
+	int being_hit_duration = 0;
+
+	unsigned int fx_attack_hit = 0;
 
 protected:
 	Types m_type = Types::unknown;
 
 //move variables
+	int	ground_y = 0;
 	iPoint speed = {0, 0};
 	iPoint move_speed = {0, 0};
 	bool grounded = true;
@@ -82,7 +86,7 @@ protected:
 	int holding_swap_duration = 0;
 	int being_hold_attack_duration = 0;
 	int being_thrown_duration = 0;
-	int being_hit_duration = 0;
+	//int being_hit_duration = 0; // moved
 	int being_knocked_duration = 0;
 	int standing_up_duration = 0;
 
@@ -134,7 +138,7 @@ protected:
 	Animation being_hold;
 	Animation being_hold_attack;
 	Animation being_thrown;
-	Animation being_hit;
+	//being_hit moved
 	Animation being_knocked;
 	Animation standing_up;
 
@@ -146,7 +150,7 @@ protected:
 	unsigned int fx_landing_jump = 0;
 	unsigned int fx_landing_knocked = 0;
 	unsigned int fx_attack_miss = 0;
-	unsigned int fx_attack_hit = 0;
+	//unsigned int fx_attack_hit = 0;
 	unsigned int fx_death = 0;
 	unsigned int fx_health_restore = 0;
 	unsigned int fx_extra_life = 0;

@@ -37,10 +37,11 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 				facing_right = true;
 			else
 				facing_right = false;
+			UpdateCurrentAnimation(&idle);
 			UpdatePosition({ 0,0 });
 		}
 	}
-	UpdateCurrentAnimation(&idle);
+	
 	return UPDATE_CONTINUE;
 }
 

@@ -95,18 +95,28 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duratio
 		if (fx_new_anim != -1)
 			App->audio->PlayFx(fx_new_anim);
 		blocking_animation_remaining_msec = block_anim_duration;
+
+		// update the hittable status!
+		if (current_animation == &being_hit || 
+			current_animation == &being_thrown ||
+			current_animation == &being_knocked ||
+			current_animation == &throwing_front ||
+			current_animation == &throwing_back ||
+			current_animation == &standing_up ||
+			current_animation == &jump_attack)
+			hittable = false;
+		else
+			hittable = true;
+
+		// update the attacking status
+		if (current_animation == &attack1 ||
+			current_animation == &attack2 ||
+			current_animation == &attack3 ||
+			current_animation == &jump_attack)
+			attacking = true;
+		else
+			attacking = false;
 	}
-	// update the hittable status!
-	if (current_animation == &being_hit || 
-		current_animation == &being_thrown || 
-		current_animation == &being_knocked ||
-		current_animation == &throwing_front || 
-		current_animation == &throwing_back ||
-		current_animation == &standing_up
-		)
-		hittable = false;
-	else
-		hittable = true;
 }
 
 

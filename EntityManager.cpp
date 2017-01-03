@@ -5,6 +5,7 @@
 #include "ModuleTimer.h"
 #include "ModuleFonts.h"
 #include "ModuleInput.h"
+#include "ModuleAudio.h"
 #include "ModuleCollision.h"
 
 #include "Player.h"
@@ -122,6 +123,10 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 	else
 		{first = b; second = a;}
 
+	int depth_difference = a->parent->GetDepth() - b->parent->GetDepth();
+	if (depth_difference < -4 || depth_difference > 4)
+		return;
+
 	switch (first->type)
 	{
 		case colliderType::PLAYER:
@@ -142,9 +147,13 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 		break;
 
 		case colliderType::PLAYER_ATTACK:
-			if (second->type == colliderType::ENEMY)	// hitting!
+			if (second->type == colliderType::ENEMY)	
 			{
-
+				if (first->parent->attacking  && second->parent->hittable )	
+				{
+					second->parent->UpdateCurrentAnimation(&second->parent->being_hit, second->parent->being_hit_duration);
+					App->audio->PlayFx(first->parent->fx_attack_hit);	
+				}
 			}
 			else
 			{
@@ -224,8 +233,8 @@ void EntityManager::CheatCodes()
 		Entity *a = (Entity*) CreateEntity(Entity::Types::npc_garcia);
 		if (a != nullptr){
 			a->position.y = player->position.y;	
-			a->ground_y = player->position.y;
 			a->position.x = player->position.x + 150;
+			a->UpdatePosition({ 0,0 });
 		}
 	}
 }

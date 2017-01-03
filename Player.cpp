@@ -182,8 +182,6 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 	if (upd_logic)
 		App->renderer->MoveCamera(position.x, speed.x);
 	
-	//previously Draw();
-	
 	// miscelaneous
 	CheatCodes();
 
@@ -313,7 +311,9 @@ bool Player::LoadFromConfigFile(const char* file_path)
 //----------------------- game variables ---------------------------
 	max_health = (int)json_object_dotget_number(root_object, "player.max_health");
 	health = max_health;
-
+	lives = (int)json_object_dotget_number(root_object, "player.lives");
+	score = (int)json_object_dotget_number(root_object, "player.score");
+	help = (int)json_object_dotget_number(root_object, "player.help");
 //----------------------- animation durations---------------------------
 	attacks_duration = (int)json_object_dotget_number(root_object, "player.duration.attacks");
 	jump_prep_duration = (int)json_object_dotget_number(root_object, "player.duration.jump_prep");
@@ -460,10 +460,13 @@ bool Player::LoadFromConfigFile(const char* file_path)
 		fx_extra_life = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.life_up"));
 	if (json_object_dothas_value_of_type(root_object, "player.fx.attack_miss", JSONString))
 		fx_attack_miss = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.attack_miss"));
+	if (json_object_dothas_value_of_type(root_object, "player.fx.attack_hit", JSONString))
+		fx_attack_hit = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.attack_hit"));
 	if (json_object_dothas_value_of_type(root_object, "player.fx.jump", JSONString))
 		fx_jump = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.jump"));
 	if (json_object_dothas_value_of_type(root_object, "player.fx.jump_land", JSONString))
 		fx_landing_jump= App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.jump_land"));
+	
 
 	json_value_free(root_value);
 
