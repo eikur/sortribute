@@ -19,6 +19,7 @@ public:
 		npc_garcia,
 		unknown
 	};
+
 	struct ptrEntityDepthComparison {
 		bool operator() (const Entity* left, const Entity* right) const {
 			return left->GetDepth() < right->GetDepth();
@@ -48,12 +49,16 @@ protected:
 	virtual bool LoadFromConfigFile(const char* file_path);
 
 public: 
+//position
 	iPoint position = {0, 0};
 	int	ground_y = 0;
-
-	int lives = 0;
+//ingame varia
+	int lives = 1;
 	int score = 0;
 	int help = 0;
+// hittable
+	bool hittable = true;
+
 
 protected:
 	Types m_type = Types::unknown;

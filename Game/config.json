@@ -74,6 +74,9 @@
 		"graphics_file": "Assets/axel.png",
 		"speed" : [3,1],
 		"max_health" : 100,
+		"lives": 3,
+		"score": 0,
+		"help": 1,
 		"dmg":{
 			"attack1": 8,
 			"attack2": 8, 
@@ -142,6 +145,8 @@
 		"graphics_file": "Assets/enemy_garcia.png",
 		"speed" : [4,1],
 		"max_health" : 60,
+		"lives": 3,
+		"score": 600,
 		"dmg":{
 			"attack1": 8,
 			"attack2": 8, 

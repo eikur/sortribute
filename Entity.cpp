@@ -96,6 +96,17 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duratio
 			App->audio->PlayFx(fx_new_anim);
 		blocking_animation_remaining_msec = block_anim_duration;
 	}
+	// update the hittable status!
+	if (current_animation == &being_hit || 
+		current_animation == &being_thrown || 
+		current_animation == &being_knocked ||
+		current_animation == &throwing_front || 
+		current_animation == &throwing_back ||
+		current_animation == &standing_up
+		)
+		hittable = false;
+	else
+		hittable = true;
 }
 
 
