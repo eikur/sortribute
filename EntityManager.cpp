@@ -113,11 +113,49 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 
 void EntityManager::HandleCollision(Collider* a, Collider* b)
 {
+	Collider* first = nullptr;
+	Collider* second = nullptr;
 	
-	LOG("Handling collisions!!");
+	// order by type to ease the logic
+	if (a->type < b->type)
+		{first = a; second = b;}
+	else
+		{first = b; second = a;}
 
-	
+	switch (first->type)
+	{
+		case colliderType::PLAYER:
+			if (second->type == colliderType::ITEMS)	//Take item!
+			{
 
+			}
+			else if (second->type == colliderType::ENEMY)	// Holding!
+			{
+			}
+			else if (second->type == colliderType::ENEMY_ATTACK)	// Being hit!
+			{
+			}
+			else
+			{
+				LOG("Bad defined collision, check collision matrix");
+			}
+		break;
+
+		case colliderType::PLAYER_ATTACK:
+			if (second->type == colliderType::ENEMY)	// hitting!
+			{
+
+			}
+			else
+			{
+				LOG("Bad defined collision, check collision matrix");
+			}
+			break;
+
+		default: 
+			LOG("Bad defined collision, check collision matrix");
+			break;
+	}
 }
 
 // -------------------------- Miscellaneous -------------------------------
