@@ -145,17 +145,21 @@
 		"dmg":{
 			"attack1": 8,
 			"attack2": 8, 
-			"attack3": 12
+			"attack3": 8
 		},
 		"colliders": {
 			"attack": [10,-52,48,32],
 			"hit": [-12,-52,22,52]
 		},
+		"duration": {
+			"attacks": 120,
+			"being_hit": 100,
+			"being_thrown": 200,
+			"being_knocked": 200,
+			"standing_up": 100
+		},
 		"sprite_offset": [-35,-80],
 		"sprite_offset_flip": [-61,-80],
-		"duration": {
-			"attacks": 120
-		},
 		"idle": {
 			"frames": [[0,0, 96,80]],
 			"speed" : 0.04
@@ -165,21 +169,25 @@
 			"speed" : 0.06
 		},
 		"attack1":{
-			"frames": [[96,80, 96,80],[0,80, 96,80],[0,80, 96,80],[0,80, 96,80],[0,80, 96,80]],
-			"speed" : 0.25
+			"frames": [[288,0,96,80]],
+			"speed" : 0.2
 		},
 		"attack2":{
-			"frames": [[96,80, 96,80],[192,80, 96,80],[192,80, 96,80],[192,80, 96,80]],
+			"frames": [[288,0,96,80]],
 			"speed" : 0.2
 		},
 		"attack3":{
-			"frames": [[288,80, 96,80],[384,80, 96,80],[384,80, 96,80],[384,80, 96,80]],
+			"frames": [[288,0,96,80]],
 			"speed" : 0.2
 		},
-		"shadow": [288,160, 96,80],
+		"hit":{
+			"frames": [[0,80, 96,80],[0,81, 96,80]],
+			"speed" : 0.1
+		},
+		"shadow": [384,0, 96,80],
 		"fx":{
 			"death_voice": "Assets/garcia_death.wav",
-			"attack_miss": "Assets/fx_attack_miss.wav"
+			"attack_hit": "Assets/fx_attack_hit_enemy.wav"
 		}
 		
 	}

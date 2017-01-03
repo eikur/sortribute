@@ -19,7 +19,7 @@ private:
 	void ReRaise();
 	void Die();
 
-	void UpdatePosition(const iPoint speed);
+	void UpdatePosition(const iPoint new_speed);
 
 	bool LoadFromConfigFile(const char* file_path);
 	void CheatCodes();

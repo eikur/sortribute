@@ -66,8 +66,12 @@ void ModuleCollision::DebugDraw()
 	{
 		if ((*it)->type == colliderType::PLAYER_ATTACK)
 			App->renderer->DrawQuad((*it)->rect, 0, 0, 255, 80);
-		else
+		else if ((*it)->type == colliderType::PLAYER)
 			App->renderer->DrawQuad((*it)->rect, 0, 255, 0, 80);
+		else if ((*it)->type == colliderType::ENEMY)
+			App->renderer->DrawQuad((*it)->rect, 255, 255, 0, 80);
+		else
+			App->renderer->DrawQuad((*it)->rect, 255, 0, 0, 80);
 	}
 }
 

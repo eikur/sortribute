@@ -1,6 +1,8 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "ModuleAudio.h"
+#include "ModuleCollision.h"
+
 #include "Entity.h"
 
 Entity::Entity(Types type) : m_type(type)
@@ -20,8 +22,28 @@ bool Entity::Update(unsigned int msec_elapsed, const bool upd_logic)
 	return true;
 }
 
-void Entity::UpdatePosition(const iPoint speed)
-{}
+void Entity::UpdatePosition(const iPoint new_speed)
+{
+	if (grounded)
+		ground_y = position.y;
+
+	position += new_speed;
+
+	//apply offset to colliders
+	if (facing_right)
+	{
+		attack_collider->rect.x = position.x + attack_collider_offset.x;
+		hit_collider->rect.x = position.x + hit_collider_offset.x;
+	}
+	else
+	{
+		attack_collider->rect.x = position.x + -(attack_collider_offset.x + attack_collider->rect.w);
+		hit_collider->rect.x = position.x - (hit_collider_offset.x + hit_collider->rect.w);
+	}
+	attack_collider->rect.y = position.y + attack_collider_offset.y;
+	hit_collider->rect.y = position.y + hit_collider_offset.y;
+	
+}
 
 //------------------- Draw to screen ---------------------
 bool Entity::Draw() const

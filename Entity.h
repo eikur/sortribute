@@ -32,7 +32,7 @@ public:
 	virtual bool Init();
 	virtual bool Update(unsigned int msec_elapsed, const bool upd_logic = false);
 
-	virtual void UpdatePosition(const iPoint speed);
+	virtual void UpdatePosition(const iPoint new_speed);
 
 	bool Draw() const;
 	int GetDepth() const;
