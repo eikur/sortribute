@@ -46,9 +46,10 @@ public:
 
 	void SetIdle();
 	void SetBeingHit(int damage = 0);
-	void SetHoldingFront( Entity* held = nullptr);
+	void SetHoldingFront(Entity* held = nullptr);
 	void SetHoldingBack(Entity* held = nullptr);
 	void SetBeingHoldFront();
+	void SetBeingHoldFrontHit(int damage = 0);
 	void SetBeingHoldBack();
 
 	virtual void AddScore(int amount);
@@ -59,6 +60,8 @@ protected:
 	bool Die();
 	bool AllowAnimationInterruption();
 	virtual bool LoadFromConfigFile(const char* file_path);
+	void LoadAnimationFromJSONObject(JSON_Object *j_object, const char *dotget_path, Animation *animation);
+	void LoadSDLRectFromJSONObject(JSON_Object* j_object, const char *dotget_path, SDL_Rect *rect);
 
 public: 
 	iPoint position = {0, 0};
@@ -71,10 +74,13 @@ public:
 	bool facing_right = true;
 	bool is_hittable = true;
 	bool is_attacking = false;
-	bool is_holding = false;
-	bool is_being_hold = false;
+	bool is_holding_front = false;
+	bool is_holding_back = false;
+	bool is_being_hold_front = false;
+	bool is_being_hold_back = false;
 
 	unsigned int fx_attack_hit = 0;
+
 	Types m_type = Types::unknown;
 
 protected:
@@ -146,6 +152,7 @@ protected:
 	Animation holding_swap;
 	
 	Animation being_hold_front;
+	Animation being_hold_front_hit;
 	Animation being_hold_back;
 	Animation being_hold_attack;
 	Animation being_thrown;
@@ -161,6 +168,7 @@ protected:
 	unsigned int fx_landing_jump = 0;
 	unsigned int fx_landing_knocked = 0;
 	unsigned int fx_attack_miss = 0;
+	unsigned int fx_attack_hit_hard = 0;
 	unsigned int fx_death = 0;
 	unsigned int fx_health_restore = 0;
 	unsigned int fx_extra_life = 0;

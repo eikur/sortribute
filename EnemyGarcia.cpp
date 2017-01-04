@@ -37,7 +37,9 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 		// animation and status transition
 		if (blocking_animation_remaining_msec <= 0)
 		{
-			if (current_animation == &being_thrown || current_animation == &being_knocked)
+			if (current_animation == &being_hold_front_hit)
+				UpdateCurrentAnimation(&being_hold_front);
+			else if (current_animation == &being_thrown || current_animation == &being_knocked)
 				UpdateCurrentAnimation(&standing_up, standing_up_duration);
 			else if (current_animation == &standing_up)
 				UpdateCurrentAnimation(&idle);
@@ -45,11 +47,11 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 
 		if (AllowAnimationInterruption())
 		{
-			if( is_being_hold == false)
+			if( is_being_hold_front == false && is_being_hold_back == false)
 			{ 
 				UpdateCurrentAnimation(&idle);
-				UpdatePosition({ 0,0 });
 			}
+			UpdatePosition({ 0,0 });
 		}
 	}
 	
@@ -117,80 +119,17 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	sprite_offset_flip.y = (int)json_array_get_number(j_array, 1);
 	json_array_clear(j_array);
 
-	idle.speed = (float)json_object_dotget_number(root_object, "garcia.idle.speed");
-	j_array = json_object_dotget_array(root_object, "garcia.idle.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		idle.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
 
-	walk.speed = (float)json_object_dotget_number(root_object, "garcia.walk.speed");
-	j_array = json_object_dotget_array(root_object, "garcia.walk.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		walk.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
+	LoadAnimationFromJSONObject(root_object, "garcia.idle", &idle);
+	LoadAnimationFromJSONObject(root_object, "garcia.walk", &walk);
+	LoadAnimationFromJSONObject(root_object, "garcia.attack1", &attack1);
+	LoadAnimationFromJSONObject(root_object, "garcia.attack3", &attack3);
+	LoadAnimationFromJSONObject(root_object, "garcia.being_hit", &being_hit);
+	LoadAnimationFromJSONObject(root_object, "garcia.being_hold_front", &being_hold_front);
+	LoadAnimationFromJSONObject(root_object, "garcia.being_hold_front_hit", &being_hold_front_hit);
+	LoadAnimationFromJSONObject(root_object, "garcia.being_hold_back", &being_hold_back);
 
-	attack1.speed = (float)json_object_dotget_number(root_object, "garcia.attack1.speed");
-	j_array = json_object_dotget_array(root_object, "garcia.attack1.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		attack1.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-
-	attack2 = attack1;
-
-	attack3.speed = (float)json_object_dotget_number(root_object, "garcia.attack3.speed");
-	j_array = json_object_dotget_array(root_object, "garcia.attack3.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		attack3.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-
-	being_hit.speed = (float)json_object_dotget_number(root_object, "garcia.hit.speed");
-	j_array = json_object_dotget_array(root_object, "garcia.hit.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		being_hit.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-
-	being_hold_front.speed = (float)json_object_dotget_number(root_object, "garcia.being_hold_front.speed");
-	j_array = json_object_dotget_array(root_object, "garcia.being_hold_front.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		being_hold_front.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-
-	being_hold_back.speed = (float)json_object_dotget_number(root_object, "garcia.being_hold_back.speed");
-	j_array = json_object_dotget_array(root_object, "garcia.being_hold_back.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		being_hold_back.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-
-
-//--- free json 
+	//--- free json 
 	json_value_free(root_value);
 
 	return true;

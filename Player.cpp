@@ -57,7 +57,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					UpdateCurrentAnimation(&idle);
 				else if (current_animation == &being_knocked || current_animation == &being_thrown)
 					UpdateCurrentAnimation(&standing_up, standing_up_duration);
-				else if (current_animation == &holding_swap)
+				else if (current_animation == &holding_front_attack)
 					UpdateCurrentAnimation(&holding_front);
 			}
 
@@ -67,7 +67,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			{
 				if (air_remaining_msec > 0)
 				{
-					if (respawn_fall == true)	// exception, just used once when respawning
+					if (respawn_fall == true)	
 					{
 
 						move_speed.y += 9;
@@ -118,37 +118,23 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 
 		if (AllowAnimationInterruption())
 		{
-			if (is_holding)
+			if (is_holding_front)
 			{
-
-				if (input_attack && ((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0)))
+				if (held_entity->health <= 0)
 				{
-					/*
-					if(current_animation == &holding_front)
-					{
-						held_entity->SetBeingThrownFront();
-						held_entity = nullptr;
-						UpdateCurrentAnimation(&throwing_front);
-						facing_right = !facing_right;
-					}
-					*/
+					held_entity = nullptr;
+					UpdateCurrentAnimation(&idle);
 				}
-				else if (input_attack)
+				else if (input_attack && ((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0)))
 				{
-					if (current_animation == &holding_back)
-					{
-					/*
-						held_entity->SetBeingThrownBack();
-					*/
-					}
-					else {
-					
-						held_entity->SetBeingHit(attack1_dmg);
-						UpdateCurrentAnimation(&holding_front_attack, attacks_duration);
-					}
-					
+					//throw
 				}
-				if ((facing_right == true && input_horizontal < 0 )|| (facing_right == false && input_horizontal > 0))
+				else if (input_attack && held_entity)
+				{
+					held_entity->SetBeingHoldFrontHit(attack1_dmg);
+					UpdateCurrentAnimation(&holding_front_attack, attacks_duration, fx_attack_hit);
+				}
+				else if ((facing_right == true && input_horizontal < 0 )|| (facing_right == false && input_horizontal > 0))
 				{
 					held_entity->SetIdle();
 					held_entity = nullptr;
@@ -156,7 +142,25 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					facing_right = !facing_right;
 				}
 			}
-			else if (is_being_hold)
+			else if (is_holding_back)
+			{
+				if (input_attack)
+				{
+					//throw smash
+				}
+				if ((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0))
+				{
+					held_entity->SetIdle();
+					held_entity = nullptr;
+					UpdateCurrentAnimation(&idle);
+					facing_right = !facing_right;
+				}
+			}
+			else if (is_being_hold_front)
+			{
+
+			}
+			else if (is_being_hold_back)
 			{
 
 			}
@@ -202,8 +206,6 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 
 	return true;
 }
-
-
 
 void Player::AddScore(int addition)
 {
@@ -325,7 +327,6 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	JSON_Value *root_value;
 	JSON_Object *root_object;
 	JSON_Array *j_array;
-	JSON_Array *j_array_inner;
 
 	root_value = json_parse_file(file_path);
 	if (root_value == nullptr)
@@ -354,6 +355,16 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	lives = (int)json_object_dotget_number(root_object, "player.lives");
 	score = (int)json_object_dotget_number(root_object, "player.score");
 	help = (int)json_object_dotget_number(root_object, "player.help");
+
+// damages
+
+	attack1_dmg = (int)json_object_dotget_number(root_object, "player.damage.attack1");
+	attack2_dmg = (int)json_object_dotget_number(root_object, "player.damage.attack2");
+	attack3_dmg = (int)json_object_dotget_number(root_object, "player.damage.attack3");
+	attack_back_dmg = (int)json_object_dotget_number(root_object, "player.damage.attack_back");
+	throw_dmg = (int)json_object_dotget_number(root_object, "player.damage.throw");
+
+
 //----------------------- animation durations---------------------------
 	attacks_duration = (int)json_object_dotget_number(root_object, "player.duration.attacks");
 	jump_prep_duration = (int)json_object_dotget_number(root_object, "player.duration.jump_prep");
@@ -375,7 +386,9 @@ bool Player::LoadFromConfigFile(const char* file_path)
 		colliderType::PLAYER_ATTACK, *this);
 	json_array_clear(j_array);
 
-//----------------------- sprites ---------------------------
+//----------------------- sprite offsets ---------------------------
+	
+	
 	j_array = json_object_dotget_array(root_object, "player.sprite_offset");
 	sprite_offset.x = (int)json_array_get_number(j_array, 0);
 	sprite_offset.y = (int)json_array_get_number(j_array, 1);
@@ -386,145 +399,22 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	sprite_offset_flip.y = (int)json_array_get_number(j_array, 1);
 	json_array_clear(j_array);
 
-	//idle animation
-	idle.speed = (float)json_object_dotget_number(root_object, "player.idle.speed");
-	j_array = json_object_dotget_array(root_object, "player.idle.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		idle.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-	
-	//walk animation
-	walk.speed = (float)json_object_dotget_number(root_object, "player.walk.speed");
-	j_array = json_object_dotget_array(root_object, "player.walk.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		walk.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-
-	//jump preparation
-	jump_prep.speed = (float)json_object_dotget_number(root_object, "player.jump_prep.speed");
-	j_array = json_object_dotget_array(root_object, "player.jump_prep.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		jump_prep.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-
-	//jump animation
-	jump.speed = (float)json_object_dotget_number(root_object, "player.jump.speed");
-	j_array = json_object_dotget_array(root_object, "player.jump.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		jump.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-
-	//jump_attack animation
-	jump_attack.speed = (float)json_object_dotget_number(root_object, "player.jump_attack.speed");
-	j_array = json_object_dotget_array(root_object, "player.jump_attack.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		jump_attack.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-	
-	//jump landing animation
+	LoadAnimationFromJSONObject(root_object, "player.idle", &idle);
+	LoadAnimationFromJSONObject(root_object, "player.walk", &walk);
+	LoadAnimationFromJSONObject(root_object, "player.jump_prep", &jump_prep);
+	LoadAnimationFromJSONObject(root_object, "player.jump", &jump);
+	LoadAnimationFromJSONObject(root_object, "player.jump_attack", &jump_attack);
 	jump_land = jump_prep;
-
-	//attack1 animation
-	attack1.speed = (float)json_object_dotget_number(root_object, "player.attack1.speed");
-	j_array = json_object_dotget_array(root_object, "player.attack1.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		attack1.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-	
-	//attack2 animation
-	attack2.speed = (float)json_object_dotget_number(root_object, "player.attack2.speed");
-	j_array = json_object_dotget_array(root_object, "player.attack2.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		attack2.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-
-	//attack3 animation
-	attack3.speed = (float)json_object_dotget_number(root_object, "player.attack3.speed");
-	j_array = json_object_dotget_array(root_object, "player.attack3.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		attack3.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-
-	//attack back animation
-	attack_back.speed = (float)json_object_dotget_number(root_object, "player.attack_back.speed");
-	j_array = json_object_dotget_array(root_object, "player.attack_back.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		attack_back.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-
-	//being_hit animation
-	being_hit.speed = (float)json_object_dotget_number(root_object, "player.being_hit.speed");
-	j_array = json_object_dotget_array(root_object, "player.being_hit.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		being_hit.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-
-	//holding_front
-	holding_front.speed = (float)json_object_dotget_number(root_object, "player.holding_front.speed");
-	j_array = json_object_dotget_array(root_object, "player.holding_front.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		holding_front.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-	
-	//holding_front
-	holding_back.speed = (float)json_object_dotget_number(root_object, "player.holding_back.speed");
-	j_array = json_object_dotget_array(root_object, "player.holding_back.frames");
-	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
-	{
-		j_array_inner = json_array_get_array(j_array, i);
-		holding_back.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
-		json_array_clear(j_array_inner);
-	}
-	json_array_clear(j_array);
-
-	//shadow
-	j_array = json_object_dotget_array(root_object, "player.shadow");
-	shadow = { (int)json_array_get_number(j_array,0), (int)json_array_get_number(j_array,1), (int)json_array_get_number(j_array,2), (int)json_array_get_number(j_array,3) };
-	json_array_clear(j_array);
+	LoadAnimationFromJSONObject(root_object, "player.attack1", &attack1);
+	LoadAnimationFromJSONObject(root_object, "player.attack2", &attack2);
+	LoadAnimationFromJSONObject(root_object, "player.attack3", &attack3);
+	LoadAnimationFromJSONObject(root_object, "player.attack_back", &attack_back);
+	LoadAnimationFromJSONObject(root_object, "player.being_hit", &being_hit);
+	LoadAnimationFromJSONObject(root_object, "player.holding_front", &holding_front);
+	LoadAnimationFromJSONObject(root_object, "player.holding_front_attack", &holding_front_attack);
+	LoadAnimationFromJSONObject(root_object, "player.holding_front_attack2", &holding_front_attack2);
+	LoadAnimationFromJSONObject(root_object, "player.holding_back", &holding_back);
+	LoadSDLRectFromJSONObject(root_object, "player.shadow", &shadow);
 
 // ---------------------- sound effects ----------------------------
 	if (json_object_dothas_value_of_type(root_object, "player.fx.voice", JSONString))

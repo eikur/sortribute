@@ -113,6 +113,11 @@ void Entity::SetBeingHit(int damage){
 	UpdateCurrentAnimation(&being_hit, being_hit_duration);
 }
 
+void Entity::SetBeingHoldFrontHit(int damage) {
+	DecreaseHealth(damage);
+	UpdateCurrentAnimation(&being_hold_front_hit, being_hit_duration);
+}
+
 void Entity::SetHoldingFront(Entity* held)
 {
 	held_entity = held;
@@ -189,15 +194,25 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duratio
 			is_attacking = false;
 		
 		// holding status
-		if (current_animation == &holding_front || current_animation == &holding_back || current_animation == &holding_front_attack || current_animation == &holding_front_attack2)
-			is_holding = true;
+		if (current_animation == &holding_front || current_animation == &holding_front_attack || current_animation == &holding_front_attack2 )
+			is_holding_front = true;
 		else
-			is_holding = false;
+			is_holding_front = false;
 
-		if (current_animation == &being_hold_back || current_animation == &being_hold_front)
-			is_being_hold = true;
+		if (current_animation == &holding_back)
+			is_holding_back = true;
 		else
-			is_being_hold = false;
+			is_holding_back = false;
+
+		if (current_animation == &being_hold_back )
+			is_being_hold_back = true;
+		else
+			is_being_hold_back = false;
+
+		if (current_animation == &being_hold_front || current_animation == &being_hold_front_hit)
+			is_being_hold_front = true;
+		else
+			is_being_hold_front = false;
 	}
 }
 
@@ -205,3 +220,31 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duratio
 bool Entity::LoadFromConfigFile(const char* file_path) { 
 	return true; 
 }
+
+void Entity::LoadAnimationFromJSONObject(JSON_Object* j_object, const char *dotget_path, Animation *animation)
+{
+	JSON_Array *j_array, *j_array_inner;
+	std::string tmp = dotget_path;
+	
+	tmp.append(".speed");
+	animation->speed = (float)json_object_dotget_number(j_object, tmp.c_str());
+	
+	tmp = dotget_path;
+	tmp.append(".frames");
+	j_array = json_object_dotget_array(j_object, tmp.c_str());
+	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
+	{
+		j_array_inner = json_array_get_array(j_array, i);
+		animation->frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
+		json_array_clear(j_array_inner);
+	}
+}
+
+void Entity::LoadSDLRectFromJSONObject(JSON_Object* j_object, const char *dotget_path, SDL_Rect *rect) 
+{
+	JSON_Array *j_array;
+	j_array = json_object_dotget_array(j_object, dotget_path);
+	*rect = { (int)json_array_get_number(j_array,0), (int)json_array_get_number(j_array,1), (int)json_array_get_number(j_array,2), (int)json_array_get_number(j_array,3) };
+	json_array_clear(j_array);
+}
+

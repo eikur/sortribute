@@ -181,12 +181,12 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 						second->SetBeingHoldFront();
 					}
 					
-					if (depth_difference != 0 || abs(first->position.x - second->position.x) < b->rect.w)
+					if (depth_difference != -1 || abs(first->position.x - second->position.x) < b->rect.w)
 					{
 						if (first->position.x <= second->position.x)
-							second->UpdatePosition({ first->position.x - second->position.x + a->rect.w, first->position.y - second->position.y });
+							second->UpdatePosition({ first->position.x - second->position.x + a->rect.w, first->position.y - second->position.y -1 });
 						else
-							second->UpdatePosition({ first->position.x - second->position.x - a->rect.w, first->position.y - second->position.y });
+							second->UpdatePosition({ first->position.x - second->position.x - a->rect.w, first->position.y - second->position.y -1});
 					}
 				}
 			}
@@ -195,7 +195,6 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 				if (second->is_attacking && first->is_hittable)
 				{
 					first->SetBeingHit();
-					App->audio->PlayFx(second->fx_attack_hit);
 					first->DecreaseHealth(8);	
 				}
 			}
@@ -212,7 +211,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 				{
 					second->SetBeingHit();
 					App->audio->PlayFx(first->fx_attack_hit);	
-					second->DecreaseHealth(8); // tmp
+					second->DecreaseHealth(8); 
 					if (first->position.x <= second->position.x)
 						second->facing_right = false;
 					else
@@ -279,7 +278,6 @@ void EntityManager::PrintPlayerHealth()
 		App->renderer->Blit(hud_graphics, hud_health_pos.x + i*hud_health_section.w, hud_health_pos.y, &hud_health_section, 0.0F);
 	}
 }
-
 
 
 bool EntityManager::LoadConfigFromFile(const char* file_path)
