@@ -87,7 +87,7 @@
 			"throw": 20
 		},
 		"colliders": {
-			"attack": [10,-52,48,32],
+			"attack": [10,-52,40,32],
 			"hit": [-12,-52,22,52]
 		},
 		"sprite_offset": [-35,-80],
@@ -145,6 +145,10 @@
 			"frames": [[0,240, 96,80]],
 			"speed" : 1.0
 		},
+		"holding_back":{
+			"frames": [[0,320, 96,80]],
+			"speed" : 1.0
+		},
 		
 		"shadow": [288,160, 96,80],
 		"fx":{
@@ -170,7 +174,7 @@
 		},
 		"colliders": {
 			"attack": [10,-52,48,32],
-			"hit": [-12,-52,22,52]
+			"hit": [-12,-52,24,52]
 		},
 		"duration": {
 			"attacks": 120,
@@ -203,12 +207,16 @@
 		},
 		"hit":{
 			"frames": [[0,80, 96,80],[0,81, 96,80]],
-			"speed" : 0.1
+			"speed" : 0.2
 		},
 		"being_hold_front":{
 			"frames": [[96,80, 96,80]],
 			"speed" : 0.1
 		},
+		"being_hold_back":{
+			"frames": [[192,80, 96,80]],
+			"speed" : 0.1
+		},		
 		"shadow": [384,0, 96,80],
 		"fx":{
 			"death_voice": "Assets/garcia_death.wav",

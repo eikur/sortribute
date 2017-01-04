@@ -470,7 +470,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	json_array_clear(j_array);
 
 	//holding_front
-	attack_back.speed = (float)json_object_dotget_number(root_object, "player.holding_front.speed");
+	holding_front.speed = (float)json_object_dotget_number(root_object, "player.holding_front.speed");
 	j_array = json_object_dotget_array(root_object, "player.holding_front.frames");
 	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
 	{
@@ -480,6 +480,17 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	}
 	json_array_clear(j_array);
 	
+	//holding_front
+	holding_back.speed = (float)json_object_dotget_number(root_object, "player.holding_back.speed");
+	j_array = json_object_dotget_array(root_object, "player.holding_back.frames");
+	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
+	{
+		j_array_inner = json_array_get_array(j_array, i);
+		holding_back.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
+		json_array_clear(j_array_inner);
+	}
+	json_array_clear(j_array);
+
 	//shadow
 	j_array = json_object_dotget_array(root_object, "player.shadow");
 	shadow = { (int)json_array_get_number(j_array,0), (int)json_array_get_number(j_array,1), (int)json_array_get_number(j_array,2), (int)json_array_get_number(j_array,3) };

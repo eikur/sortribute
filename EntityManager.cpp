@@ -128,57 +128,69 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 
 void EntityManager::HandleCollision(Collider* a, Collider* b)
 {
-	Collider* first = nullptr;
-	Collider* second = nullptr;
-	
+	Entity* first = nullptr;
+	Entity* second = nullptr;
+	colliderType first_type;
+	colliderType second_type;
+		
 	// order by type to ease the logic
-	if (a->type < b->type)
-		{first = a; second = b;}
+	if (a->type <= b->type)
+	{
+		first = a->parent; first_type = a->type; 
+		second = b->parent; second_type = b->type;
+	}
 	else
-		{first = b; second = a;}
+	{
+		first = b->parent; first_type = b->type; 
+		second = a->parent; second_type = a->type;
+	}
 
-	int depth_difference = a->parent->GetDepth() - b->parent->GetDepth();
-	if (depth_difference < -6 || depth_difference > 6)
+	int depth_difference = first->GetDepth() - second->GetDepth();
+	if (depth_difference < -5 || depth_difference > 5)
 		return;
 
-	switch (first->type)
+
+	switch (first_type)
 	{
 		case colliderType::PLAYER:
-			if (second->type == colliderType::ITEMS)	//Take item!
+			if (second_type == colliderType::ITEMS)	//Take item!
 			{
 
 			}
-			else if (second->type == colliderType::ENEMY)	// Holding!
+			else if (second_type == colliderType::ENEMY)	// Holding!
 			{
-				if ( first->parent->IsGrounded() &&
-					(first->parent->facing_right == true && first->parent->position.x < second->parent->position.x) ||
-					(first->parent->facing_right == false && second->parent->position.x < first->parent->position.x) )
+				if ( first->IsGrounded() &&
+					(first->facing_right == true && first->position.x <= second->position.x) ||
+					(first->facing_right == false && second->position.x <= first->position.x) )
 				{
-					if (first->parent->facing_right == second->parent->facing_right)	// back hold
+					if (first->facing_right == second->facing_right)	// back hold
 					{
-						//first->parent->HoldingBack(); 
-						//second->parent->BeingHoldBack();
+						first->SetHoldingBack(); 
+						second->SetBeingHoldBack();
 					}
 					else
 					{
-						first->parent->SetHoldingFront();
-						second->parent->SetBeingHoldFront();
+						first->SetHoldingFront();
+						second->SetBeingHoldFront();
 					}
-					if (depth_difference != 0)
-						second->parent->SetDepth(first->parent->GetDepth());
+					
+					if (depth_difference != 0) {
+						second->SetDepth(first->GetDepth());
+					}
+						
 				}
-				else
+				else 
 				{
-					second->parent->SetIdle();
+					second->SetIdle();
 				}
 			}
-			else if (second->type == colliderType::ENEMY_ATTACK)	// Being hit!
+			else if (second_type == colliderType::ENEMY_ATTACK)	// Being hit!
 			{
-				if (second->parent->attacking && first->parent->hittable)
+				if (second->attacking && first->hittable)
 				{
-					first->parent->SetBeingHit();
-					App->audio->PlayFx(second->parent->fx_attack_hit);
-					first->parent->DecreaseHealth(8);	// tmp
+					first->SetBeingHit();
+					App->audio->PlayFx(second->fx_attack_hit);
+					first->DecreaseHealth(8);	
 				}
 			}
 			else
@@ -188,13 +200,13 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 		break;
 
 		case colliderType::PLAYER_ATTACK:
-			if (second->type == colliderType::ENEMY)	
+			if (second_type == colliderType::ENEMY)
 			{
-				if (first->parent->attacking  && second->parent->hittable )	
+				if (first->attacking  && second->hittable )	
 				{
-					second->parent->SetBeingHit();
-					App->audio->PlayFx(first->parent->fx_attack_hit);	
-					second->parent->DecreaseHealth(8); // tmp
+					second->SetBeingHit();
+					App->audio->PlayFx(first->fx_attack_hit);	
+					second->DecreaseHealth(8); // tmp
 				}
 			}
 			else
