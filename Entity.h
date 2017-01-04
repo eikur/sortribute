@@ -45,9 +45,9 @@ public:
 	void DecreaseHealth(int amount);
 
 	void SetIdle();
-	void SetBeingHit();
-	void SetHoldingFront();
-	void SetHoldingBack();
+	void SetBeingHit(int damage = 0);
+	void SetHoldingFront( Entity* held = nullptr);
+	void SetHoldingBack(Entity* held = nullptr);
 	void SetBeingHoldFront();
 	void SetBeingHoldBack();
 
@@ -62,22 +62,20 @@ protected:
 
 public: 
 	iPoint position = {0, 0};
-
 	int health = 0;
 	int max_health = 0;
 	int lives = 1;
 	int score = 0;
 	int help = 0;
 
-	bool hittable = true;
-	bool attacking = false;
 	bool facing_right = true;
+	bool is_hittable = true;
+	bool is_attacking = false;
 	bool is_holding = false;
 	bool is_being_hold = false;
 
 	unsigned int fx_attack_hit = 0;
 	Types m_type = Types::unknown;
-
 
 protected:
 //move variables
@@ -166,6 +164,9 @@ protected:
 	unsigned int fx_death = 0;
 	unsigned int fx_health_restore = 0;
 	unsigned int fx_extra_life = 0;
+
+// Hold enemy
+	Entity* held_entity = nullptr;
 };
 
 #endif // __ENTITY_H__

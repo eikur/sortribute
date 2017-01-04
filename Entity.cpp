@@ -16,11 +16,11 @@ bool Entity::Init()
 	return true;
 }
 
-//----------------------------------------------------
 bool Entity::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
 	return true;
 }
+
 void Entity::UpdatePosition(const iPoint new_speed)
 {
 	if (grounded)
@@ -28,7 +28,6 @@ void Entity::UpdatePosition(const iPoint new_speed)
 
 	position += new_speed;
 
-	//apply offset to colliders
 	if (facing_right)
 	{
 		attack_collider->rect.x = position.x + attack_collider_offset.x;
@@ -46,7 +45,7 @@ void Entity::UpdatePosition(const iPoint new_speed)
 	
 }
 
-//----------------------------------------------------
+
 bool Entity::Draw() const
 {
 	if (facing_right)
@@ -63,9 +62,11 @@ bool Entity::Draw() const
 	}
 	return true;
 }
+
 int Entity::GetDepth() const {
 	return ground_y;
 }
+
 void Entity::SetDepth(int new_depth) {
 	int diff = new_depth - ground_y;
 	UpdatePosition({ 0,diff });
@@ -75,14 +76,17 @@ bool Entity::IsGrounded() const
 {
 	return grounded;
 }
+
 //----------------------------------------------------
 bool Entity::IsAlive() const
 {
 	return health > 0;
 }
+
 void Entity::IncreaseHealth(int amount) {
 	health = MIN(health + amount, max_health);
 }
+
 void Entity::DecreaseHealth(int amount) {
 	health = MAX(health - amount, 0);
 }
@@ -94,25 +98,30 @@ bool Entity::Die()
 		attack_collider->to_delete = true;
 	return false;
 }
-void Entity::AddScore(int amount) {}
 
-//-------------------    Setters for collisions---------------------------------
+void Entity::AddScore(int amount) 
+{}
+
+//-------------------    Setters for collision management---------------------------------
 void Entity::SetIdle()
 {
 	UpdateCurrentAnimation(&idle);
 }
 
-void Entity::SetBeingHit(){
+void Entity::SetBeingHit(int damage){
+	DecreaseHealth(damage);
 	UpdateCurrentAnimation(&being_hit, being_hit_duration);
 }
 
-void Entity::SetHoldingFront()
+void Entity::SetHoldingFront(Entity* held)
 {
+	held_entity = held;
 	UpdateCurrentAnimation(&holding_front);
 }
 
-void Entity::SetHoldingBack()
+void Entity::SetHoldingBack(Entity* held)
 {
+	held_entity = held;
 	UpdateCurrentAnimation(&holding_back);
 }
 
@@ -166,21 +175,21 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duratio
 			current_animation == &throwing_back ||
 			current_animation == &standing_up ||
 			current_animation == &jump_attack)
-			hittable = false;
+			is_hittable = false;
 		else
-			hittable = true;
+			is_hittable = true;
 
 		// update the attacking status
 		if (current_animation == &attack1 ||
 			current_animation == &attack2 ||
 			current_animation == &attack3 ||
 			current_animation == &jump_attack)
-			attacking = true;
+			is_attacking = true;
 		else
-			attacking = false;
+			is_attacking = false;
 		
 		// holding status
-		if (current_animation == &holding_front || current_animation == &holding_back)
+		if (current_animation == &holding_front || current_animation == &holding_back || current_animation == &holding_front_attack || current_animation == &holding_front_attack2)
 			is_holding = true;
 		else
 			is_holding = false;

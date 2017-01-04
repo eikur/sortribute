@@ -172,12 +172,12 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 				{
 					if (first->facing_right == second->facing_right)
 					{
-						first->SetHoldingBack(); 
+						first->SetHoldingBack(second); 
 						second->SetBeingHoldBack();
 					}
 					else
 					{
-						first->SetHoldingFront();
+						first->SetHoldingFront(second);
 						second->SetBeingHoldFront();
 					}
 					
@@ -192,7 +192,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			}
 			else if (second_col->type == colliderType::ENEMY_ATTACK)
 			{
-				if (second->attacking && first->hittable)
+				if (second->is_attacking && first->is_hittable)
 				{
 					first->SetBeingHit();
 					App->audio->PlayFx(second->fx_attack_hit);
@@ -208,7 +208,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 		case colliderType::PLAYER_ATTACK:
 			if (second_col->type == colliderType::ENEMY)
 			{
-				if (first->attacking  && second->hittable )	
+				if (first->is_attacking  && second->is_hittable )	
 				{
 					second->SetBeingHit();
 					App->audio->PlayFx(first->fx_attack_hit);	

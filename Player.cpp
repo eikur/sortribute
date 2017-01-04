@@ -42,7 +42,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 
 		if (upd_logic == true)
 		{
-			if (blocking_animation_remaining_msec > 0 )
+			if (blocking_animation_remaining_msec > 0)
 				blocking_animation_remaining_msec -= msec_elapsed;
 
 			// animation transitions
@@ -63,13 +63,13 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 
 
 			// gravity calculations
-			if (grounded == false)	
+			if (grounded == false)
 			{
 				if (air_remaining_msec > 0)
 				{
 					if (respawn_fall == true)	// exception, just used once when respawning
 					{
-						
+
 						move_speed.y += 9;
 						air_remaining_msec -= msec_elapsed;
 					}
@@ -115,13 +115,43 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				}
 			}
 		}
-		
+
 		if (AllowAnimationInterruption())
 		{
-			if(is_holding)
-			{ 
-				if (facing_right == true && input_horizontal < 0 || facing_right == false && input_horizontal > 0)	// letting go off the hold!
+			if (is_holding)
+			{
+
+				if (input_attack && ((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0)))
 				{
+					/*
+					if(current_animation == &holding_front)
+					{
+						held_entity->SetBeingThrownFront();
+						held_entity = nullptr;
+						UpdateCurrentAnimation(&throwing_front);
+						facing_right = !facing_right;
+					}
+					*/
+				}
+				else if (input_attack)
+				{
+					if (current_animation == &holding_back)
+					{
+					/*
+						held_entity->SetBeingThrownBack();
+					*/
+					}
+					else {
+					
+						held_entity->SetBeingHit(attack1_dmg);
+						UpdateCurrentAnimation(&holding_front_attack, attacks_duration);
+					}
+					
+				}
+				if ((facing_right == true && input_horizontal < 0 )|| (facing_right == false && input_horizontal > 0))
+				{
+					held_entity->SetIdle();
+					held_entity = nullptr;
 					UpdateCurrentAnimation(&idle);
 					facing_right = !facing_right;
 				}
@@ -138,12 +168,12 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				move_speed.x += speed.x*input_horizontal;
 				facing_right = input_horizontal == 0 ? facing_right : (input_horizontal > 0 ? true : false);
 
-				if (grounded == false)	// air 
+				if (grounded == false)	
 				{
 					if (input_attack)
 						UpdateCurrentAnimation(&jump_attack, 0, fx_voice);
 				}
-				else 		// grounded
+				else 		
 				{
 					if (input_attack_back)
 						UpdateCurrentAnimation(&attack_back, attacks_duration, fx_attack_miss);
