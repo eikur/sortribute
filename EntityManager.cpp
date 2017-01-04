@@ -138,7 +138,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 		{first = b; second = a;}
 
 	int depth_difference = a->parent->GetDepth() - b->parent->GetDepth();
-	if (depth_difference < -5 || depth_difference > 5)
+	if (depth_difference < -6 || depth_difference > 6)
 		return;
 
 	switch (first->type)
@@ -150,22 +150,33 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			}
 			else if (second->type == colliderType::ENEMY)	// Holding!
 			{
-				if (first->parent->facing_right == second->parent->facing_right)	// back hold
+				if ( first->parent->IsGrounded() &&
+					(first->parent->facing_right == true && first->parent->position.x < second->parent->position.x) ||
+					(first->parent->facing_right == false && second->parent->position.x < first->parent->position.x) )
 				{
-					first->parent->HoldingBack(); 
-					second->parent->BeingHoldBack();
+					if (first->parent->facing_right == second->parent->facing_right)	// back hold
+					{
+						//first->parent->HoldingBack(); 
+						//second->parent->BeingHoldBack();
+					}
+					else
+					{
+						first->parent->SetHoldingFront();
+						second->parent->SetBeingHoldFront();
+					}
+					if (depth_difference != 0)
+						second->parent->SetDepth(first->parent->GetDepth());
 				}
 				else
 				{
-					first->parent->HoldingFront();
-					second->parent->BeingHoldFront();
+					second->parent->SetIdle();
 				}
 			}
 			else if (second->type == colliderType::ENEMY_ATTACK)	// Being hit!
 			{
 				if (second->parent->attacking && first->parent->hittable)
 				{
-					first->parent->BeingHit();
+					first->parent->SetBeingHit();
 					App->audio->PlayFx(second->parent->fx_attack_hit);
 					first->parent->DecreaseHealth(8);	// tmp
 				}
@@ -181,7 +192,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			{
 				if (first->parent->attacking  && second->parent->hittable )	
 				{
-					second->parent->BeingHit();
+					second->parent->SetBeingHit();
 					App->audio->PlayFx(first->parent->fx_attack_hit);	
 					second->parent->DecreaseHealth(8); // tmp
 				}

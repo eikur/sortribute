@@ -37,21 +37,25 @@ public:
 	void UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration = 0, int fx_new_anim = -1);
 
 	bool Draw() const;
-	int GetDepth() const;
+	int  GetDepth() const;
+	void SetDepth( int new_depth);
+	bool IsGrounded() const;
 
 	void IncreaseHealth(int amount);
 	void DecreaseHealth(int amount);
 
-	void BeingHit();
-	void HoldingFront();
-	void HoldingBack();
-	void BeingHoldFront();
-	void BeingHoldBack();
+	void SetIdle();
+	void SetBeingHit();
+	void SetHoldingFront();
+	void SetHoldingBack();
+	void SetBeingHoldFront();
+	void SetBeingHoldBack();
 
 	virtual void AddScore(int amount);
+	
 
 protected:
-	bool IsAlive();
+	bool IsAlive() const;
 	bool Die();
 	bool AllowAnimationInterruption();
 	virtual bool LoadFromConfigFile(const char* file_path);
@@ -68,6 +72,8 @@ public:
 	bool hittable = true;
 	bool attacking = false;
 	bool facing_right = true;
+	bool is_holding = false;
+	bool is_being_hold = false;
 
 	unsigned int fx_attack_hit = 0;
 	Types m_type = Types::unknown;

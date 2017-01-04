@@ -41,6 +41,8 @@ void Entity::UpdatePosition(const iPoint new_speed)
 	}
 	attack_collider->rect.y = position.y + attack_collider_offset.y;
 	hit_collider->rect.y = position.y + hit_collider_offset.y;
+	if (grounded)
+		ground_y = position.y;
 	
 }
 
@@ -64,9 +66,17 @@ bool Entity::Draw() const
 int Entity::GetDepth() const {
 	return ground_y;
 }
+void Entity::SetDepth(int new_depth) {
+	int diff = new_depth - ground_y;
+	UpdatePosition({ 0,diff });
+}
 
+bool Entity::IsGrounded() const 
+{
+	return grounded;
+}
 //----------------------------------------------------
-bool Entity::IsAlive()
+bool Entity::IsAlive() const
 {
 	return health > 0;
 }
@@ -85,23 +95,33 @@ bool Entity::Die()
 	return false;
 }
 void Entity::AddScore(int amount) {}
+
 //-------------------    Setters for collisions---------------------------------
-void Entity::BeingHit(){
+void Entity::SetIdle()
+{
+	UpdateCurrentAnimation(&idle);
+}
+
+void Entity::SetBeingHit(){
 	UpdateCurrentAnimation(&being_hit, being_hit_duration);
 }
-void Entity::HoldingFront()
+
+void Entity::SetHoldingFront()
 {
 	UpdateCurrentAnimation(&holding_front);
 }
-void Entity::HoldingBack()
+
+void Entity::SetHoldingBack()
 {
 	UpdateCurrentAnimation(&holding_back);
 }
-void Entity::BeingHoldFront()
+
+void Entity::SetBeingHoldFront()
 {
 	UpdateCurrentAnimation(&being_hold_front);
 }
-void Entity::BeingHoldBack()
+
+void Entity::SetBeingHoldBack()
 {
 	UpdateCurrentAnimation(&being_hold_back);
 }
@@ -158,6 +178,17 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duratio
 			attacking = true;
 		else
 			attacking = false;
+		
+		// holding status
+		if (current_animation == &holding_front || current_animation == &holding_back)
+			is_holding = true;
+		else
+			is_holding = false;
+
+		if (current_animation == &being_hold_back || current_animation == &being_hold_front)
+			is_being_hold = true;
+		else
+			is_being_hold = false;
 	}
 }
 

@@ -46,12 +46,15 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 
 		if (AllowAnimationInterruption())
 		{
-			if (parent->player->position.x >= position.x)
-				facing_right = true;
-			else
-				facing_right = false;
-			UpdateCurrentAnimation(&idle);	
-			UpdatePosition({ 0,0 });
+			if( is_being_hold == false)
+			{ 
+				if (parent->player->position.x >= position.x)
+					facing_right = true;
+				else
+					facing_right = false;
+				UpdateCurrentAnimation(&idle);
+				UpdatePosition({ 0,0 });
+			}
 		}
 	}
 	
@@ -171,6 +174,15 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	}
 	json_array_clear(j_array);
 
+	being_hold_front.speed = (float)json_object_dotget_number(root_object, "garcia.being_hold_front.speed");
+	j_array = json_object_dotget_array(root_object, "garcia.being_hold_front.frames");
+	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
+	{
+		j_array_inner = json_array_get_array(j_array, i);
+		being_hold_front.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
+		json_array_clear(j_array_inner);
+	}
+	json_array_clear(j_array);
 
 
 //--- free json 

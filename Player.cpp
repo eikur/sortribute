@@ -118,29 +118,44 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		
 		if (AllowAnimationInterruption())
 		{
-			if (grounded)
-				move_speed.y += speed.y*input_vertical;
-
-			move_speed.x += speed.x*input_horizontal;
-			facing_right = input_horizontal == 0 ? facing_right : (input_horizontal > 0 ? true : false);
-
-			if (grounded == false)	// air 
-			{
-				if (input_attack)
-					UpdateCurrentAnimation(&jump_attack, 0, fx_voice);
-			}
-			else 		// grounded
-			{
-				if (input_attack_back)
-					UpdateCurrentAnimation(&attack_back, attacks_duration, fx_attack_miss);
-				else if (input_jump)
-					UpdateCurrentAnimation(&jump_prep, jump_prep_duration, fx_jump);
-				else if (input_attack)
-					UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
-				else if (move_speed.IsZero())
+			if(is_holding)
+			{ 
+				if (facing_right == true && input_horizontal < 0 || facing_right == false && input_horizontal > 0)	// letting go off the hold!
+				{
 					UpdateCurrentAnimation(&idle);
-				else
-					UpdateCurrentAnimation(&walk);
+					facing_right = !facing_right;
+				}
+			}
+			else if (is_being_hold)
+			{
+
+			}
+			else
+			{
+				if (grounded)
+					move_speed.y += speed.y*input_vertical;
+
+				move_speed.x += speed.x*input_horizontal;
+				facing_right = input_horizontal == 0 ? facing_right : (input_horizontal > 0 ? true : false);
+
+				if (grounded == false)	// air 
+				{
+					if (input_attack)
+						UpdateCurrentAnimation(&jump_attack, 0, fx_voice);
+				}
+				else 		// grounded
+				{
+					if (input_attack_back)
+						UpdateCurrentAnimation(&attack_back, attacks_duration, fx_attack_miss);
+					else if (input_jump)
+						UpdateCurrentAnimation(&jump_prep, jump_prep_duration, fx_jump);
+					else if (input_attack)
+						UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
+					else if (move_speed.IsZero())
+						UpdateCurrentAnimation(&idle);
+					else
+						UpdateCurrentAnimation(&walk);
+				}
 			}
 		}
 		if (upd_logic)
@@ -442,6 +457,28 @@ bool Player::LoadFromConfigFile(const char* file_path)
 		json_array_clear(j_array_inner);
 	}
 	json_array_clear(j_array);
+
+	//being_hit animation
+	being_hit.speed = (float)json_object_dotget_number(root_object, "player.being_hit.speed");
+	j_array = json_object_dotget_array(root_object, "player.being_hit.frames");
+	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
+	{
+		j_array_inner = json_array_get_array(j_array, i);
+		being_hit.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
+		json_array_clear(j_array_inner);
+	}
+	json_array_clear(j_array);
+
+	//holding_front
+	attack_back.speed = (float)json_object_dotget_number(root_object, "player.holding_front.speed");
+	j_array = json_object_dotget_array(root_object, "player.holding_front.frames");
+	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
+	{
+		j_array_inner = json_array_get_array(j_array, i);
+		holding_front.frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
+		json_array_clear(j_array_inner);
+	}
+	json_array_clear(j_array);
 	
 	//shadow
 	j_array = json_object_dotget_array(root_object, "player.shadow");
@@ -483,6 +520,6 @@ void Player::CheatCodes() {
 		UpdateCurrentAnimation(&being_hit, being_hit_duration);
 	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
 		UpdateCurrentAnimation(&being_thrown, being_thrown_duration);
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
 		UpdateCurrentAnimation(&holding_front);
 }
