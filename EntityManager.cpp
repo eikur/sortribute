@@ -90,6 +90,7 @@ update_status EntityManager::Update()
 
 	if (player == nullptr)
 		App->timer->TimerStop();
+
 	PrintStatus();
 	CheatCodes();
 
@@ -138,19 +139,19 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 {
 	Entity* first = nullptr;
 	Entity* second = nullptr;
-	colliderType first_type;
-	colliderType second_type;
+	Collider* first_col = nullptr;
+	Collider* second_col = nullptr;
 		
 	// order by type to ease the logic
 	if (a->type <= b->type)
 	{
-		first = a->parent; first_type = a->type; 
-		second = b->parent; second_type = b->type;
+		first = a->parent; first_col = a;
+		second = b->parent; second_col = b;
 	}
 	else
 	{
-		first = b->parent; first_type = b->type; 
-		second = a->parent; second_type = a->type;
+		first = b->parent; first_col = b;
+		second = a->parent; second_col = a;
 	}
 
 	int depth_difference = first->GetDepth() - second->GetDepth();
@@ -158,14 +159,14 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 		return;
 
 
-	switch (first_type)
+	switch (first_col->type)
 	{
 		case colliderType::PLAYER:
-			if (second_type == colliderType::ITEMS)	
+			if (second_col->type == colliderType::ITEMS)	
 			{
 				//Take item!
 			}
-			else if (second_type == colliderType::ENEMY)
+			else if (second_col->type == colliderType::ENEMY)
 			{
 				if ( first->IsGrounded() && ( (first->facing_right == true && first->position.x <= second->position.x) || (first->facing_right == false && second->position.x <= first->position.x) ) )
 				{
@@ -180,18 +181,16 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 						second->SetBeingHoldFront();
 					}
 					
-					if (depth_difference != 0) {
-						second->SetDepth(first->GetDepth());
+					if (depth_difference != 0 || abs(first->position.x - second->position.x) < b->rect.w)
+					{
+						if (first->position.x <= second->position.x)
+							second->UpdatePosition({ first->position.x - second->position.x + a->rect.w, first->position.y - second->position.y });
+						else
+							second->UpdatePosition({ first->position.x - second->position.x - a->rect.w, first->position.y - second->position.y });
 					}
-					// x position amendment needed
-						
-				}
-				else 
-				{
-					second->SetIdle();
 				}
 			}
-			else if (second_type == colliderType::ENEMY_ATTACK)
+			else if (second_col->type == colliderType::ENEMY_ATTACK)
 			{
 				if (second->attacking && first->hittable)
 				{
@@ -207,7 +206,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 		break;
 
 		case colliderType::PLAYER_ATTACK:
-			if (second_type == colliderType::ENEMY)
+			if (second_col->type == colliderType::ENEMY)
 			{
 				if (first->attacking  && second->hittable )	
 				{
@@ -228,7 +227,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			break;
 
 		case colliderType::ENEMY:
-			if (second_type == colliderType::ENEMY)
+			if (second_col->type == colliderType::ENEMY)
 			{
 				/*
 					if (first->is_being_thrown || second->is_being_thrown)...

@@ -89,7 +89,7 @@
 		},
 		"colliders": {
 			"attack": [10,-52,40,32],
-			"hit": [-12,-52,22,52]
+			"hit": [-12,-52,24,52]
 		},
 		"sprite_offset": [-35,-80],
 		"sprite_offset_flip": [-61,-80],

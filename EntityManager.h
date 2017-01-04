@@ -4,6 +4,7 @@
 #include <list>
 #include "Module.h"
 #include "Entity.h"
+#include <math.h>
 
 class Timer;
 class Player;
@@ -39,7 +40,7 @@ public:
 private:
 	std::list<Entity*> entities;
 	
-	int time_left_msec = 10000;
+	int time_left_msec = 100000;
 
 	bool pause = false; 
 	Uint32 elapsed_msec = 0;
