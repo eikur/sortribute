@@ -20,7 +20,7 @@ bool Player::Init()
 		LOG("Error loading player config from file");
 		return false;
 	}
-	UpdateCurrentAnimation(&idle);
+	ReRaise();
 	return true;
 }
 
@@ -36,7 +36,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		}
 		else
 		{
-			Die();
+			return false;	// die
 		}
 	}
 	else
@@ -51,7 +51,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			{
 				UpdateCurrentAnimation(&jump);
 				air_remaining_msec = jump_duration;
-				grounded = false;
+				//grounded = false;
 			}
 			if (blocking_animation_remaining_msec <= 0 && current_animation == &jump_prep)
 			{
@@ -62,39 +62,51 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			{
 				if (air_remaining_msec > 0)
 				{
-					int divisor = jump_duration / 16;
-					int frames_left = air_remaining_msec / divisor;
-					air_remaining_msec -= msec_elapsed;
-
-					switch (frames_left)
+					if (respawn_fall == true)	// exception, just used once when respawning
 					{
-					case 0:	 move_speed.y += 7; break;
-					case 1:	 move_speed.y += 6; break;
-					case 2:	 move_speed.y += 5; break;
-					case 3:	 move_speed.y += 5; break;
-					case 4:	 move_speed.y += 4; break;
-					case 5:	 move_speed.y += 3; break;
-					case 6:	 move_speed.y += 2; break;
-					case 7:  move_speed.y += 1; break;
-					case 8:  move_speed.y -= 1; break;
-					case 9:  move_speed.y -= 2; break;
-					case 10: move_speed.y -= 3; break;
-					case 11: move_speed.y -= 4; break;
-					case 12: move_speed.y -= 5; break;
-					case 13: move_speed.y -= 5; break;
-					case 14: move_speed.y -= 7; break;
-					case 15: move_speed.y -= 8; break;
+						air_remaining_msec -= msec_elapsed;
+						move_speed.y += 9;
+						UpdatePosition(move_speed);
+					}
+					else if (jumping)
+					{
+						int divisor = jump_duration / 16;
+						int frames_left = air_remaining_msec / divisor;
+						air_remaining_msec -= msec_elapsed;
+
+						switch (frames_left)
+						{
+						case 0:	 move_speed.y += 7; break;
+						case 1:	 move_speed.y += 6; break;
+						case 2:	 move_speed.y += 5; break;
+						case 3:	 move_speed.y += 5; break;
+						case 4:	 move_speed.y += 4; break;
+						case 5:	 move_speed.y += 3; break;
+						case 6:	 move_speed.y += 2; break;
+						case 7:  move_speed.y += 1; break;
+						case 8:  move_speed.y -= 1; break;
+						case 9:  move_speed.y -= 2; break;
+						case 10: move_speed.y -= 3; break;
+						case 11: move_speed.y -= 4; break;
+						case 12: move_speed.y -= 5; break;
+						case 13: move_speed.y -= 5; break;
+						case 14: move_speed.y -= 7; break;
+						case 15: move_speed.y -= 8; break;
+						}
+					}
+					else {
+						// falling after knockout or throw
 					}
 				}
 				if (air_remaining_msec <= 0)
 				{
+					respawn_fall = false;
 					UpdateCurrentAnimation(&jump_land, jump_prep_duration, fx_landing_jump);
 					if (position.y != ground_y)
 					{
 						move_speed.y = ground_y - position.y;
 						UpdatePosition(move_speed);
 					}
-					grounded = true;
 				}
 			}
 		}
@@ -222,14 +234,13 @@ void Player::ModifyLives(int mod_to_add)
 
 void Player::ReRaise()
 {
-	position.x = position_limits.x;
-	position.y = position_limits.y;
-	health = max_health;
-}
+	position = { 40, 32 };
+	ground_y = 176;
+	UpdateCurrentAnimation(&jump, jump_duration);
+	respawn_fall = true;
+	air_remaining_msec = jump_duration;
 
-void Player::Die()
-{
-	//implement
+	health = max_health;
 }
 
 void Player::UpdatePosition(const iPoint new_speed) {
@@ -299,9 +310,6 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	}
 
 //----------------------- position and speed ---------------------------
-	position = { 48, 170 };
-	ground_y = position.y;
-
 	//move speed
 	j_array = json_object_dotget_array(root_object, "player.speed");
 	speed.x = (int)json_array_get_number(j_array, 0);
@@ -478,10 +486,10 @@ bool Player::LoadFromConfigFile(const char* file_path)
 void Player::CheatCodes() {
 	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 		ModifyLives(+1);
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_REPEAT)
 		AddScore(1000);
-	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN && help < 9)
+	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN && help < 9)
 		help += 1;
-	if (App->input->GetKey(SDL_SCANCODE_D) == KEY_REPEAT)
+	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_REPEAT)
 		DecreaseHealth(4);
 }

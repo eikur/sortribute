@@ -42,6 +42,8 @@ public:
 	void IncreaseHealth(int amount);
 	void DecreaseHealth(int amount);
 
+	virtual void AddScore(int amount);
+
 protected:
 	bool IsAlive();
 	bool AllowAnimationInterruption();
@@ -62,15 +64,16 @@ public:
 	int being_hit_duration = 0;
 
 	unsigned int fx_attack_hit = 0;
-
-protected:
 	Types m_type = Types::unknown;
 
+
+protected:
 //move variables
 	int	ground_y = 0;
 	iPoint speed = {0, 0};
 	iPoint move_speed = {0, 0};
 	bool grounded = true;
+	bool jumping = false;
 
 // jumping control
 	int air_remaining_msec = 0;

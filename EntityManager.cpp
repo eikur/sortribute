@@ -54,12 +54,26 @@ update_status EntityManager::Update()
 		if (elapsed_msec >= upd_logic_msec)
 			upd_logic = true;
 
-		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
-			(*it)->Update(elapsed_msec, upd_logic);
-		
-		entities.sort(Entity::ptrEntityDepthComparison());
-		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
-			(*it)->Draw();
+		entities.sort();
+		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end();)
+		{
+			if ((*it)->Update(elapsed_msec, upd_logic) == false)
+			{
+
+				if (*it == player)
+					player = nullptr;
+				else
+					player->AddScore((*it)->score);
+				RELEASE(*it);
+				it = entities.erase(it);
+			}
+			else
+			{
+				(*it)->Draw();
+				++it;
+			}
+
+		}
 
 		if (upd_logic == true)
 		{
@@ -168,14 +182,22 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 }
 
 // -------------------------- Miscellaneous -------------------------------
-void EntityManager::PrintStatus() 
+void EntityManager::PrintStatus()
 {
 	App->renderer->Blit(hud_graphics, 0, 0, &hud_section, 0.0F);
-	App->fonts->Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, App->fonts->GetPrintableValue(player->score, 6));
-	App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(player->help, 1));
-	App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(player->lives, 1));
 	App->fonts->Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(time_left, 2));
-	PrintPlayerHealth();
+	if (player != nullptr){
+		App->fonts->Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, App->fonts->GetPrintableValue(player->score, 6));
+		App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(player->help, 1));
+		App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(player->lives, 1));
+		PrintPlayerHealth();
+	}
+	else {
+		App->fonts->Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, "000000");
+		App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, "0" );
+		App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, "0");
+		App->fonts->Print(146, 110, ModuleFonts::Fonts::scene_overlap, "END");
+	}
 
 }
 
@@ -252,7 +274,7 @@ bool EntityManager::LoadConfigFromFile(const char* file_path)
 
 void EntityManager::CheatCodes()
 {
-	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN && player != nullptr)
 	{
 		Entity *a = (Entity*) CreateEntity(Entity::Types::npc_garcia);
 		if (a != nullptr){

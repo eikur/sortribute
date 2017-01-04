@@ -13,11 +13,11 @@ public:
 	bool Init();
 	bool Update( unsigned int msec_elapsed, const bool upd_logic = false);
 
-private:
 	void AddScore(int addition);
+
+private:
 	void ModifyLives(int mod_to_add);
 	void ReRaise();
-	void Die();
 
 	void UpdatePosition(const iPoint new_speed);
 
@@ -27,7 +27,8 @@ private:
 private: 
 	SDL_Rect position_limits = { 28, 162, 264, 55 };	// initial margins
 	EntityManager *parent = nullptr;
-
+	
+	bool respawn_fall = true;
 };
 
 #endif // __PLAYER_H__

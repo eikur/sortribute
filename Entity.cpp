@@ -16,12 +16,11 @@ bool Entity::Init()
 	return true;
 }
 
-//------------------- Updates ---------------------
+//----------------------------------------------------
 bool Entity::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
 	return true;
 }
-
 void Entity::UpdatePosition(const iPoint new_speed)
 {
 	if (grounded)
@@ -45,7 +44,7 @@ void Entity::UpdatePosition(const iPoint new_speed)
 	
 }
 
-//------------------- Draw to screen ---------------------
+//----------------------------------------------------
 bool Entity::Draw() const
 {
 	if (facing_right)
@@ -62,25 +61,23 @@ bool Entity::Draw() const
 	}
 	return true;
 }
-
 int Entity::GetDepth() const {
 	return ground_y;
 }
 
 //----------------------------------------------------
-
 bool Entity::IsAlive()
 {
 	return health > 0;
 }
-
 void Entity::IncreaseHealth(int amount) {
 	health = MIN(health + amount, max_health);
 }
 void Entity::DecreaseHealth(int amount) {
 	health = MAX(health - amount, 0);
 }
-
+void Entity::AddScore(int amount) {}
+//----------------------------------------------------
 bool Entity::AllowAnimationInterruption()
 {
 	return blocking_animation_remaining_msec <= 0;
@@ -95,6 +92,22 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duratio
 		if (fx_new_anim != -1)
 			App->audio->PlayFx(fx_new_anim);
 		blocking_animation_remaining_msec = block_anim_duration;
+
+	// grounded update
+		if (current_animation == &jump ||
+			current_animation == &jump_attack ||
+			current_animation == &being_thrown ||
+			current_animation == &being_knocked 
+			)
+			grounded = false;
+		else
+			grounded = true;
+	
+	//update jumping status
+		if (current_animation == &jump || current_animation == &jump_attack)
+			jumping = true;
+		else
+			jumping = false;
 
 		// update the hittable status!
 		if (current_animation == &being_hit || 
@@ -119,8 +132,7 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duratio
 	}
 }
 
-
-
+//----------------------------------------------------
 bool Entity::LoadFromConfigFile(const char* file_path) { 
 	return true; 
 }
