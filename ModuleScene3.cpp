@@ -32,7 +32,7 @@ bool ModuleScene3::Init()
 bool ModuleScene3::Start()
 {
 	LOG("Scene3: Starting MoonBeach\n");
-	//App->audio->PlayMusic(music_path.c_str(), 1.0F);	//TODO: Uncomment
+	App->audio->PlayMusic(music_path.c_str(), 1.0F);	//TODO: Uncomment
 	App->audio->PlayFx(fx_waves);
 	App->manager->Enable();
 	App->manager->player = App->manager->CreateEntity(Entity::Types::player);

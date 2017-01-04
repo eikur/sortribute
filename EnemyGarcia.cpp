@@ -26,28 +26,36 @@ bool EnemyGarcia::Init()
 
 bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
+	if (IsAlive() == false)
+	{
+		return Die();
+	}
 	if (upd_logic)
 	{
 		if (blocking_animation_remaining_msec > 0)
 			blocking_animation_remaining_msec -= msec_elapsed;
 		
+		// animation and status transition
+		if (blocking_animation_remaining_msec <= 0)
+		{
+			if (current_animation == &being_thrown || current_animation == &being_knocked)
+				UpdateCurrentAnimation(&standing_up, standing_up_duration);
+			else if (current_animation == &standing_up)
+				UpdateCurrentAnimation(&idle);
+		}
+
 		if (AllowAnimationInterruption())
 		{
 			if (parent->player->position.x >= position.x)
 				facing_right = true;
 			else
 				facing_right = false;
-			UpdateCurrentAnimation(&idle);
+			UpdateCurrentAnimation(&idle);	
 			UpdatePosition({ 0,0 });
 		}
 	}
 	
-	return UPDATE_CONTINUE;
-}
-
-
-void EnemyGarcia::Die() {
-	// TODO: Implement death
+	return true;
 }
 
 bool EnemyGarcia::LoadFromConfigFile(const char* file_path) 
@@ -70,7 +78,13 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 		json_value_free(root_value);
 		return false;
 	}
-	
+
+// ------------------------ health ----------------------------
+	max_health = (int)json_object_dotget_number(root_object, "garcia.max_health");
+	health = max_health;
+	lives = (int)json_object_dotget_number(root_object, "garcia.lives");
+	score = (int)json_object_dotget_number(root_object, "garcia.score");
+
 //----------------------- colliders ---------------------------
 	j_array = json_object_dotget_array(root_object, "garcia.colliders.hit");
 	hit_collider_offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };

@@ -14,7 +14,6 @@ public:
 	bool Update(unsigned int msec_elapsed, const bool upd_logic = false);
 
 private:
-	void Die();
 	bool LoadFromConfigFile(const char* file_path);
 	
 private: 

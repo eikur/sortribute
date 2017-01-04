@@ -33,7 +33,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		if (lives > 0)
 			ReRaise();
 		else
-			return false;
+			return Die();
 	}
 	else
 	{
@@ -69,9 +69,9 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				{
 					if (respawn_fall == true)	// exception, just used once when respawning
 					{
+						
+						move_speed.y += 9;
 						air_remaining_msec -= msec_elapsed;
-						move_speed.y += 8;
-						UpdatePosition(move_speed);
 					}
 					else if (jumping)
 					{
@@ -145,8 +145,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		}
 		if (upd_logic)
 		{
-			if(!respawn_fall)
-				UpdatePosition(move_speed);
+			UpdatePosition(move_speed);
 			App->renderer->MoveCamera(position.x, speed.x);
 		}
 
@@ -193,9 +192,10 @@ void Player::ModifyLives(int mod_to_add)
 
 void Player::ReRaise()
 {
-	position = { 40, 32 };
-	ground_y = 160;
+	position = { 40, 32};
+	ground_y = 174;
 	UpdateCurrentAnimation(&jump, jump_duration);
+	facing_right = true;
 	respawn_fall = true;
 	air_remaining_msec = jump_duration;
 
@@ -479,4 +479,10 @@ void Player::CheatCodes() {
 		help += 1;
 	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_REPEAT)
 		DecreaseHealth(4);
+	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)
+		UpdateCurrentAnimation(&being_hit, being_hit_duration);
+	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
+		UpdateCurrentAnimation(&being_thrown, being_thrown_duration);
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN)
+		UpdateCurrentAnimation(&holding_front);
 }

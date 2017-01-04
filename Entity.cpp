@@ -76,7 +76,36 @@ void Entity::IncreaseHealth(int amount) {
 void Entity::DecreaseHealth(int amount) {
 	health = MAX(health - amount, 0);
 }
+bool Entity::Die()
+{
+	if (hit_collider != nullptr)
+		hit_collider->to_delete = true;
+	if (attack_collider != nullptr)
+		attack_collider->to_delete = true;
+	return false;
+}
 void Entity::AddScore(int amount) {}
+//-------------------    Setters for collisions---------------------------------
+void Entity::BeingHit(){
+	UpdateCurrentAnimation(&being_hit, being_hit_duration);
+}
+void Entity::HoldingFront()
+{
+	UpdateCurrentAnimation(&holding_front);
+}
+void Entity::HoldingBack()
+{
+	UpdateCurrentAnimation(&holding_back);
+}
+void Entity::BeingHoldFront()
+{
+	UpdateCurrentAnimation(&being_hold_front);
+}
+void Entity::BeingHoldBack()
+{
+	UpdateCurrentAnimation(&being_hold_back);
+}
+
 //----------------------------------------------------
 bool Entity::AllowAnimationInterruption()
 {

@@ -54,7 +54,8 @@ update_status EntityManager::Update()
 		if (elapsed_msec >= upd_logic_msec)
 			upd_logic = true;
 
-		entities.sort();
+		
+		entities.sort(Entity::ptrEntityDepthComparison());
 		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end();)
 		{
 			if ((*it)->Update(elapsed_msec, upd_logic) == false)
@@ -72,9 +73,8 @@ update_status EntityManager::Update()
 				(*it)->Draw();
 				++it;
 			}
-
 		}
-
+		
 		if (upd_logic == true)
 		{
 			elapsed_msec = 0;
@@ -138,7 +138,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 		{first = b; second = a;}
 
 	int depth_difference = a->parent->GetDepth() - b->parent->GetDepth();
-	if (depth_difference < -4 || depth_difference > 4)
+	if (depth_difference < -5 || depth_difference > 5)
 		return;
 
 	switch (first->type)
@@ -150,9 +150,25 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			}
 			else if (second->type == colliderType::ENEMY)	// Holding!
 			{
+				if (first->parent->facing_right == second->parent->facing_right)	// back hold
+				{
+					first->parent->HoldingBack(); 
+					second->parent->BeingHoldBack();
+				}
+				else
+				{
+					first->parent->HoldingFront();
+					second->parent->BeingHoldFront();
+				}
 			}
 			else if (second->type == colliderType::ENEMY_ATTACK)	// Being hit!
 			{
+				if (second->parent->attacking && first->parent->hittable)
+				{
+					first->parent->BeingHit();
+					App->audio->PlayFx(second->parent->fx_attack_hit);
+					first->parent->DecreaseHealth(8);	// tmp
+				}
 			}
 			else
 			{
@@ -165,8 +181,9 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			{
 				if (first->parent->attacking  && second->parent->hittable )	
 				{
-					second->parent->UpdateCurrentAnimation(&second->parent->being_hit, second->parent->being_hit_duration);
+					second->parent->BeingHit();
 					App->audio->PlayFx(first->parent->fx_attack_hit);	
+					second->parent->DecreaseHealth(8); // tmp
 				}
 			}
 			else

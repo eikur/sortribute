@@ -42,10 +42,17 @@ public:
 	void IncreaseHealth(int amount);
 	void DecreaseHealth(int amount);
 
+	void BeingHit();
+	void HoldingFront();
+	void HoldingBack();
+	void BeingHoldFront();
+	void BeingHoldBack();
+
 	virtual void AddScore(int amount);
 
 protected:
 	bool IsAlive();
+	bool Die();
 	bool AllowAnimationInterruption();
 	virtual bool LoadFromConfigFile(const char* file_path);
 
@@ -60,8 +67,7 @@ public:
 
 	bool hittable = true;
 	bool attacking = false;
-	Animation being_hit;
-	int being_hit_duration = 0;
+	bool facing_right = true;
 
 	unsigned int fx_attack_hit = 0;
 	Types m_type = Types::unknown;
@@ -89,7 +95,7 @@ protected:
 	int holding_swap_duration = 0;
 	int being_hold_attack_duration = 0;
 	int being_thrown_duration = 0;
-	//int being_hit_duration = 0; // moved
+	int being_hit_duration = 0; 
 	int being_knocked_duration = 0;
 	int standing_up_duration = 0;
 
@@ -112,7 +118,6 @@ protected:
 	Animation * current_animation = nullptr;
 	iPoint sprite_offset = {0, 0};
 	iPoint sprite_offset_flip = {0, 0};
-	bool facing_right = true;
 
 	Animation idle;
 	Animation walk;
@@ -131,15 +136,16 @@ protected:
 	Animation holding_front;
 	Animation holding_front_attack;
 	Animation holding_front_attack2;
-	Animation holding_back;
+	Animation holding_back; 
 	Animation throwing_front;
 	Animation throwing_back;
 	Animation holding_swap;
 	
-	Animation being_hold;
+	Animation being_hold_front;
+	Animation being_hold_back;
 	Animation being_hold_attack;
 	Animation being_thrown;
-	//being_hit moved
+	Animation being_hit;
 	Animation being_knocked;
 	Animation standing_up;
 
@@ -151,7 +157,6 @@ protected:
 	unsigned int fx_landing_jump = 0;
 	unsigned int fx_landing_knocked = 0;
 	unsigned int fx_attack_miss = 0;
-	//unsigned int fx_attack_hit = 0;
 	unsigned int fx_death = 0;
 	unsigned int fx_health_restore = 0;
 	unsigned int fx_extra_life = 0;
