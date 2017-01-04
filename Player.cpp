@@ -31,33 +31,38 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		//UpdateCurrentAnimation(being_knocked);
 		ModifyLives(-1);
 		if (lives > 0)
-		{
 			ReRaise();
-		}
 		else
-		{
-			return false;	// die
-		}
+			return false;
 	}
 	else
 	{
-		move_speed = {0, 0};
+		GetInput();
+		move_speed = { 0,0 };
+
 		if (upd_logic == true)
 		{
 			if (blocking_animation_remaining_msec > 0 )
 				blocking_animation_remaining_msec -= msec_elapsed;
 
-			if (blocking_animation_remaining_msec <= 0 && current_animation == &jump_prep)
+			// animation transitions
+			if (blocking_animation_remaining_msec <= 0)
 			{
-				UpdateCurrentAnimation(&jump);
-				air_remaining_msec = jump_duration;
-				//grounded = false;
-			}
-			if (blocking_animation_remaining_msec <= 0 && current_animation == &jump_prep)
-			{
-				UpdateCurrentAnimation(&idle);
+				if (current_animation == &jump_prep)
+				{
+					UpdateCurrentAnimation(&jump);
+					air_remaining_msec = jump_duration;
+				}
+				else if (current_animation == &jump_land || current_animation == &being_hit || current_animation == &take_item)
+					UpdateCurrentAnimation(&idle);
+				else if (current_animation == &being_knocked || current_animation == &being_thrown)
+					UpdateCurrentAnimation(&standing_up, standing_up_duration);
+				else if (current_animation == &holding_swap)
+					UpdateCurrentAnimation(&holding_front);
 			}
 
+
+			// gravity calculations
 			if (grounded == false)	
 			{
 				if (air_remaining_msec > 0)
@@ -65,14 +70,14 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					if (respawn_fall == true)	// exception, just used once when respawning
 					{
 						air_remaining_msec -= msec_elapsed;
-						move_speed.y += 9;
+						move_speed.y += 8;
 						UpdatePosition(move_speed);
 					}
 					else if (jumping)
 					{
+						air_remaining_msec -= msec_elapsed;
 						int divisor = jump_duration / 16;
 						int frames_left = air_remaining_msec / divisor;
-						air_remaining_msec -= msec_elapsed;
 
 						switch (frames_left)
 						{
@@ -101,12 +106,12 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				if (air_remaining_msec <= 0)
 				{
 					respawn_fall = false;
-					UpdateCurrentAnimation(&jump_land, jump_prep_duration, fx_landing_jump);
 					if (position.y != ground_y)
 					{
 						move_speed.y = ground_y - position.y;
 						UpdatePosition(move_speed);
 					}
+					UpdateCurrentAnimation(&jump_land, jump_prep_duration, fx_landing_jump);
 				}
 			}
 		}
@@ -114,88 +119,42 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		if (AllowAnimationInterruption())
 		{
 			if (grounded)
-			{
-				if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-					move_speed.y = -speed.y;
-				else
-					if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-						move_speed.y = speed.y;
-			}
+				move_speed.y += speed.y*input_vertical;
 
-			if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-			{
-				move_speed.x = -speed.x;
-				facing_right = false;
-			}
-			else
-			{
-				if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-				{
-					move_speed.x = speed.x;
-					facing_right = true;
-				}
-			}
+			move_speed.x += speed.x*input_horizontal;
+			facing_right = input_horizontal == 0 ? facing_right : (input_horizontal > 0 ? true : false);
 
-			if (grounded == false)	// air logic
+			if (grounded == false)	// air 
 			{
-				if (upd_logic)
-				{
-					UpdatePosition(move_speed);
-				}
-				if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
-				{
+				if (input_attack)
 					UpdateCurrentAnimation(&jump_attack, 0, fx_voice);
-				}
 			}
-			else
+			else 		// grounded
 			{
-				if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
-				{
-					if (App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT) // back attack
-					{
-						UpdateCurrentAnimation(&attack_back, attacks_duration, fx_attack_miss);
-					}
-					else
-					{
-						UpdateCurrentAnimation(&jump_prep, jump_prep_duration, fx_jump);
-					}
-				}
-				else if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN )
-				{
-					if (App->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT) // back attack
-					{
-						UpdateCurrentAnimation(&attack_back, attacks_duration, fx_attack_miss);
-					}
-					else  //combo attacks 
-					{
-						UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
-					}
-				}
+				if (input_attack_back)
+					UpdateCurrentAnimation(&attack_back, attacks_duration, fx_attack_miss);
+				else if (input_jump)
+					UpdateCurrentAnimation(&jump_prep, jump_prep_duration, fx_jump);
+				else if (input_attack)
+					UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
+				else if (move_speed.IsZero())
+					UpdateCurrentAnimation(&idle);
 				else
-				{
-					if (upd_logic)
-					{
-						if (move_speed.IsZero())
-						{
-							UpdateCurrentAnimation(&idle);
-						}
-						else
-						{
-							UpdatePosition(move_speed);
-							UpdateCurrentAnimation(&walk);
-						}
-					}
-				}
+					UpdateCurrentAnimation(&walk);
 			}
 		}
+		if (upd_logic)
+		{
+			if(!respawn_fall)
+				UpdatePosition(move_speed);
+			App->renderer->MoveCamera(position.x, speed.x);
+		}
+
+		// miscelaneous
+		CheatCodes();
 	}
-	
-	// logic end
-	if (upd_logic)
-		App->renderer->MoveCamera(position.x, speed.x);
-	
-	// miscelaneous
-	CheatCodes();
+
+
 
 	return true;
 }
@@ -235,7 +194,7 @@ void Player::ModifyLives(int mod_to_add)
 void Player::ReRaise()
 {
 	position = { 40, 32 };
-	ground_y = 176;
+	ground_y = 160;
 	UpdateCurrentAnimation(&jump, jump_duration);
 	respawn_fall = true;
 	air_remaining_msec = jump_duration;
@@ -287,6 +246,34 @@ void Player::UpdatePosition(const iPoint new_speed) {
 	hit_collider->rect.y = position.y + hit_collider_offset.y;
 }
 
+void Player::GetInput()
+{
+	ResetInput();
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+		input_vertical = -1;
+	else
+		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+			input_vertical = 1;
+
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+		input_horizontal = -1;
+	else
+		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+			input_horizontal = 1;
+		
+	input_help = App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN;
+	input_attack = App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN; 
+	input_jump = App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN;
+	input_attack_back = (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN && App->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT) ||
+		(App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN);
+
+}
+
+void Player::ResetInput()
+{
+	input_horizontal = input_vertical = 0;
+	input_help = input_attack = input_jump = input_attack_back = false;
+}
 //------------------------------------------------------------------------
 bool Player::LoadFromConfigFile(const char* file_path)
 {
