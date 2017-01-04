@@ -7,7 +7,7 @@ class EntityManager;
 class Player : public Entity {
 
 public: 
-	Player( EntityManager* parent);
+	Player();
 	~Player();
 	
 	bool Init();

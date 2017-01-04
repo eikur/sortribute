@@ -41,15 +41,21 @@ update_status EntityManager::Update()
 			App->timer->TimerPause();
 		else
 			App->timer->TimerResume();
+		if (player != nullptr)
+			App->audio->PlayFx(fx_pause);
 	}
 
-	if (pause)
-	{
-		
-	}
-	else
+	if (pause == false)
 	{
 		elapsed_msec += App->timer->DeltaTime();
+		time_left_msec -= App->timer->DeltaTime();
+
+
+		if (time_left_msec <= 0)
+		{
+			player->DecreaseHealth(player->max_health);
+			time_left_msec = 100000;
+		}
 
 		if (elapsed_msec >= upd_logic_msec)
 			upd_logic = true;
@@ -82,6 +88,8 @@ update_status EntityManager::Update()
 		}
 	}
 
+	if (player == nullptr)
+		App->timer->TimerStop();
 	PrintStatus();
 	CheatCodes();
 
@@ -107,8 +115,8 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 
 	switch (type)
 	{
-	case Entity::Types::player: ret = new Player(this); break;
-	case Entity::Types::npc_garcia: ret = new EnemyGarcia(this); break;
+	case Entity::Types::player: ret = new Player(); break;
+	case Entity::Types::npc_garcia: ret = new EnemyGarcia(); break;
 	}
 
 	if (ret != nullptr)
@@ -153,17 +161,15 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 	switch (first_type)
 	{
 		case colliderType::PLAYER:
-			if (second_type == colliderType::ITEMS)	//Take item!
+			if (second_type == colliderType::ITEMS)	
 			{
-
+				//Take item!
 			}
-			else if (second_type == colliderType::ENEMY)	// Holding!
+			else if (second_type == colliderType::ENEMY)
 			{
-				if ( first->IsGrounded() &&
-					(first->facing_right == true && first->position.x <= second->position.x) ||
-					(first->facing_right == false && second->position.x <= first->position.x) )
+				if ( first->IsGrounded() && ( (first->facing_right == true && first->position.x <= second->position.x) || (first->facing_right == false && second->position.x <= first->position.x) ) )
 				{
-					if (first->facing_right == second->facing_right)	// back hold
+					if (first->facing_right == second->facing_right)
 					{
 						first->SetHoldingBack(); 
 						second->SetBeingHoldBack();
@@ -177,6 +183,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 					if (depth_difference != 0) {
 						second->SetDepth(first->GetDepth());
 					}
+					// x position amendment needed
 						
 				}
 				else 
@@ -184,7 +191,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 					second->SetIdle();
 				}
 			}
-			else if (second_type == colliderType::ENEMY_ATTACK)	// Being hit!
+			else if (second_type == colliderType::ENEMY_ATTACK)
 			{
 				if (second->attacking && first->hittable)
 				{
@@ -207,6 +214,11 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 					second->SetBeingHit();
 					App->audio->PlayFx(first->fx_attack_hit);	
 					second->DecreaseHealth(8); // tmp
+					if (first->position.x <= second->position.x)
+						second->facing_right = false;
+					else
+						second->facing_right = true;
+
 				}
 			}
 			else
@@ -215,6 +227,18 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			}
 			break;
 
+		case colliderType::ENEMY:
+			if (second_type == colliderType::ENEMY)
+			{
+				/*
+					if (first->is_being_thrown || second->is_being_thrown)...
+				*/
+			}
+			else
+			{
+				LOG("Bad defined collisions, check collision matrix");
+			}
+			break;
 		default: 
 			LOG("Bad defined collision, check collision matrix");
 			break;
@@ -225,14 +249,19 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 void EntityManager::PrintStatus()
 {
 	App->renderer->Blit(hud_graphics, 0, 0, &hud_section, 0.0F);
-	App->fonts->Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(time_left, 2));
+	if (pause)
+	{
+		App->fonts->Print(134, 96, ModuleFonts::Fonts::scene_overlap, "PAUSE");
+	}
 	if (player != nullptr){
+		App->fonts->Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(time_left_msec / 2000, 2));
 		App->fonts->Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, App->fonts->GetPrintableValue(player->score, 6));
 		App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(player->help, 1));
 		App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(player->lives, 1));
 		PrintPlayerHealth();
 	}
 	else {
+		App->fonts->Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, "00");
 		App->fonts->Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, "000000");
 		App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, "0" );
 		App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, "0");
@@ -308,7 +337,10 @@ bool EntityManager::LoadConfigFromFile(const char* file_path)
 	hud_health_section = { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
 	json_array_clear(j_array);
 
+	if (json_object_dothas_value_of_type(root_object, "hud.fx_pause", JSONString))
+		fx_pause = App->audio->LoadFx(json_object_dotget_string(root_object, "hud.fx_pause"));
 	json_value_free(root_value);
+
 	return true;
 }
 

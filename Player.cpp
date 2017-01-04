@@ -10,7 +10,7 @@
 
 
 
-Player::Player(EntityManager* parent) : Entity(Types::player), parent(parent) {}
+Player::Player() : Entity(Types::player) {}
 Player::~Player(){}
 
 bool Player::Init()

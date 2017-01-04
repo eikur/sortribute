@@ -69,7 +69,8 @@
 		"health_section": [88,32,2,6],
 		"lives_pos": [96,8],
 		"help_pos": [136,8],
-		"time_pos" : [152,8]
+		"time_pos" : [152,8],
+		"fx_pause" : "Assets/fx_pause.wav"
 	},
 	
 	"player": {

@@ -39,12 +39,13 @@ public:
 private:
 	std::list<Entity*> entities;
 	
-	int time_left = 50;
+	int time_left_msec = 10000;
 
 	bool pause = false; 
 	Uint32 elapsed_msec = 0;
 	Uint32 upd_logic_msec = 20;
 	bool upd_logic = false;
+	unsigned int fx_pause = 0;
 
 	//hud
 	SDL_Texture *hud_graphics = nullptr;
@@ -55,7 +56,7 @@ private:
 	iPoint hud_time_pos = { 0,0 };
 	iPoint hud_help_pos = { 0,0 };
 	iPoint hud_lives_pos = { 0,0 };
-
+		
 };
 
 #endif // __ENTITYMANAGER_H__

@@ -7,7 +7,7 @@ class EntityManager;
 class EnemyGarcia: public Entity {
 
 public:
-	EnemyGarcia(EntityManager* parent);
+	EnemyGarcia();
 	~EnemyGarcia();
 
 	bool Init();

@@ -4,11 +4,10 @@
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "ModuleCollision.h"
-#include "EntityManager.h"
 
 #include "EnemyGarcia.h"
 
-EnemyGarcia::EnemyGarcia(EntityManager* parent): Entity(Entity::Types::npc_garcia), parent(parent)
+EnemyGarcia::EnemyGarcia(): Entity(Entity::Types::npc_garcia)
 { }
 
 EnemyGarcia::~EnemyGarcia(){}
