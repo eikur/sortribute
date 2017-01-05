@@ -28,12 +28,18 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
 	if (IsAlive() == false)
 	{
-		//UpdateCurrentAnimation(being_knocked);
-		ModifyLives(-1);
-		if (lives > 0)
-			ReRaise();
-		else
-			return Die();
+		if (blocking_animation_remaining_msec > 0)
+			blocking_animation_remaining_msec -= msec_elapsed;
+		if (blocking_animation_remaining_msec < 0 && current_animation == &being_knocked)
+			UpdateCurrentAnimation(&dying, dying_duration);
+		if (blocking_animation_remaining_msec <= 0 && current_animation == &dying)
+		{
+			ModifyLives(-1);
+			if (lives > 0)
+				ReRaise();
+			else
+				return Die();
+		}
 	}
 	else
 	{
@@ -441,6 +447,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	standing_up_duration = (int)json_object_dotget_number(root_object, "player.duration.standing_up");
 	holding_swap_duration = (int)json_object_dotget_number(root_object, "player.duration.holding_swap");
 	combo_window_msec = (int)json_object_dotget_number(root_object, "player.duration.combo_window");
+	dying_duration = (int)json_object_dotget_number(root_object, "player.duration.dying");
 //----------------------- colliders ---------------------------
 	hit_collider = LoadColliderFromJSONObject(root_object, "player.colliders.hit", colliderType::PLAYER, &hit_collider_offset);
 	attack_collider = LoadColliderFromJSONObject(root_object, "player.colliders.attack", colliderType::PLAYER_ATTACK, &attack_collider_offset);
@@ -481,9 +488,9 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	LoadSoundFXFromJSONObject(root_object, "player.fx.attack_hit", &fx_attack_hit);
 	LoadSoundFXFromJSONObject(root_object, "player.fx.jump", &fx_jump);
 	LoadSoundFXFromJSONObject(root_object, "player.fx.jump_land", &fx_landing_jump);
+	LoadSoundFXFromJSONObject(root_object, "player.fx.death", &fx_death);
 
 	json_value_free(root_value);
-
 
 	return true;
 
@@ -496,12 +503,10 @@ void Player::CheatCodes() {
 		AddScore(1000);
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN && help < 9)
 		help += 1;
-	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_REPEAT)
-		DecreaseHealth(4);
-	if (App->input->GetKey(SDL_SCANCODE_H) == KEY_DOWN)
-		UpdateCurrentAnimation(&being_hit, being_hit_duration);
+	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+	{
+		SetBeingHit(8);
+	}
 	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
 		UpdateCurrentAnimation(&being_thrown, being_thrown_duration);
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_REPEAT)
-		UpdateCurrentAnimation(&holding_front);
 }

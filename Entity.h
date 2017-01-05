@@ -121,6 +121,7 @@ protected:
 	int being_hit_duration = 0; 
 	int being_knocked_duration = 0;
 	int standing_up_duration = 0;
+	int dying_duration = 0;
 
 // health & damage variables
 	int attack1_dmg= 0;

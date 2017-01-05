@@ -134,7 +134,10 @@ void Entity::SetBeingHit(int damage){
 	is_hittable = false;
 	unhittable_remaining_msec = unhittable_max_msec;
 	DecreaseHealth(damage);
-	UpdateCurrentAnimation(&being_hit, being_hit_duration);
+	if (health <= 0)
+		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death);
+	else
+		UpdateCurrentAnimation(&being_hit, being_hit_duration);
 }
 
 void Entity::SetBeingHoldFrontHit(int damage) {
