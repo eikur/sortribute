@@ -104,7 +104,7 @@
 			"holding_swap": 768,
 			"combo_window": 260,
 			"unhittable": 200,
-			"dying": 1536
+			"dying": 2048
 		},
 		"idle": {
 			"frames": [[0,0, 96,80],[0,0, 96,80],[0,0, 96,80],[0,0, 96,80],[96,0, 96,80],[192,0, 96,80]],
@@ -183,8 +183,8 @@
 			"speed" : 0.1
 		},
 		"dying":{
-			"frames": [[288,400, 96,80]],
-			"speed" : 0
+			"frames": [[288,400, 96,80], [384,160, 96,80]],
+			"speed" : 0.08
 		},
 		
 		"shadow": [288,160, 96,80],
@@ -221,7 +221,7 @@
 			"being_knocked": 200,
 			"standing_up": 100,
 			"unhittable": 200,
-			"dying": 512
+			"dying": 2048
 		},
 		"sprite_offset": [-35,-80],
 		"sprite_offset_flip": [-61,-80],
@@ -275,7 +275,7 @@
 		},
 		"shadow": [480,0, 96,80],
 		"fx":{
-			"death_voice": "Assets/garcia_death.wav",
+			"death_voice": "Assets/fx_voice_garcia.wav",
 			"attack_hit": "Assets/fx_attack_hit_enemy.wav"
 			
 		}

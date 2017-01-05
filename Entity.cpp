@@ -112,13 +112,23 @@ void Entity::IncreaseHealth(int amount) {
 void Entity::DecreaseHealth(int amount) {
 	health = MAX(health - amount, 0);
 }
-bool Entity::Die()
+
+void Entity::TimeOver()
+{
+	health = 0;
+	if (held_entity != nullptr)
+	{
+		held_entity->SetIdle();
+		held_entity = nullptr;
+	}
+	UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death);
+}
+void Entity::RemoveColliders()
 {
 	if (hit_collider != nullptr)
 		hit_collider->to_delete = true;
 	if (attack_collider != nullptr)
 		attack_collider->to_delete = true;
-	return false;
 }
 
 void Entity::AddScore(int amount) 

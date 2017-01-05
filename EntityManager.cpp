@@ -53,7 +53,7 @@ update_status EntityManager::Update()
 
 		if (time_left_msec <= 0)
 		{
-			player->DecreaseHealth(player->max_health);
+			player->TimeOver();
 			time_left_msec = 100000;
 		}
 
@@ -194,8 +194,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			{
 				if (second->is_attacking && first->is_hittable)
 				{
-					first->SetBeingHit();
-					first->DecreaseHealth(8);	
+					first->SetBeingHit(8);
 				}
 			}
 			else
@@ -214,11 +213,11 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 					App->audio->PlayFx(first->fx_attack_hit);
 
 					if (first->current_combo_hits <= 2)
-						second->SetBeingHit(8);	// attck dmg 1
+						second->SetBeingHit(8);	
 					else if (first->current_combo_hits == 3)
-						second->SetBeingHit(8);	// attck dmg 2
+						second->SetBeingHit(8);	
 					else
-						second->SetBeingHit(12);	// attck dmg 3
+						second->SetBeingHit(12);	
 
 					if (first->position.x <= second->position.x)
 						second->facing_right = false;

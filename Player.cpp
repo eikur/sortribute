@@ -28,9 +28,13 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
 	if (IsAlive() == false)
 	{
-		if (blocking_animation_remaining_msec > 0)
+		if (blocking_animation_remaining_msec > 0) {
 			blocking_animation_remaining_msec -= msec_elapsed;
-		if (blocking_animation_remaining_msec < 0 && current_animation == &being_knocked)
+			if (upd_logic && current_animation == &being_knocked)
+				UpdatePosition({facing_right? -2 : 2,0});
+		}
+
+		if (blocking_animation_remaining_msec <= 0 && current_animation != &dying)
 			UpdateCurrentAnimation(&dying, dying_duration);
 		if (blocking_animation_remaining_msec <= 0 && current_animation == &dying)
 		{
@@ -38,7 +42,10 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			if (lives > 0)
 				ReRaise();
 			else
-				return Die();
+			{
+				RemoveColliders();
+				return false;
+			}
 		}
 	}
 	else

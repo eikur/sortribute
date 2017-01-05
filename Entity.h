@@ -44,6 +44,7 @@ public:
 
 	void IncreaseHealth(int amount);
 	void DecreaseHealth(int amount);
+	void TimeOver();
 
 	void SetIdle();
 	void SetBeingHit(int damage = 0);
@@ -58,8 +59,9 @@ public:
 
 protected:
 	bool IsAlive() const;
-	bool Die();
 	bool AllowAnimationInterruption();
+
+	void RemoveColliders();
 	
 	virtual bool LoadFromConfigFile(const char* file_path);
 	void LoadAnimationFromJSONObject(JSON_Object *j_object, const char *dotget_path, Animation* animation);
