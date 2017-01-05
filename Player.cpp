@@ -59,6 +59,19 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					UpdateCurrentAnimation(&standing_up, standing_up_duration);
 				else if (current_animation == &holding_front_attack)
 					UpdateCurrentAnimation(&holding_front);
+				else if (current_animation == &holding_swap)
+				{
+					is_holding_back = !is_holding_back;	is_holding_front = !is_holding_front; 	facing_right = !facing_right;
+					position.y = ground_y;
+					if (is_holding_front)
+					{
+						held_entity->SetBeingHoldFront();	UpdateCurrentAnimation(&holding_front, 0, fx_landing_jump);
+					}
+					else if (is_holding_back)
+					{
+						held_entity->SetBeingHoldBack(); UpdateCurrentAnimation(&holding_back, 0, fx_landing_jump);
+					}
+				}
 			}
 
 
@@ -67,16 +80,16 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			{
 				if (air_remaining_msec > 0)
 				{
+					
 					if (respawn_fall == true)	
 					{
-
-						move_speed.y += 9;
 						air_remaining_msec -= msec_elapsed;
+						move_speed.y += 9;// TODO: CHANGE
 					}
 					else if (jumping)
 					{
 						air_remaining_msec -= msec_elapsed;
-						int divisor = jump_duration / 16;
+						int divisor =  jump_duration / 16;
 						int frames_left = air_remaining_msec / divisor;
 
 						switch (frames_left)
@@ -95,22 +108,38 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 						case 11: move_speed.y -= 4; break;
 						case 12: move_speed.y -= 5; break;
 						case 13: move_speed.y -= 5; break;
-						case 14: move_speed.y -= 7; break;
-						case 15: move_speed.y -= 8; break;
+						case 14: move_speed.y -= 6; break;
+						case 15: move_speed.y -= 7; break;
 						}
 					}
-					else {
+					else if (is_holding_back || is_holding_front)
+					{
+						air_remaining_msec -= msec_elapsed;
+						int divisor = holding_swap_duration / 5;
+						int frames_left = air_remaining_msec / divisor;
+						int mod = facing_right ? 1 : -1;
+
+						holding_swap.SetCurrentFrame(4 - frames_left);
+						switch (frames_left)
+						{
+						case 4: SetPosition({ held_entity->position.x - mod*24, held_entity->position.y - 6 }); break;
+						case 3: SetPosition({ held_entity->position.x, held_entity->position.y - 50 }); break;
+						case 2: SetPosition({ held_entity->position.x, held_entity->position.y - 50}); break;
+						case 1: SetPosition({ held_entity->position.x, held_entity->position.y - 50 }); break;
+						case 0: SetPosition({ held_entity->position.x + mod*24 , held_entity->position.y - 6 }); break;
+						}
+					}
+					else
+					{
 						// falling after knockout or throw
 					}
+
 				}
 				if (air_remaining_msec <= 0)
 				{
 					respawn_fall = false;
-					if (position.y != ground_y)
-					{
-						move_speed.y = ground_y - position.y;
-						UpdatePosition(move_speed);
-					}
+					move_speed.y = 0;
+					position.y = ground_y;
 					UpdateCurrentAnimation(&jump_land, jump_prep_duration, fx_landing_jump);
 				}
 			}
@@ -129,10 +158,16 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				{
 					//throw
 				}
-				else if (input_attack && held_entity)
+				else if (input_attack )
 				{
 					held_entity->SetBeingHoldFrontHit(attack1_dmg);
 					UpdateCurrentAnimation(&holding_front_attack, attacks_duration, fx_attack_hit);
+				}
+				else if (input_jump)
+				{
+					UpdateCurrentAnimation(&holding_swap, holding_swap_duration, fx_jump);
+					air_remaining_msec = holding_swap_duration;
+					
 				}
 				else if ((facing_right == true && input_horizontal < 0 )|| (facing_right == false && input_horizontal > 0))
 				{
@@ -144,21 +179,22 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			}
 			else if (is_holding_back)
 			{
-				if (input_attack)
+				if (input_jump)
+				{
+					UpdateCurrentAnimation(&holding_swap, holding_swap_duration, fx_jump);
+					air_remaining_msec = holding_swap_duration;
+				}
+				else if (input_attack)
 				{
 					//throw smash
 				}
-				if ((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0))
+				else if ((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0))
 				{
 					held_entity->SetIdle();
 					held_entity = nullptr;
 					UpdateCurrentAnimation(&idle);
 					facing_right = !facing_right;
 				}
-			}
-			else if (is_being_hold_front)
-			{
-
 			}
 			else if (is_being_hold_back)
 			{
@@ -356,7 +392,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	score = (int)json_object_dotget_number(root_object, "player.score");
 	help = (int)json_object_dotget_number(root_object, "player.help");
 
-// damages
+	//----------------------- damages ---------------------------
 
 	attack1_dmg = (int)json_object_dotget_number(root_object, "player.damage.attack1");
 	attack2_dmg = (int)json_object_dotget_number(root_object, "player.damage.attack2");
@@ -369,6 +405,11 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	attacks_duration = (int)json_object_dotget_number(root_object, "player.duration.attacks");
 	jump_prep_duration = (int)json_object_dotget_number(root_object, "player.duration.jump_prep");
 	jump_duration = (int)json_object_dotget_number(root_object, "player.duration.jump");
+	being_hit_duration = (int)json_object_dotget_number(root_object, "player.duration.being_hit");
+	being_thrown_duration = (int)json_object_dotget_number(root_object, "player.duration.being_thrown");
+	being_knocked_duration= (int)json_object_dotget_number(root_object, "player.duration.being_knocked");
+	standing_up_duration = (int)json_object_dotget_number(root_object, "player.duration.standing_up");
+	holding_swap_duration = (int)json_object_dotget_number(root_object, "player.duration.holding_swap");
 
 //----------------------- colliders ---------------------------
 	j_array = json_object_dotget_array(root_object, "player.colliders.hit");
@@ -414,6 +455,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	LoadAnimationFromJSONObject(root_object, "player.holding_front_attack", &holding_front_attack);
 	LoadAnimationFromJSONObject(root_object, "player.holding_front_attack2", &holding_front_attack2);
 	LoadAnimationFromJSONObject(root_object, "player.holding_back", &holding_back);
+	LoadAnimationFromJSONObject(root_object, "player.holding_swap", &holding_swap);
 	LoadSDLRectFromJSONObject(root_object, "player.shadow", &shadow);
 
 // ---------------------- sound effects ----------------------------

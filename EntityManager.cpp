@@ -347,9 +347,8 @@ void EntityManager::CheatCodes()
 	{
 		Entity *a = (Entity*) CreateEntity(Entity::Types::npc_garcia);
 		if (a != nullptr){
-			a->position.y = player->position.y;	
-			a->position.x = player->position.x + 150;
-			a->UpdatePosition({ 0,0 });
+			a->SetPosition({ player->position.x + 150, player->position.y });
+
 		}
 	}
 }

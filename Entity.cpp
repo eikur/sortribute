@@ -45,6 +45,28 @@ void Entity::UpdatePosition(const iPoint new_speed)
 	
 }
 
+void Entity::SetPosition(const iPoint new_position)
+{
+	position = new_position;
+
+	if (grounded)
+		ground_y = position.y;
+
+
+	if (facing_right)
+	{
+		attack_collider->rect.x = position.x + attack_collider_offset.x;
+		hit_collider->rect.x = position.x + hit_collider_offset.x;
+	}
+	else
+	{
+		attack_collider->rect.x = position.x + -(attack_collider_offset.x + attack_collider->rect.w);
+		hit_collider->rect.x = position.x - (hit_collider_offset.x + hit_collider->rect.w);
+	}
+	attack_collider->rect.y = position.y + attack_collider_offset.y;
+	hit_collider->rect.y = position.y + hit_collider_offset.y;
+}
+
 
 bool Entity::Draw() const
 {
@@ -161,7 +183,7 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duratio
 			current_animation == &jump_attack ||
 			current_animation == &being_thrown ||
 			current_animation == &being_knocked 
-			)
+			|| current_animation == &holding_swap)
 			grounded = false;
 		else
 			grounded = true;
@@ -179,7 +201,9 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duratio
 			current_animation == &throwing_front ||
 			current_animation == &throwing_back ||
 			current_animation == &standing_up ||
-			current_animation == &jump_attack)
+			current_animation == &jump_attack ||
+			current_animation == &holding_swap
+			)
 			is_hittable = false;
 		else
 			is_hittable = true;
@@ -188,18 +212,20 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duratio
 		if (current_animation == &attack1 ||
 			current_animation == &attack2 ||
 			current_animation == &attack3 ||
+			//current_animation == &attack_back ||
 			current_animation == &jump_attack)
 			is_attacking = true;
 		else
 			is_attacking = false;
 		
 		// holding status
-		if (current_animation == &holding_front || current_animation == &holding_front_attack || current_animation == &holding_front_attack2 )
+		if (current_animation == &holding_front || current_animation == &holding_front_attack || current_animation == &holding_front_attack2 || 
+			(current_animation == &holding_swap && is_holding_front))
 			is_holding_front = true;
 		else
 			is_holding_front = false;
 
-		if (current_animation == &holding_back)
+		if (current_animation == &holding_back || (current_animation == &holding_swap && is_holding_back))
 			is_holding_back = true;
 		else
 			is_holding_back = false;
