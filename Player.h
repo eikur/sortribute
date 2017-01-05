@@ -21,7 +21,7 @@ private:
 
 	void UpdatePosition(const iPoint new_speed);
 
-	void GetInput();
+	void GetInput( bool upd_logic);
 	void ResetInput();
 
 	bool LoadFromConfigFile(const char* file_path);
@@ -37,8 +37,11 @@ private:
 	int input_vertical = 0;
 	bool input_help = false;
 	bool input_attack = false;
+	bool input_hold_front_throw = false;
 	bool input_attack_back = false;
 	bool input_jump = false;
+
+	std::string input_queue = "";
 
 	int max_hold_swaps = 2;
 	int current_hold_swaps = 0;

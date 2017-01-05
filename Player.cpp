@@ -50,7 +50,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 	}
 	else
 	{
-		GetInput();
+		GetInput(upd_logic);
 		move_speed = { 0,0 };
 
 		if (upd_logic == true)
@@ -184,9 +184,12 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					held_entity = nullptr;
 					UpdateCurrentAnimation(&idle);
 				}
-				else if (input_attack && ((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0)))
+				else if (input_hold_front_throw)
 				{
-					//throw
+					facing_right = !facing_right;
+					UpdateCurrentAnimation(&throwing_front, throwing_duration);
+					held_entity->SetBeingThrownFront();
+					held_entity = nullptr;
 				}
 				else if (input_attack )
 				{
@@ -226,7 +229,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				}
 				else if (input_attack)
 				{
-					//throw smash
+					UpdateCurrentAnimation(&throwing_back, throwing_duration);
 				}
 				else if ((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0))
 				{
@@ -242,9 +245,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			}
 			else
 			{
-				if (grounded)
-					move_speed.y += speed.y*input_vertical;
-
+				move_speed.y += grounded? speed.y*input_vertical : 0;
 				move_speed.x += speed.x*input_horizontal;
 				facing_right = input_horizontal == 0 ? facing_right : (input_horizontal > 0 ? true : false);
 
@@ -379,33 +380,67 @@ void Player::UpdatePosition(const iPoint new_speed) {
 	hit_collider->rect.y = position.y + hit_collider_offset.y;
 }
 
-void Player::GetInput()
+void Player::GetInput( bool upd_logic )
 {
-	ResetInput();
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+	if (upd_logic)
+		ResetInput();
+	
+	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_UP) == KEY_DOWN)
+		input_queue.append("u");
+	if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_DOWN)
+		input_queue.append("d");
+	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
+		input_queue.append("l");
+	if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_DOWN)
+		input_queue.append("r");
+	if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN)
+		input_queue.append("A");
+	if (App->input->GetKey(SDL_SCANCODE_Z) == KEY_REPEAT)
+		input_queue.append("a");
+	if (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN)
+		input_queue.append("B");
+	if (App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT)
+		input_queue.append("b");
+	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN)
+		input_queue.append("C");
+	if (App->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT)
+		input_queue.append("c");
+	
+	// find in the string
+	if (input_queue.find("u") != std::string::npos)
 		input_vertical = -1;
 	else
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
+		if (input_queue.find("d") != std::string::npos)
 			input_vertical = 1;
-
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
+	
+	if (input_queue.find("l") != std::string::npos)
 		input_horizontal = -1;
 	else
-		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
+		if (input_queue.find("r") != std::string::npos)
 			input_horizontal = 1;
-		
-	input_help = App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN;
-	input_attack = App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN; 
-	input_jump = App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN;
-	input_attack_back = (App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN && App->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT) ||
-		(App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN);
 
+	if ( (( input_queue.find("lB") != std::string::npos || input_queue.find("lb") != std::string::npos) && facing_right) ||
+			((input_queue.find("rB") != std::string::npos || input_queue.find("rb") != std::string::npos) && !facing_right) )
+		input_hold_front_throw = true;
+	else if (input_queue.find("BC") != std::string::npos || input_queue.find("bC") != std::string::npos || input_queue.find("Bc") != std::string::npos)
+		input_attack_back = true;
+	else
+	{
+		if (input_queue.find("B") != std::string::npos)
+			input_attack = true;
+		if (input_queue.find("C") != std::string::npos)
+			input_jump = true;
+	}
+
+	if (input_queue.find("A") != std::string::npos)
+		input_help = true;
 }
 
 void Player::ResetInput()
 {
+	input_queue = "";
 	input_horizontal = input_vertical = 0;
-	input_help = input_attack = input_jump = input_attack_back = false;
+	input_help = input_attack = input_jump = input_attack_back = input_hold_front_throw = false;
 }
 //------------------------------------------------------------------------
 bool Player::LoadFromConfigFile(const char* file_path)
@@ -448,6 +483,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	attacks_duration = (int)json_object_dotget_number(root_object, "player.duration.attacks");
 	jump_prep_duration = (int)json_object_dotget_number(root_object, "player.duration.jump_prep");
 	jump_duration = (int)json_object_dotget_number(root_object, "player.duration.jump");
+	throwing_duration = (int)json_object_dotget_number(root_object, "player.duration.throwing");
 	being_hit_duration = (int)json_object_dotget_number(root_object, "player.duration.being_hit");
 	being_thrown_duration = (int)json_object_dotget_number(root_object, "player.duration.being_thrown");
 	being_knocked_duration= (int)json_object_dotget_number(root_object, "player.duration.being_knocked");
@@ -455,6 +491,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	holding_swap_duration = (int)json_object_dotget_number(root_object, "player.duration.holding_swap");
 	combo_window_msec = (int)json_object_dotget_number(root_object, "player.duration.combo_window");
 	dying_duration = (int)json_object_dotget_number(root_object, "player.duration.dying");
+
 //----------------------- colliders ---------------------------
 	hit_collider = LoadColliderFromJSONObject(root_object, "player.colliders.hit", colliderType::PLAYER, &hit_collider_offset);
 	attack_collider = LoadColliderFromJSONObject(root_object, "player.colliders.attack", colliderType::PLAYER_ATTACK, &attack_collider_offset);
@@ -479,6 +516,8 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	LoadAnimationFromJSONObject(root_object, "player.holding_front_attack2", &holding_front_attack2);
 	LoadAnimationFromJSONObject(root_object, "player.holding_back", &holding_back);
 	LoadAnimationFromJSONObject(root_object, "player.holding_swap", &holding_swap);
+	LoadAnimationFromJSONObject(root_object, "player.throwing_front", &throwing_front);
+	LoadAnimationFromJSONObject(root_object, "player.throwing_back", &throwing_back);
 	LoadAnimationFromJSONObject(root_object, "player.take_item", &take_item);
 	LoadAnimationFromJSONObject(root_object, "player.being_hit", &being_hit);
 	LoadAnimationFromJSONObject(root_object, "player.being_knocked", &being_knocked);
@@ -515,6 +554,6 @@ void Player::CheatCodes() {
 		SetBeingHit(8);
 	}
 	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
-		UpdateCurrentAnimation(&being_thrown_front, being_thrown_duration);
+		UpdateCurrentAnimation(&throwing_back, throwing_duration);
 
 }
