@@ -7,6 +7,7 @@
 #include "Animation.h"
 
 struct Collider;
+enum colliderType;
 struct SDL_Texture;
 struct SDL_Rect;
 
@@ -36,6 +37,10 @@ public:
 	virtual void UpdatePosition(const iPoint new_speed);
 	virtual void SetPosition(const iPoint new_position);
 	void UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration = 0, int fx_new_anim = -1);
+
+	iPoint UpdateKnockedMotion();
+	iPoint UpdateThrownFrontMotion();
+	iPoint UpdateThrownBackMotion();
 
 	bool Draw() const;
 	int  GetDepth() const;
@@ -87,6 +92,8 @@ public:
 	bool is_holding_back = false;
 	bool is_being_hold_front = false;
 	bool is_being_hold_back = false;
+	bool is_being_thrown_front = false;
+	bool is_being_thrown_back = false;
 
 	unsigned int fx_attack_hit = 0;
 

@@ -20,6 +20,8 @@ private:
 	void ReRaise();
 
 	void UpdatePosition(const iPoint new_speed);
+	int  UpdateJumpVerticalSpeed();
+	void UpdateHoldingSwapMotion();
 
 	void GetInput( bool upd_logic);
 	void ResetInput();

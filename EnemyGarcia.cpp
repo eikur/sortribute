@@ -30,8 +30,9 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 		RemoveColliders();
 		if (blocking_animation_remaining_msec > 0) {
 			blocking_animation_remaining_msec -= msec_elapsed;
+			air_remaining_msec -= msec_elapsed;
 			if (upd_logic && current_animation == &being_knocked)
-				UpdatePosition({ facing_right ? -2 : 2,0 });
+				UpdatePosition(UpdateKnockedMotion());
 		}
 
 		if (blocking_animation_remaining_msec <= 0 && current_animation != &dying)

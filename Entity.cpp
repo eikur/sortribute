@@ -167,6 +167,33 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration
 	}
 }
 
+iPoint Entity::UpdateKnockedMotion()
+{
+	int divisor = being_thrown_duration / 7;
+	int frames_left = air_remaining_msec / divisor;
+	iPoint ret = { 0,0 };
+
+	int mod = facing_right ? 1 : -1;
+	switch (frames_left)
+	{
+	case 6: ret.x -= mod * 5; ret.y -= 7; being_knocked.SetCurrentFrame(0); break;
+	case 5: ret.x -= mod * 5; ret.y -= 4; being_knocked.SetCurrentFrame(0); break;
+	case 4: ret.x -= mod * 4; ret.y -= 3; being_knocked.SetCurrentFrame(0); break;
+	case 3: ret.x -= mod * 4; ret.y += 4; being_knocked.SetCurrentFrame(0); break;
+	case 2: ret.x -= mod * 4; ret.y += 3; being_knocked.SetCurrentFrame(1); break;
+	case 1: ret.x -= mod * 3; ret.y += 3; being_knocked.SetCurrentFrame(1); break;
+	case 0: ret.x -= mod * 2; ret.y += 2; being_knocked.SetCurrentFrame(1); break;
+	}
+	return ret;
+}
+
+iPoint Entity::UpdateThrownFrontMotion()
+{
+	return{ 0,0 };
+}
+iPoint Entity::UpdateThrownBackMotion() {
+	return{ 0,0 };
+}
 // ----------------- Depth related ------------------------
 
 int Entity::GetDepth() const {
@@ -207,6 +234,7 @@ void Entity::TimeOver()
 		held_entity = nullptr;
 	}
 	UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death);
+	air_remaining_msec = being_knocked_duration;
 }
 void Entity::RemoveColliders()
 {
@@ -231,7 +259,10 @@ void Entity::SetBeingHit(int damage){
 	unhittable_remaining_msec = unhittable_max_msec;
 	DecreaseHealth(damage);
 	if (health <= 0)
+	{
 		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death);
+		air_remaining_msec = being_knocked_duration;
+	}
 	else
 		UpdateCurrentAnimation(&being_hit, being_hit_duration);
 }
@@ -241,7 +272,10 @@ void Entity::SetBeingHoldFrontHit(int damage) {
 	unhittable_remaining_msec = unhittable_max_msec;
 	DecreaseHealth(damage);
 	if (health <= 0)
+	{
 		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death);
+		air_remaining_msec = being_knocked_duration;
+	}
 	else
 		UpdateCurrentAnimation(&being_hold_front_hit, being_hit_duration);
 }

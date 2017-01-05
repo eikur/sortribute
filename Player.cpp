@@ -30,8 +30,9 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 	{
 		if (blocking_animation_remaining_msec > 0) {
 			blocking_animation_remaining_msec -= msec_elapsed;
+			air_remaining_msec -= msec_elapsed;
 			if (upd_logic && current_animation == &being_knocked)
-				UpdatePosition({facing_right? -2 : 2,0});
+				UpdatePosition(UpdateKnockedMotion());
 		}
 
 		if (blocking_animation_remaining_msec <= 0 && current_animation != &dying)
@@ -58,11 +59,34 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			if (blocking_animation_remaining_msec > 0)
 				blocking_animation_remaining_msec -= msec_elapsed;
 
-			// animation transitions
+			if (grounded == false)	{
+				if (air_remaining_msec > 0)
+				{
+					air_remaining_msec -= msec_elapsed;
+					if (respawn_fall == true)
+						move_speed.y += 9;
+					else if (jumping)
+						move_speed.y += UpdateJumpVerticalSpeed();
+					else if (is_holding_back || is_holding_front)
+						UpdateHoldingSwapMotion();
+//					else if (is_being_thrown_front)
+//					else if (is_being_thrown_back)
+					else  //knocked
+						move_speed = UpdateKnockedMotion();
+				}
+				if (air_remaining_msec <= 0)
+				{
+					respawn_fall = false;
+					move_speed.y = 0;
+					position.y = ground_y;
+					if (jumping)
+						UpdateCurrentAnimation(&jump_land, jump_prep_duration, fx_landing_jump);
+				}
+			}
+
 			if (blocking_animation_remaining_msec <= 0)
 			{
-				if (current_animation == &jump_prep)
-				{
+				if (current_animation == &jump_prep){
 					UpdateCurrentAnimation(&jump);
 					air_remaining_msec = jump_duration;
 				}
@@ -104,74 +128,6 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			{
 				combo_remaining_msec = 0;
 				current_combo_hits = 0;
-			}
-
-			if (grounded == false)
-			{
-				if (air_remaining_msec > 0)
-				{
-					
-					if (respawn_fall == true)	
-					{
-						air_remaining_msec -= msec_elapsed;
-						move_speed.y += 9;
-					}
-					else if (jumping)
-					{
-						air_remaining_msec -= msec_elapsed;
-						int divisor =  jump_duration / 16;
-						int frames_left = air_remaining_msec / divisor;
-
-						switch (frames_left)
-						{
-						case 0:	 move_speed.y += 7; break;
-						case 1:	 move_speed.y += 6; break;
-						case 2:	 move_speed.y += 5; break;
-						case 3:	 move_speed.y += 5; break;
-						case 4:	 move_speed.y += 4; break;
-						case 5:	 move_speed.y += 3; break;
-						case 6:	 move_speed.y += 2; break;
-						case 7:  move_speed.y += 1; break;
-						case 8:  move_speed.y -= 1; break;
-						case 9:  move_speed.y -= 2; break;
-						case 10: move_speed.y -= 3; break;
-						case 11: move_speed.y -= 4; break;
-						case 12: move_speed.y -= 5; break;
-						case 13: move_speed.y -= 5; break;
-						case 14: move_speed.y -= 6; break;
-						case 15: move_speed.y -= 7; break;
-						}
-					}
-					else if (is_holding_back || is_holding_front)
-					{
-						air_remaining_msec -= msec_elapsed;
-						int divisor = holding_swap_duration / 5;
-						int frames_left = air_remaining_msec / divisor;
-						int mod = facing_right ? 1 : -1;
-
-						holding_swap.SetCurrentFrame(4 - frames_left);
-						switch (frames_left)
-						{
-						case 4: SetPosition({ held_entity->position.x - mod*24, held_entity->position.y - 6 }); break;
-						case 3: SetPosition({ held_entity->position.x, held_entity->position.y - 50 }); break;
-						case 2: SetPosition({ held_entity->position.x, held_entity->position.y - 50}); break;
-						case 1: SetPosition({ held_entity->position.x, held_entity->position.y - 50 }); break;
-						case 0: SetPosition({ held_entity->position.x + mod*24 , held_entity->position.y - 6 }); break;
-						}
-					}
-					else
-					{
-						// falling after knockout or throw
-					}
-
-				}
-				if (air_remaining_msec <= 0)
-				{
-					respawn_fall = false;
-					move_speed.y = 0;
-					position.y = ground_y;
-					UpdateCurrentAnimation(&jump_land, jump_prep_duration, fx_landing_jump);
-				}
 			}
 		}
 
@@ -338,6 +294,7 @@ void Player::ReRaise()
 	health = max_health;
 }
 
+//-------------- Specific updates
 void Player::UpdatePosition(const iPoint new_speed) {
 
 	if (grounded)
@@ -382,6 +339,53 @@ void Player::UpdatePosition(const iPoint new_speed) {
 	hit_collider->rect.y = position.y + hit_collider_offset.y;
 }
 
+int Player::UpdateJumpVerticalSpeed()
+{
+	int divisor = jump_duration / 16;
+	int frames_left = air_remaining_msec / divisor;
+	int ret = 0;
+
+	switch (frames_left)
+	{
+	case 0:	 ret += 7; break;
+	case 1:	 ret += 6; break;
+	case 2:	 ret+= 5; break;
+	case 3:	 ret+= 5; break;
+	case 4:	 ret+= 4; break;
+	case 5:	 ret+= 3; break;
+	case 6:	 ret+= 2; break;
+	case 7:  ret+= 1; break;
+	case 8:  ret-= 1; break;
+	case 9:  ret-= 2; break;
+	case 10: ret-= 3; break;
+	case 11: ret-= 4; break;
+	case 12: ret-= 5; break;
+	case 13: ret-= 5; break;
+	case 14: ret-= 6; break;
+	case 15: ret-= 7; break;
+	}
+	return ret;
+} 
+
+void Player::UpdateHoldingSwapMotion()
+{
+	int divisor = holding_swap_duration / 5;
+	int frames_left = air_remaining_msec / divisor;
+	int mod = facing_right ? 1 : -1;
+
+	holding_swap.SetCurrentFrame(4 - frames_left);
+	switch (frames_left)
+	{
+	case 4: SetPosition({ held_entity->position.x - mod * 24, held_entity->position.y - 6 }); break;
+	case 3: SetPosition({ held_entity->position.x, held_entity->position.y - 50 }); break;
+	case 2: SetPosition({ held_entity->position.x, held_entity->position.y - 50 }); break;
+	case 1: SetPosition({ held_entity->position.x, held_entity->position.y - 50 }); break;
+	case 0: SetPosition({ held_entity->position.x + mod * 24 , held_entity->position.y - 6 }); break;
+	}
+}
+
+//--- Input related -------
+
 void Player::GetInput( bool upd_logic )
 {
 	ResetInput();
@@ -421,7 +425,9 @@ void Player::ResetInput()
 	input_horizontal = input_vertical = 0;
 	input_help = input_attack = input_jump = input_attack_back = input_hold_front_throw = false;
 }
-//------------------------------------------------------------------------
+
+//--------------------------- Miscelaneous ---------------------------------------------
+
 bool Player::LoadFromConfigFile(const char* file_path)
 {
 	JSON_Value *root_value;
