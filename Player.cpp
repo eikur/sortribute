@@ -399,7 +399,6 @@ bool Player::LoadFromConfigFile(const char* file_path)
 {
 	JSON_Value *root_value;
 	JSON_Object *root_object;
-	JSON_Array *j_array;
 
 	root_value = json_parse_file(file_path);
 	if (root_value == nullptr)
@@ -461,12 +460,18 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	LoadAnimationFromJSONObject(root_object, "player.attack2", &attack2);
 	LoadAnimationFromJSONObject(root_object, "player.attack3", &attack3);
 	LoadAnimationFromJSONObject(root_object, "player.attack_back", &attack_back);
-	LoadAnimationFromJSONObject(root_object, "player.being_hit", &being_hit);
 	LoadAnimationFromJSONObject(root_object, "player.holding_front", &holding_front);
 	LoadAnimationFromJSONObject(root_object, "player.holding_front_attack", &holding_front_attack);
 	LoadAnimationFromJSONObject(root_object, "player.holding_front_attack2", &holding_front_attack2);
 	LoadAnimationFromJSONObject(root_object, "player.holding_back", &holding_back);
 	LoadAnimationFromJSONObject(root_object, "player.holding_swap", &holding_swap);
+	LoadAnimationFromJSONObject(root_object, "player.take_item", &take_item);
+	LoadAnimationFromJSONObject(root_object, "player.being_hit", &being_hit);
+	LoadAnimationFromJSONObject(root_object, "player.being_knocked", &being_knocked);
+	LoadAnimationFromJSONObject(root_object, "player.being_thrown", &being_thrown);
+	LoadAnimationFromJSONObject(root_object, "player.standing_up", &standing_up);
+	LoadAnimationFromJSONObject(root_object, "player.dying", &dying);
+
 	LoadSDLRectFromJSONObject(root_object, "player.shadow", &shadow);
 
 // ---------------------- sound effects ----------------------------

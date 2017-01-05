@@ -173,6 +173,8 @@ protected:
 	Animation being_knocked;
 	Animation standing_up;
 
+	Animation dying;
+
 	SDL_Rect shadow;
 
 // sounds

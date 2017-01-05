@@ -71,7 +71,6 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 {
 	JSON_Value *root_value;
 	JSON_Object *root_object;
-	JSON_Array *j_array;
 
 	root_value = json_parse_file(file_path);
 	if (root_value == nullptr)
@@ -94,20 +93,8 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	score = (int)json_object_dotget_number(root_object, "garcia.score");
 
 //----------------------- colliders ---------------------------
-	j_array = json_object_dotget_array(root_object, "garcia.colliders.hit");
-	hit_collider_offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
-	hit_collider = App->collision->AddCollider(
-	{ hit_collider_offset.x + position.x, hit_collider_offset.y + position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3) },
-		colliderType::ENEMY, *this);
-
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "garcia.colliders.attack");
-	attack_collider_offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
-	attack_collider = App->collision->AddCollider(
-	{ attack_collider_offset.x + position.x, attack_collider_offset.y + position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3) },
-		colliderType::ENEMY_ATTACK, *this);
-	json_array_clear(j_array);
+	hit_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.hit", colliderType::ENEMY, &hit_collider_offset);
+	attack_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.attack", colliderType::ENEMY_ATTACK, &attack_collider_offset);
 
 //----------------------- duration ---------------------------
 	attacks_duration = (int)json_object_dotget_number(root_object, "garcia.duration.attacks");
@@ -119,25 +106,27 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 
 	
 //----------------------- sprites ---------------------------
-	j_array = json_object_dotget_array(root_object, "garcia.sprite_offset");
-	sprite_offset.x = (int)json_array_get_number(j_array, 0);
-	sprite_offset.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
+	LoadiPointFromJSONObject(root_object, "garcia.sprite_offset", &sprite_offset);
+	LoadiPointFromJSONObject(root_object, "garcia.sprite_offset_flip", &sprite_offset_flip);
 
-	j_array = json_object_dotget_array(root_object, "garcia.sprite_offset_flip");
-	sprite_offset_flip.x = (int)json_array_get_number(j_array, 0);
-	sprite_offset_flip.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-
-
+//----------------------- animations ---------------------------
 	LoadAnimationFromJSONObject(root_object, "garcia.idle", &idle);
 	LoadAnimationFromJSONObject(root_object, "garcia.walk", &walk);
 	LoadAnimationFromJSONObject(root_object, "garcia.attack1", &attack1);
-	LoadAnimationFromJSONObject(root_object, "garcia.attack3", &attack3);
+	LoadAnimationFromJSONObject(root_object, "garcia.attack2", &attack2);
 	LoadAnimationFromJSONObject(root_object, "garcia.being_hit", &being_hit);
 	LoadAnimationFromJSONObject(root_object, "garcia.being_hold_front", &being_hold_front);
 	LoadAnimationFromJSONObject(root_object, "garcia.being_hold_front_hit", &being_hold_front_hit);
 	LoadAnimationFromJSONObject(root_object, "garcia.being_hold_back", &being_hold_back);
+	LoadAnimationFromJSONObject(root_object, "garcia.being_knocked", &being_knocked);
+	LoadAnimationFromJSONObject(root_object, "garcia.being_thrown", &being_thrown);
+	LoadAnimationFromJSONObject(root_object, "garcia.standing_up", &standing_up);
+	LoadAnimationFromJSONObject(root_object, "garcia.dying", &dying);
+	LoadSDLRectFromJSONObject(root_object, "garcia.shadow", &shadow);
+
+//----------------------- sounds ---------------------------
+	LoadSoundFXFromJSONObject(root_object, "fx.death_voice", &fx_death);
+	LoadSoundFXFromJSONObject(root_object, "fx.attack_hit", &fx_attack_hit);
 
 	//--- free json 
 	json_value_free(root_value);
