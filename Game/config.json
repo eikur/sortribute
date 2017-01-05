@@ -77,12 +77,12 @@
 		"jump_prep": 240,
 		"jump": 768,
 		"throwing": 544,
-		"being_hit": 544,
+		"being_hit": 1024,
 		"being_knocked": 768,
 		"being_thrown": 768,
 		"standing_up": 544,
 		"holding_swap": 1024,
-		"combo_window": 300,
+		"combo_window": 360,
 		"unhittable": 200,
 		"dying": 2048
 	},	
@@ -101,7 +101,7 @@
 			"throw": 20
 		},
 		"colliders": {
-			"attack": [10,-52,40,32],
+			"attack": [10,-52,32,32],
 			"hit": [-12,-52,24,52]
 		},
 		"sprite_offset": [-35,-80],

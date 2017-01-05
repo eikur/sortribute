@@ -214,16 +214,12 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					UpdateCurrentAnimation(&jump_prep, jump_prep_duration, fx_jump);
 				else if (input_attack)
 				{
-					LOG("attacking with block time = %d, combo_hits = %d", blocking_animation_remaining_msec, current_combo_hits);
-					if (current_combo_hits <= 2)
+					if (current_combo_hits <= 1)
 						UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
-					else  if (current_combo_hits == 3)
+					else  if (current_combo_hits == 2)
 						UpdateCurrentAnimation(&attack2, attacks_duration, fx_attack_miss);
-					else if (current_combo_hits == 4)
-					{
+					else if (current_combo_hits == 3)
 						UpdateCurrentAnimation(&attack3, attacks_duration, fx_attack_miss);
-						current_combo_hits = 0;
-					}
 				}
 				else if (move_speed.IsZero())
 					UpdateCurrentAnimation(&idle);

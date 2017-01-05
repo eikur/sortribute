@@ -36,7 +36,7 @@ public:
 
 	virtual void UpdatePosition(const iPoint new_speed);
 	virtual void SetPosition(const iPoint new_position);
-	void UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration = 0, int fx_new_anim = -1);
+	void UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration = 0, int fx_new_anim = -1, bool override_current = false);
 
 	iPoint UpdateKnockedMotion();
 	iPoint UpdateThrownFrontMotion( iPoint pivot);

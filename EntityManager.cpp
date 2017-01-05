@@ -210,23 +210,23 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 				if (first->is_attacking  && second->is_hittable )	
 				{
 					first->is_attacking = false;
-					second->is_hittable = false;
 					App->audio->PlayFx(first->fx_attack_hit);
 					if (first->IsGrounded())
 					{
-						first->current_combo_hits += 1;
-						first->combo_remaining_msec = first->combo_window_msec;
 
-						if (first->current_combo_hits <= 2)
+						if (first->current_combo_hits <= 1)
 							second->SetBeingHit(8);
-						else if (first->current_combo_hits == 3)
+						else if (first->current_combo_hits <= 2)
 							second->SetBeingHit(8);
-						else
-						{
+						else if( first->current_combo_hits == 3)
+						{					
 							second->SetBeingKnocked(12);
-							first->current_combo_hits = 0;
+							first->current_combo_hits = -1;
 							first->combo_remaining_msec = 0;
 						}
+
+						first->current_combo_hits += 1;
+						first->combo_remaining_msec = first->combo_window_msec;
 
 						if (first->position.x <= second->position.x)
 							second->facing_right = false;

@@ -91,9 +91,9 @@ bool Entity::AllowAnimationInterruption()
 	return blocking_animation_remaining_msec <= 0;
 }
 
-void Entity::UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration, int fx_new_anim)
+void Entity::UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration, int fx_new_anim, bool override_current)
 {
-	if (current_animation != new_anim)
+	if (current_animation != new_anim || override_current)
 	{
 		current_animation = new_anim;
 		current_animation->Reset();
@@ -259,10 +259,10 @@ void Entity::SetBeingHit(int damage){
 	unhittable_remaining_msec = unhittable_max_msec;
 	DecreaseHealth(damage);
 	if (IsAlive())
-		UpdateCurrentAnimation(&being_hit, being_hit_duration);
+		UpdateCurrentAnimation(&being_hit, being_hit_duration,-1,true);
 	else
 	{
-		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death);
+		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death, true);
 		air_remaining_msec = being_knocked_duration;
 	}
 }
@@ -272,10 +272,10 @@ void Entity::SetBeingHoldFrontHit(int damage) {
 	unhittable_remaining_msec = unhittable_max_msec;
 	DecreaseHealth(damage);
 	if (IsAlive())
-		UpdateCurrentAnimation(&being_hold_front_hit, being_hit_duration);
+		UpdateCurrentAnimation(&being_hold_front_hit, being_hit_duration, -1, true);
 	else
 	{
-		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death);
+		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death, true);
 		air_remaining_msec = being_knocked_duration;
 	}
 }
@@ -315,9 +315,9 @@ void Entity::SetBeingKnocked(int damage)
 	DecreaseHealth(damage);
 	air_remaining_msec = being_knocked_duration;
 	if (IsAlive())
-		UpdateCurrentAnimation(&being_knocked, being_knocked_duration);
+		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, -1, true);
 	else
-		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death);
+		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death, true);
 
 }
 

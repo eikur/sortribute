@@ -31,7 +31,7 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 	if (air_remaining_msec > 0)
 		air_remaining_msec = MAX(air_remaining_msec - msec_elapsed, 0);
 	if (unhittable_remaining_msec > 0)
-		unhittable_remaining_msec -= msec_elapsed;
+		unhittable_remaining_msec = MAX(unhittable_remaining_msec - msec_elapsed, 0);
 
 	if (IsAlive() == false)
 	{
@@ -83,7 +83,7 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 		}
 	}
 	if (upd_logic)
-		UpdatePosition({ 0,0 });
+		UpdatePosition(move_speed);
 
 	return true;
 }
