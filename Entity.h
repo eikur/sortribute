@@ -39,8 +39,8 @@ public:
 	void UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration = 0, int fx_new_anim = -1);
 
 	iPoint UpdateKnockedMotion();
-	iPoint UpdateThrownFrontMotion();
-	iPoint UpdateThrownBackMotion();
+	iPoint UpdateThrownFrontMotion( iPoint pivot);
+	iPoint UpdateThrownBackMotion( iPoint pivot);
 
 	bool Draw() const;
 	int  GetDepth() const;
@@ -58,8 +58,8 @@ public:
 	void SetBeingHoldFront();
 	void SetBeingHoldFrontHit(int damage = 0);
 	void SetBeingHoldBack();
-	void SetBeingThrownFront();
-	void SetBeingThrownBack();
+	void SetBeingThrownFront( iPoint pivot);
+	void SetBeingThrownBack( iPoint pivot);
 
 	virtual void AddScore(int amount);
 	
@@ -120,6 +120,9 @@ protected:
 // hit control
 	int unhittable_max_msec = 0;
 	int unhittable_remaining_msec = 0;
+
+// throw control 
+	iPoint pivot = { 0,0 };
 
 //animation blocking	
 	int blocking_animation_remaining_msec = 0;

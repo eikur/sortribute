@@ -187,11 +187,11 @@ iPoint Entity::UpdateKnockedMotion()
 	return ret;
 }
 
-iPoint Entity::UpdateThrownFrontMotion()
+iPoint Entity::UpdateThrownFrontMotion( iPoint pivot)
 {
 	return{ 0,0 };
 }
-iPoint Entity::UpdateThrownBackMotion() {
+iPoint Entity::UpdateThrownBackMotion(iPoint pivot) {
 	return{ 0,0 };
 }
 // ----------------- Depth related ------------------------
@@ -302,10 +302,10 @@ void Entity::SetBeingHoldBack()
 	UpdateCurrentAnimation(&being_hold_back);
 }
 
-void Entity::SetBeingThrownFront() {
+void Entity::SetBeingThrownFront( iPoint pivot) {
 	UpdateCurrentAnimation(&being_thrown_front, being_thrown_duration);
 }
-void Entity::SetBeingThrownBack() {
+void Entity::SetBeingThrownBack( iPoint pivot) {
 	UpdateCurrentAnimation(&being_thrown_back, being_thrown_duration);
 }
 

@@ -72,7 +72,20 @@
 		"time_pos" : [152,8],
 		"fx_pause" : "Assets/fx_pause.wav"
 	},
-	
+	"durations": {
+		"attacks": 240,
+		"jump_prep": 240,
+		"jump": 768,
+		"throwing": 544,
+		"being_hit": 544,
+		"being_knocked": 768,
+		"being_thrown": 768,
+		"standing_up": 544,
+		"holding_swap": 1024,
+		"combo_window": 360,
+		"unhittable": 200,
+		"dying": 2048
+	},	
 	"player": {
 		"graphics_file": "Assets/axel.png",
 		"speed" : [3,1],
@@ -93,20 +106,6 @@
 		},
 		"sprite_offset": [-35,-80],
 		"sprite_offset_flip": [-61,-80],
-		"duration": {
-			"attacks": 160,
-			"jump_prep": 160,
-			"jump": 544,
-			"throwing": 544,
-			"being_hit": 100,
-			"being_knocked": 768,
-			"being_thrown": 768,
-			"standing_up": 544,
-			"holding_swap": 768,
-			"combo_window": 260,
-			"unhittable": 200,
-			"dying": 2048
-		},
 		"idle": {
 			"frames": [[0,0, 96,80],[0,0, 96,80],[0,0, 96,80],[0,0, 96,80],[96,0, 96,80],[192,0, 96,80]],
 			"speed" : 0.04
@@ -222,15 +221,6 @@
 		"colliders": {
 			"attack": [10,-52,48,32],
 			"hit": [-12,-52,24,52]
-		},
-		"duration": {
-			"attacks": 160,
-			"being_hit": 320,
-			"being_thrown": 768,
-			"being_knocked": 768,
-			"standing_up": 100,
-			"unhittable": 200,
-			"dying": 2048
 		},
 		"sprite_offset": [-35,-80],
 		"sprite_offset_flip": [-61,-80],

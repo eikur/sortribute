@@ -26,17 +26,19 @@ bool Player::Init()
 
 bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
+	if (blocking_animation_remaining_msec > 0)
+		blocking_animation_remaining_msec = MAX(blocking_animation_remaining_msec - msec_elapsed, 0);
+	if (air_remaining_msec > 0)
+		air_remaining_msec = MAX(air_remaining_msec - msec_elapsed, 0);
+
 	if (IsAlive() == false)
 	{
-		if (blocking_animation_remaining_msec > 0) {
-			blocking_animation_remaining_msec -= msec_elapsed;
-			air_remaining_msec -= msec_elapsed;
-			if (upd_logic && current_animation == &being_knocked)
-				UpdatePosition(UpdateKnockedMotion());
-		}
+		if (upd_logic && current_animation == &being_knocked)
+			UpdatePosition(UpdateKnockedMotion());
 
 		if (blocking_animation_remaining_msec <= 0 && current_animation != &dying)
 			UpdateCurrentAnimation(&dying, dying_duration);
+
 		if (blocking_animation_remaining_msec <= 0 && current_animation == &dying)
 		{
 			ModifyLives(-1);
@@ -48,206 +50,196 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				return false;
 			}
 		}
+		return true;
 	}
-	else
+
+	GetInput(upd_logic);
+	move_speed = { 0,0 };
+
+	if (grounded == false) 
 	{
-		GetInput(upd_logic);
-		move_speed = { 0,0 };
-
-		if (upd_logic == true)
+		if (air_remaining_msec > 0)
 		{
-			if (blocking_animation_remaining_msec > 0)
-				blocking_animation_remaining_msec -= msec_elapsed;
-
-			if (grounded == false)	{
-				if (air_remaining_msec > 0)
-				{
-					air_remaining_msec -= msec_elapsed;
-					if (respawn_fall == true)
-						move_speed.y += 9;
-					else if (jumping)
-						move_speed.y += UpdateJumpVerticalSpeed();
-					else if (is_holding_back || is_holding_front)
-						UpdateHoldingSwapMotion();
-//					else if (is_being_thrown_front)
-//					else if (is_being_thrown_back)
-					else  //knocked
-						move_speed = UpdateKnockedMotion();
-				}
-				if (air_remaining_msec <= 0)
-				{
-					respawn_fall = false;
-					move_speed.y = 0;
-					position.y = ground_y;
-					if (jumping)
-						UpdateCurrentAnimation(&jump_land, jump_prep_duration, fx_landing_jump);
-				}
-			}
-
-			if (blocking_animation_remaining_msec <= 0)
+			if (respawn_fall == true)
 			{
-				if (current_animation == &jump_prep){
-					UpdateCurrentAnimation(&jump);
-					air_remaining_msec = jump_duration;
-				}
-				else if (current_animation == &jump_land || current_animation == &being_hit || current_animation == &take_item)
-					UpdateCurrentAnimation(&idle);
-				else if (current_animation == &being_knocked || current_animation == &being_thrown_front)
-					UpdateCurrentAnimation(&standing_up, standing_up_duration);
-				else if (current_animation == &holding_front_attack)
-					UpdateCurrentAnimation(&holding_front);
-				else if (current_animation == &holding_swap)
-				{
-					is_holding_back = !is_holding_back;	is_holding_front = !is_holding_front; 	facing_right = !facing_right;
-					position.y = ground_y;
-					current_hold_swaps += 1;
-					if (current_hold_swaps < max_hold_swaps)
-					{
-						if (is_holding_front)
-						{
-							held_entity->SetBeingHoldFront();	UpdateCurrentAnimation(&holding_front, 0, fx_landing_jump);
-						}
-						else if (is_holding_back)
-						{
-							held_entity->SetBeingHoldBack(); UpdateCurrentAnimation(&holding_back, 0, fx_landing_jump);
-						}
-					}
-					else
-					{
-						current_hold_swaps = 0;
-						held_entity->SetIdle();
-						held_entity = nullptr;
-						UpdateCurrentAnimation(&idle);
-					}
-				}
+				if (upd_logic)
+				move_speed.y += 9; 
 			}
-
-			if( combo_remaining_msec > 0)
-				combo_remaining_msec -= msec_elapsed;
-			if (combo_remaining_msec <= 0)
-			{
-				combo_remaining_msec = 0;
-				current_combo_hits = 0;
-			}
+			else if (jumping)
+				move_speed.y = UpdateJumpVerticalSpeed();
+			else if (is_holding_back || is_holding_front)
+					UpdateHoldingSwapMotion();
+			else
+				move_speed = UpdateKnockedMotion();
 		}
-
-		if (AllowAnimationInterruption())
+		if (air_remaining_msec <= 0)
 		{
-			if (is_holding_front)
+			respawn_fall = false;
+			move_speed.y = 0;
+			position.y = ground_y;
+			if (jumping)
+				UpdateCurrentAnimation(&jump_land, jump_prep_duration, fx_landing_jump);
+		}
+	}
+	
+	if (blocking_animation_remaining_msec <= 0)
+	{
+		if (current_animation == &jump_prep){
+			UpdateCurrentAnimation(&jump);
+			air_remaining_msec = jump_duration;
+		}
+		else if (current_animation == &jump_land || current_animation == &being_hit || current_animation == &take_item)
+			UpdateCurrentAnimation(&idle);
+		else if (current_animation == &being_knocked || current_animation == &being_thrown_front)
+			UpdateCurrentAnimation(&standing_up, standing_up_duration);
+		else if (current_animation == &holding_front_attack)
+			UpdateCurrentAnimation(&holding_front);
+		else if (current_animation == &holding_swap)
+		{
+			is_holding_back = !is_holding_back;	is_holding_front = !is_holding_front; 	facing_right = !facing_right;
+			position.y = ground_y;
+			current_hold_swaps += 1;
+			if (current_hold_swaps < max_hold_swaps)
 			{
-				if (held_entity->health <= 0)
+				if (is_holding_front)
 				{
-					held_entity = nullptr;
-					UpdateCurrentAnimation(&idle);
+					held_entity->SetBeingHoldFront();	UpdateCurrentAnimation(&holding_front, 0, fx_landing_jump);
 				}
-				else if (input_hold_front_throw)
+				else if (is_holding_back)
 				{
-					facing_right = !facing_right;
-					UpdateCurrentAnimation(&throwing_front, throwing_duration);
-					held_entity->SetBeingThrownFront();
-					held_entity = nullptr;
+					held_entity->SetBeingHoldBack(); UpdateCurrentAnimation(&holding_back, 0, fx_landing_jump);
 				}
-				else if (input_attack )
-				{
-					current_combo_hits += 1;
-					combo_remaining_msec = combo_window_msec;
-					if (current_combo_hits <= 2)
-					{
-						held_entity->SetBeingHoldFrontHit(attack1_dmg);
-						UpdateCurrentAnimation(&holding_front_attack, attacks_duration, fx_attack_hit);
-					}
-					else
-					{
-						held_entity->SetBeingHoldFrontHit(attack2_dmg);									 // tmp
-						UpdateCurrentAnimation(&holding_front_attack2, attacks_duration, fx_attack_hit); // tmp
-					}
-						
-				}
-				else if (input_jump)
-				{
-					UpdateCurrentAnimation(&holding_swap, holding_swap_duration, fx_jump);
-					air_remaining_msec = holding_swap_duration;
-				}
-				else if ((facing_right == true && input_horizontal < 0 )|| (facing_right == false && input_horizontal > 0))
-				{
-					held_entity->SetIdle();
-					held_entity = nullptr;
-					UpdateCurrentAnimation(&idle);
-					facing_right = !facing_right;
-				}
-			}
-			else if (is_holding_back)
-			{
-				if (input_jump)
-				{
-					UpdateCurrentAnimation(&holding_swap, holding_swap_duration, fx_jump);
-					air_remaining_msec = holding_swap_duration;
-				}
-				else if (input_attack)
-				{
-					UpdateCurrentAnimation(&throwing_back, throwing_duration);
-					held_entity->SetBeingThrownBack();
-					held_entity = nullptr;
-				}
-				else if ((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0))
-				{
-					held_entity->SetIdle();
-					held_entity = nullptr;
-					UpdateCurrentAnimation(&idle);
-					facing_right = !facing_right;
-				}
-			}
-			else if (is_being_hold_back)
-			{
-
 			}
 			else
 			{
-				move_speed.y += grounded? speed.y*input_vertical : 0;
-				move_speed.x += speed.x*input_horizontal;
-				facing_right = input_horizontal == 0 ? facing_right : (input_horizontal > 0 ? true : false);
-
-				if (grounded == false)	
-				{
-					if (input_attack)
-						UpdateCurrentAnimation(&jump_attack, 0, fx_voice);
-				}
-				else 		
-				{
-					if (input_attack_back)
-						UpdateCurrentAnimation(&attack_back, attacks_duration, fx_attack_miss);
-					else if (input_jump)
-						UpdateCurrentAnimation(&jump_prep, jump_prep_duration, fx_jump);
-					else if (input_attack)
-					{
-						if (current_combo_hits <= 2)
-							UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
-						else  if (current_combo_hits == 3)
-							UpdateCurrentAnimation(&attack2, attacks_duration, fx_attack_miss);
-						else if (current_combo_hits == 4)
-						{
-							UpdateCurrentAnimation(&attack3, attacks_duration, fx_attack_miss);
-							current_combo_hits = 0;
-						}
-					}
-					else if (move_speed.IsZero())
-						UpdateCurrentAnimation(&idle);
-					else
-						UpdateCurrentAnimation(&walk);
-				}
+				current_hold_swaps = 0;
+				held_entity->SetIdle();
+				held_entity = nullptr;
+				UpdateCurrentAnimation(&idle, 0, fx_landing_jump);
 			}
 		}
-		if (upd_logic)
-		{
-			UpdatePosition(move_speed);
-			App->renderer->MoveCamera(position.x, speed.x);
-		}
 
-		// miscelaneous
-		CheatCodes();
+
+		if( combo_remaining_msec > 0)
+			combo_remaining_msec -= msec_elapsed;
+		if (combo_remaining_msec <= 0)
+		{
+			combo_remaining_msec = 0;
+			current_combo_hits = 0;
+		}
 	}
 
+	if (AllowAnimationInterruption())
+	{
+		if (is_holding_front)
+		{
+			if (held_entity->health <= 0)
+			{
+				held_entity = nullptr;
+				UpdateCurrentAnimation(&idle);
+			}
+			else if (input_hold_front_throw)
+			{
+				facing_right = !facing_right;
+				UpdateCurrentAnimation(&throwing_front, throwing_duration);
+				held_entity->SetBeingThrownFront( position);
+				held_entity = nullptr;
+			}
+			else if (input_attack )
+			{
+				current_combo_hits += 1;
+				combo_remaining_msec = combo_window_msec;
+				if (current_combo_hits <= 2)
+				{
+					held_entity->SetBeingHoldFrontHit(attack1_dmg);
+					UpdateCurrentAnimation(&holding_front_attack, attacks_duration, fx_attack_hit);
+				}
+				else
+				{
+					held_entity->SetBeingHoldFrontHit(attack2_dmg);									 // tmp
+					UpdateCurrentAnimation(&holding_front_attack2, attacks_duration, fx_attack_hit); // tmp
+				}
+						
+			}
+			else if (input_jump)
+			{
+				UpdateCurrentAnimation(&holding_swap, holding_swap_duration, fx_jump);
+				air_remaining_msec = holding_swap_duration;
+			}
+			else if ((facing_right == true && input_horizontal < 0 )|| (facing_right == false && input_horizontal > 0))
+			{
+				held_entity->SetIdle();
+				held_entity = nullptr;
+				UpdateCurrentAnimation(&idle);
+				facing_right = !facing_right;
+			}
+		}
+		else if (is_holding_back)
+		{
+			if (input_jump)
+			{
+				UpdateCurrentAnimation(&holding_swap, holding_swap_duration, fx_jump);
+				air_remaining_msec = holding_swap_duration;
+			}
+			else if (input_attack)
+			{
+				UpdateCurrentAnimation(&throwing_back, throwing_duration);
+				held_entity->SetBeingThrownBack(position);
+				held_entity = nullptr;
+			}
+			else if ((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0))
+			{
+				held_entity->SetIdle();
+				held_entity = nullptr;
+				UpdateCurrentAnimation(&idle);
+				facing_right = !facing_right;
+			}
+		}
+		else
+		{
+			move_speed.y += grounded? speed.y*input_vertical : 0;
+			move_speed.x += speed.x*input_horizontal;
+			facing_right = input_horizontal == 0 ? facing_right : (input_horizontal > 0 ? true : false);
 
+			if (grounded == false)	
+			{
+				if (input_attack)
+					UpdateCurrentAnimation(&jump_attack, 0, fx_voice);
+			}
+			else 		
+			{
+				if (input_attack_back)
+					UpdateCurrentAnimation(&attack_back, attacks_duration, fx_attack_miss);
+				else if (input_jump)
+					UpdateCurrentAnimation(&jump_prep, jump_prep_duration, fx_jump);
+				else if (input_attack)
+				{
+					if (current_combo_hits <= 2)
+						UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
+					else  if (current_combo_hits == 3)
+						UpdateCurrentAnimation(&attack2, attacks_duration, fx_attack_miss);
+					else if (current_combo_hits == 4)
+					{
+						UpdateCurrentAnimation(&attack3, attacks_duration, fx_attack_miss);
+						current_combo_hits = 0;
+					}
+				}
+				else if (move_speed.IsZero())
+					UpdateCurrentAnimation(&idle);
+				else
+					UpdateCurrentAnimation(&walk);
+			}
+		}
+	}
+
+	if (upd_logic)
+	{
+		UpdatePosition(move_speed);
+		App->renderer->MoveCamera(position.x, speed.x);
+	}
+
+	// miscelaneous
+	CheatCodes();
 
 	return true;
 }
@@ -371,6 +363,7 @@ void Player::UpdateHoldingSwapMotion()
 {
 	int divisor = holding_swap_duration / 5;
 	int frames_left = air_remaining_msec / divisor;
+	LOG("frames_left %d", frames_left);
 	int mod = facing_right ? 1 : -1;
 
 	holding_swap.SetCurrentFrame(4 - frames_left);
@@ -535,10 +528,5 @@ void Player::CheatCodes() {
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN && help < 9)
 		help += 1;
 	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
-	{
 		SetBeingHit(8);
-	}
-	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
-		UpdateCurrentAnimation(&throwing_back, throwing_duration);
-
 }

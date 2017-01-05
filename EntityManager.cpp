@@ -7,6 +7,7 @@
 #include "ModuleInput.h"
 #include "ModuleAudio.h"
 #include "ModuleCollision.h"
+#include "ModuleFadeToBlack.h"
 
 #include "Player.h"
 #include "EnemyGarcia.h"
@@ -346,6 +347,7 @@ bool EntityManager::LoadConfigFromFile(const char* file_path)
 		fx_pause = App->audio->LoadFx(json_object_dotget_string(root_object, "hud.fx_pause"));
 	json_value_free(root_value);
 
+
 	return true;
 }
 
@@ -358,6 +360,10 @@ void EntityManager::CheatCodes()
 			a->SetPosition({ player->position.x + 150, player->position.y });
 
 		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && player == nullptr)
+	{
+		App->fade->FadeToBlack((Module*)App->scene3, (Module*)App->scene3, 10.0F);
 	}
 }
 

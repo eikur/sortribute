@@ -20,6 +20,7 @@ bool EnemyGarcia::Init()
 		return false;
 	}
 	UpdateCurrentAnimation(&idle);
+	facing_right = false;
 	return true;
 }
 
@@ -34,47 +35,47 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			if (upd_logic && current_animation == &being_knocked)
 				UpdatePosition(UpdateKnockedMotion());
 		}
-
 		if (blocking_animation_remaining_msec <= 0 && current_animation != &dying)
+		{
 			UpdateCurrentAnimation(&dying, dying_duration);
-
+		}
 		if (blocking_animation_remaining_msec <= 0 && current_animation == &dying)
 			return false;
+		return true;
 	}
-	else {
-		if (upd_logic)
+
+	if (upd_logic)
+	{
+		if (blocking_animation_remaining_msec > 0)
+			blocking_animation_remaining_msec -= msec_elapsed;
+
+		// animation and status transition
+		if (blocking_animation_remaining_msec <= 0)
 		{
-			if (blocking_animation_remaining_msec > 0)
-				blocking_animation_remaining_msec -= msec_elapsed;
+			if (current_animation == &being_hold_front_hit)
+				UpdateCurrentAnimation(&being_hold_front);
+			else if (current_animation == &being_thrown_front || current_animation == &being_thrown_back || current_animation == &being_knocked)
+				UpdateCurrentAnimation(&standing_up, standing_up_duration);
+			else if (current_animation == &standing_up)
+				UpdateCurrentAnimation(&idle);
+		}
 
-			// animation and status transition
-			if (blocking_animation_remaining_msec <= 0)
+		if (unhittable_remaining_msec > 0)
+			unhittable_remaining_msec -= msec_elapsed;
+
+		if (unhittable_remaining_msec <= 0 && (current_animation == &being_hit || current_animation == &being_hold_front_hit))
+		{
+			unhittable_remaining_msec = 0;
+			is_hittable = true;
+		}
+
+		if (AllowAnimationInterruption())
+		{
+			if (is_being_hold_front == false && is_being_hold_back == false)
 			{
-				if (current_animation == &being_hold_front_hit)
-					UpdateCurrentAnimation(&being_hold_front);
-				else if (current_animation == &being_thrown_front || current_animation == &being_thrown_back || current_animation == &being_knocked)
-					UpdateCurrentAnimation(&standing_up, standing_up_duration);
-				else if (current_animation == &standing_up)
-					UpdateCurrentAnimation(&idle);
+				UpdateCurrentAnimation(&idle);
 			}
-
-			if (unhittable_remaining_msec > 0)
-				unhittable_remaining_msec -= msec_elapsed;
-
-			if (unhittable_remaining_msec <= 0 && (current_animation == &being_hit || current_animation == &being_hold_front_hit))
-			{
-				unhittable_remaining_msec = 0;
-				is_hittable = true;
-			}
-
-			if (AllowAnimationInterruption())
-			{
-				if (is_being_hold_front == false && is_being_hold_back == false)
-				{
-					UpdateCurrentAnimation(&idle);
-				}
-				UpdatePosition({ 0,0 });
-			}
+			UpdatePosition({ 0,0 });
 		}
 	}
 	return true;
