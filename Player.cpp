@@ -90,10 +90,16 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		}
 		else if (current_animation == &jump_land || current_animation == &being_hit || current_animation == &take_item)
 			UpdateCurrentAnimation(&idle);
-		else if (current_animation == &being_knocked || current_animation == &being_thrown_front)
+		else if (current_animation == &being_knocked)
 			UpdateCurrentAnimation(&standing_up, standing_up_duration);
 		else if (current_animation == &holding_front_attack)
 			UpdateCurrentAnimation(&holding_front);
+		else if (current_animation == &holding_front_attack2)
+		{
+			held_entity->SetBeingKnocked(attack2_dmg);
+			held_entity = nullptr;
+			UpdateCurrentAnimation(&idle, 0, fx_attack_hit_hard);
+		}
 		else if (current_animation == &holding_swap)
 		{
 			is_holding_back = !is_holding_back;	is_holding_front = !is_holding_front; 	facing_right = !facing_right;
@@ -103,11 +109,13 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			{
 				if (is_holding_front)
 				{
-					held_entity->SetBeingHoldFront();	UpdateCurrentAnimation(&holding_front, 0, fx_landing_jump);
+					held_entity->SetBeingHoldFront();	
+					UpdateCurrentAnimation(&holding_front, 0, fx_landing_jump);
 				}
 				else if (is_holding_back)
 				{
-					held_entity->SetBeingHoldBack(); UpdateCurrentAnimation(&holding_back, 0, fx_landing_jump);
+					held_entity->SetBeingHoldBack(); 
+					UpdateCurrentAnimation(&holding_back, 0, fx_landing_jump);
 				}
 			}
 			else
@@ -156,8 +164,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				}
 				else
 				{
-					held_entity->SetBeingHoldFrontHit(attack2_dmg);									 // tmp
-					UpdateCurrentAnimation(&holding_front_attack2, attacks_duration, fx_attack_hit); // tmp
+					UpdateCurrentAnimation(&holding_front_attack2, attacks_duration); 
 				}
 						
 			}
@@ -462,7 +469,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	being_hit_duration = (int)json_object_dotget_number(root_object, "durations.being_hit");
 	being_thrown_duration = (int)json_object_dotget_number(root_object, "durations.being_thrown");
 	being_knocked_duration= (int)json_object_dotget_number(root_object, "durations.being_knocked");
-	standing_up_duration = (int)json_object_dotget_number(root_object, "durations.standing_up");
+	standing_up_duration = (int)json_object_dotget_number(root_object, "durations.standing_up_player");
 	holding_swap_duration = (int)json_object_dotget_number(root_object, "durations.holding_swap");
 	combo_window_msec = (int)json_object_dotget_number(root_object, "durations.combo_window");
 	dying_duration = (int)json_object_dotget_number(root_object, "durations.dying");
@@ -507,6 +514,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	LoadSoundFXFromJSONObject(root_object, "player.fx.life_up", &fx_extra_life);
 	LoadSoundFXFromJSONObject(root_object, "player.fx.attack_miss", &fx_attack_miss);
 	LoadSoundFXFromJSONObject(root_object, "player.fx.attack_hit", &fx_attack_hit);
+	LoadSoundFXFromJSONObject(root_object, "player.fx.attack_hit_hard", &fx_attack_hit_hard);
 	LoadSoundFXFromJSONObject(root_object, "player.fx.jump", &fx_jump);
 	LoadSoundFXFromJSONObject(root_object, "player.fx.jump_land", &fx_landing_jump);
 	LoadSoundFXFromJSONObject(root_object, "player.fx.death", &fx_death);
@@ -524,6 +532,8 @@ void Player::CheatCodes() {
 		AddScore(1000);
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN && help < 9)
 		help += 1;
-	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN)
 		SetBeingHit(8);
+	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+		SetBeingKnocked(12);
 }

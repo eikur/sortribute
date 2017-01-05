@@ -122,7 +122,7 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	being_hit_duration = (int)json_object_dotget_number(root_object, "durations.being_hit");
 	being_knocked_duration = (int)json_object_dotget_number(root_object, "durations.being_knocked");
 	being_thrown_duration = (int)json_object_dotget_number(root_object, "durations.being_thrown");
-	standing_up_duration = (int)json_object_dotget_number(root_object, "durations.standing_up");
+	standing_up_duration = (int)json_object_dotget_number(root_object, "durations.standing_up_enemy");
 	unhittable_max_msec = (int)json_object_dotget_number(root_object, "durations.unhittable");
 	dying_duration = (int)json_object_dotget_number(root_object, "durations.dying");
 

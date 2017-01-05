@@ -169,7 +169,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			}
 			else if (second_col->type == colliderType::ENEMY)
 			{
-				if ( first->IsGrounded() && ( (first->facing_right == true && first->position.x <= second->position.x) || (first->facing_right == false && second->position.x <= first->position.x) ) )
+				if ( first->IsGrounded() && second->IsGrounded() && ( (first->facing_right == true && first->position.x <= second->position.x) || (first->facing_right == false && second->position.x <= first->position.x) ) )
 				{
 					if (first->facing_right == second->facing_right)
 					{
@@ -209,11 +209,15 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			{
 				if (first->is_attacking  && second->is_hittable )	
 				{
-					first->is_attacking = false;
+					second->is_hittable = false;
 					App->audio->PlayFx(first->fx_attack_hit);
+					if (first->position.x <= second->position.x)
+						second->facing_right = false;
+					else
+						second->facing_right = true;
+
 					if (first->IsGrounded())
 					{
-
 						if (first->current_combo_hits <= 1)
 							second->SetBeingHit(8);
 						else if (first->current_combo_hits <= 2)
@@ -227,11 +231,6 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 
 						first->current_combo_hits += 1;
 						first->combo_remaining_msec = first->combo_window_msec;
-
-						if (first->position.x <= second->position.x)
-							second->facing_right = false;
-						else
-							second->facing_right = true;
 					}
 					else {	// jump attack
 						second->SetBeingKnocked(12);

@@ -80,10 +80,11 @@
 		"being_hit": 1024,
 		"being_knocked": 768,
 		"being_thrown": 768,
-		"standing_up": 544,
+		"standing_up_player": 1536,
+		"standing_up_enemy": 512,
 		"holding_swap": 1024,
 		"combo_window": 360,
-		"unhittable": 200,
+		"unhittable": 240,
 		"dying": 2048
 	},	
 	"player": {
@@ -188,7 +189,7 @@
 		},
 		"standing_up":{
 			"frames": [[288,400, 96,80],[384,400, 96,80],[288,400, 96,80],[384,400, 96,80],[480,400, 96,80]],
-			"speed" : 0.1
+			"speed" : 0.08
 		},
 		"dying":{
 			"frames": [[288,400, 96,80], [384,160, 96,80]],
@@ -202,6 +203,7 @@
 			"jump_land": "Assets/fx_land.wav",
 			"attack_miss": "Assets/fx_attack_miss.wav",
 			"attack_hit": "Assets/fx_attack_hit.wav",
+			"attack_hit_hard": "Assets/fx_attack_hit_hard.wav",
 			"life_up": "Assets/fx_life_up.wav",
 			"death": "Assets/fx_voice_axel_death.wav"
 		}
@@ -266,7 +268,7 @@
 		},
 		"standing_up":{
 			"frames": [[480,80, 96,80]],
-			"speed" : 0.1		
+			"speed" : 0.08
 		},
 		"dying":{
 			"frames": [[384,80, 96,80],[576,0, 96,80]],
