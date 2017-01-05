@@ -68,7 +68,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				}
 				else if (current_animation == &jump_land || current_animation == &being_hit || current_animation == &take_item)
 					UpdateCurrentAnimation(&idle);
-				else if (current_animation == &being_knocked || current_animation == &being_thrown)
+				else if (current_animation == &being_knocked || current_animation == &being_thrown_front)
 					UpdateCurrentAnimation(&standing_up, standing_up_duration);
 				else if (current_animation == &holding_front_attack)
 					UpdateCurrentAnimation(&holding_front);
@@ -482,7 +482,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	LoadAnimationFromJSONObject(root_object, "player.take_item", &take_item);
 	LoadAnimationFromJSONObject(root_object, "player.being_hit", &being_hit);
 	LoadAnimationFromJSONObject(root_object, "player.being_knocked", &being_knocked);
-	LoadAnimationFromJSONObject(root_object, "player.being_thrown", &being_thrown);
+	LoadAnimationFromJSONObject(root_object, "player.being_thrown_front", &being_thrown_front);
 	LoadAnimationFromJSONObject(root_object, "player.standing_up", &standing_up);
 	LoadAnimationFromJSONObject(root_object, "player.dying", &dying);
 
@@ -514,6 +514,7 @@ void Player::CheatCodes() {
 	{
 		SetBeingHit(8);
 	}
-	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_DOWN)
-		UpdateCurrentAnimation(&being_thrown, being_thrown_duration);
+	if (App->input->GetKey(SDL_SCANCODE_F) == KEY_DOWN)
+		UpdateCurrentAnimation(&being_thrown_front, being_thrown_duration);
+
 }

@@ -16,6 +16,8 @@ bool Entity::Init()
 	return true;
 }
 
+// ----------------- Updates ------------------------
+
 bool Entity::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
 	return true;
@@ -67,7 +69,6 @@ void Entity::SetPosition(const iPoint new_position)
 	hit_collider->rect.y = position.y + hit_collider_offset.y;
 }
 
-
 bool Entity::Draw() const
 {
 	if (facing_right)
@@ -85,6 +86,89 @@ bool Entity::Draw() const
 	return true;
 }
 
+bool Entity::AllowAnimationInterruption()
+{
+	return blocking_animation_remaining_msec <= 0;
+}
+
+void Entity::UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration, int fx_new_anim)
+{
+	if (current_animation != new_anim)
+	{
+		current_animation = new_anim;
+		current_animation->Reset();
+		if (fx_new_anim != -1)
+			App->audio->PlayFx(fx_new_anim);
+		blocking_animation_remaining_msec = block_anim_duration;
+
+		// grounded update
+		if (current_animation == &jump ||
+			current_animation == &jump_attack ||
+			current_animation == &being_thrown_front ||
+			current_animation == &being_thrown_back ||
+			current_animation == &being_knocked ||
+			current_animation == &holding_swap)
+			grounded = false;
+		else
+			grounded = true;
+
+		//update jumping status
+		if (current_animation == &jump || current_animation == &jump_attack)
+			jumping = true;
+		else
+			jumping = false;
+
+		// update the hittable status!
+		if (current_animation == &being_hit ||
+			current_animation == &being_thrown_front ||
+			current_animation == &being_thrown_back ||
+			current_animation == &being_knocked ||
+			current_animation == &throwing_front ||
+			current_animation == &throwing_back ||
+			current_animation == &standing_up ||
+			current_animation == &jump_attack ||
+			current_animation == &holding_swap
+			)
+			is_hittable = false;
+		else
+			is_hittable = true;
+
+		// update the attacking status
+		if (current_animation == &attack1 ||
+			current_animation == &attack2 ||
+			current_animation == &attack3 ||
+			//current_animation == &attack_back ||
+			current_animation == &jump_attack)
+			is_attacking = true;
+		else
+			is_attacking = false;
+
+		// holding status
+		if (current_animation == &holding_front || current_animation == &holding_front_attack || current_animation == &holding_front_attack2 ||
+			(current_animation == &holding_swap && is_holding_front))
+			is_holding_front = true;
+		else
+			is_holding_front = false;
+
+		if (current_animation == &holding_back || (current_animation == &holding_swap && is_holding_back))
+			is_holding_back = true;
+		else
+			is_holding_back = false;
+
+		if (current_animation == &being_hold_back)
+			is_being_hold_back = true;
+		else
+			is_being_hold_back = false;
+
+		if (current_animation == &being_hold_front || current_animation == &being_hold_front_hit)
+			is_being_hold_front = true;
+		else
+			is_being_hold_front = false;
+	}
+}
+
+// ----------------- Depth related ------------------------
+
 int Entity::GetDepth() const {
 	return ground_y;
 }
@@ -99,7 +183,8 @@ bool Entity::IsGrounded() const
 	return grounded;
 }
 
-//----------------------------------------------------
+//---------------------- Health related------------------------------
+
 bool Entity::IsAlive() const
 {
 	return health > 0;
@@ -134,7 +219,8 @@ void Entity::RemoveColliders()
 void Entity::AddScore(int amount) 
 {}
 
-//-------------------    Setters for collision management---------------------------------
+//-------------------    Interaction between entities ---------------------------------
+
 void Entity::SetIdle()
 {
 	UpdateCurrentAnimation(&idle);
@@ -179,87 +265,17 @@ void Entity::SetBeingHoldBack()
 	UpdateCurrentAnimation(&being_hold_back);
 }
 
-//----------------------------------------------------
-bool Entity::AllowAnimationInterruption()
-{
-	return blocking_animation_remaining_msec <= 0;
+void Entity::SetBeingThrownFront() {
+	UpdateCurrentAnimation(&being_thrown_front, being_thrown_duration);
 }
-
-void Entity::UpdateCurrentAnimation(Animation *new_anim,  int block_anim_duration, int fx_new_anim )
-{
-	if (current_animation != new_anim)
-	{
-		current_animation = new_anim;
-		current_animation->Reset();
-		if (fx_new_anim != -1)
-			App->audio->PlayFx(fx_new_anim);
-		blocking_animation_remaining_msec = block_anim_duration;
-
-	// grounded update
-		if (current_animation == &jump ||
-			current_animation == &jump_attack ||
-			current_animation == &being_thrown ||
-			current_animation == &being_knocked 
-			|| current_animation == &holding_swap)
-			grounded = false;
-		else
-			grounded = true;
-	
-	//update jumping status
-		if (current_animation == &jump || current_animation == &jump_attack)
-			jumping = true;
-		else
-			jumping = false;
-
-		// update the hittable status!
-		if (current_animation == &being_hit || 
-			current_animation == &being_thrown ||
-			current_animation == &being_knocked ||
-			current_animation == &throwing_front ||
-			current_animation == &throwing_back ||
-			current_animation == &standing_up ||
-			current_animation == &jump_attack ||
-			current_animation == &holding_swap
-			)
-			is_hittable = false;
-		else
-			is_hittable = true;
-
-		// update the attacking status
-		if (current_animation == &attack1 ||
-			current_animation == &attack2 ||
-			current_animation == &attack3 ||
-			//current_animation == &attack_back ||
-			current_animation == &jump_attack)
-			is_attacking = true;
-		else
-			is_attacking = false;
-		
-		// holding status
-		if (current_animation == &holding_front || current_animation == &holding_front_attack || current_animation == &holding_front_attack2 || 
-			(current_animation == &holding_swap && is_holding_front))
-			is_holding_front = true;
-		else
-			is_holding_front = false;
-
-		if (current_animation == &holding_back || (current_animation == &holding_swap && is_holding_back))
-			is_holding_back = true;
-		else
-			is_holding_back = false;
-
-		if (current_animation == &being_hold_back )
-			is_being_hold_back = true;
-		else
-			is_being_hold_back = false;
-
-		if (current_animation == &being_hold_front || current_animation == &being_hold_front_hit)
-			is_being_hold_front = true;
-		else
-			is_being_hold_front = false;
-	}
+void Entity::SetBeingThrownBack() {
+	UpdateCurrentAnimation(&being_thrown_back, being_thrown_duration);
 }
 
 //----------------------------------------------------
+
+
+//------------------------- JSON LOAD ---------------------------
 bool Entity::LoadFromConfigFile(const char* file_path) { 
 	return true; 
 }

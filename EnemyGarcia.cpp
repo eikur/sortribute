@@ -51,7 +51,7 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			{
 				if (current_animation == &being_hold_front_hit)
 					UpdateCurrentAnimation(&being_hold_front);
-				else if (current_animation == &being_thrown || current_animation == &being_knocked)
+				else if (current_animation == &being_thrown_front || current_animation == &being_thrown_back || current_animation == &being_knocked)
 					UpdateCurrentAnimation(&standing_up, standing_up_duration);
 				else if (current_animation == &standing_up)
 					UpdateCurrentAnimation(&idle);
@@ -132,7 +132,8 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	LoadAnimationFromJSONObject(root_object, "garcia.being_hold_front_hit", &being_hold_front_hit);
 	LoadAnimationFromJSONObject(root_object, "garcia.being_hold_back", &being_hold_back);
 	LoadAnimationFromJSONObject(root_object, "garcia.being_knocked", &being_knocked);
-	LoadAnimationFromJSONObject(root_object, "garcia.being_thrown", &being_thrown);
+	LoadAnimationFromJSONObject(root_object, "garcia.being_thrown_front", &being_thrown_front);
+	// missing being_thrown_back
 	LoadAnimationFromJSONObject(root_object, "garcia.standing_up", &standing_up);
 	LoadAnimationFromJSONObject(root_object, "garcia.dying", &dying);
 	LoadSDLRectFromJSONObject(root_object, "garcia.shadow", &shadow);

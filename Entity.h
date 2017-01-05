@@ -53,6 +53,8 @@ public:
 	void SetBeingHoldFront();
 	void SetBeingHoldFrontHit(int damage = 0);
 	void SetBeingHoldBack();
+	void SetBeingThrownFront();
+	void SetBeingThrownBack();
 
 	virtual void AddScore(int amount);
 	
@@ -171,7 +173,8 @@ protected:
 	Animation being_hold_front_hit;
 	Animation being_hold_back;
 	Animation being_hold_attack;
-	Animation being_thrown;
+	Animation being_thrown_front;
+	Animation being_thrown_back;
 	Animation being_hit;
 	Animation being_knocked;
 	Animation standing_up;
