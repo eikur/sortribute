@@ -209,23 +209,33 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			{
 				if (first->is_attacking  && second->is_hittable )	
 				{
-					first->current_combo_hits += 1;
-					first->combo_remaining_msec = first->combo_window_msec;
+					first->is_attacking = false;
+					second->is_hittable = false;
 					App->audio->PlayFx(first->fx_attack_hit);
+					if (first->IsGrounded())
+					{
+						first->current_combo_hits += 1;
+						first->combo_remaining_msec = first->combo_window_msec;
 
-					if (first->current_combo_hits <= 2)
-						second->SetBeingHit(8);	
-					else if (first->current_combo_hits == 3)
-						second->SetBeingHit(8);	
-					else
-						second->SetBeingHit(12);	
+						if (first->current_combo_hits <= 2)
+							second->SetBeingHit(8);
+						else if (first->current_combo_hits == 3)
+							second->SetBeingHit(8);
+						else
+						{
+							second->SetBeingKnocked(12);
+							first->current_combo_hits = 0;
+							first->combo_remaining_msec = 0;
+						}
 
-					if (first->position.x <= second->position.x)
-						second->facing_right = false;
-					else
-						second->facing_right = true;
-
-
+						if (first->position.x <= second->position.x)
+							second->facing_right = false;
+						else
+							second->facing_right = true;
+					}
+					else {	// jump attack
+						second->SetBeingKnocked(12);
+					}
 				}
 			}
 			else
@@ -360,10 +370,6 @@ void EntityManager::CheatCodes()
 			a->SetPosition({ player->position.x + 150, player->position.y });
 
 		}
-	}
-	if (App->input->GetKey(SDL_SCANCODE_SPACE) == KEY_DOWN && player == nullptr)
-	{
-		App->fade->FadeToBlack((Module*)App->scene3, (Module*)App->scene3, 10.0F);
 	}
 }
 

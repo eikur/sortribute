@@ -26,15 +26,19 @@ bool EnemyGarcia::Init()
 
 bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
+	if (blocking_animation_remaining_msec > 0)
+		blocking_animation_remaining_msec = MAX(blocking_animation_remaining_msec - msec_elapsed, 0);
+	if (air_remaining_msec > 0)
+		air_remaining_msec = MAX(air_remaining_msec - msec_elapsed, 0);
+	if (unhittable_remaining_msec > 0)
+		unhittable_remaining_msec -= msec_elapsed;
+
 	if (IsAlive() == false)
 	{
 		RemoveColliders();
-		if (blocking_animation_remaining_msec > 0) {
-			blocking_animation_remaining_msec -= msec_elapsed;
-			air_remaining_msec -= msec_elapsed;
-			if (upd_logic && current_animation == &being_knocked)
-				UpdatePosition(UpdateKnockedMotion());
-		}
+		if (upd_logic && current_animation == &being_knocked)
+			UpdatePosition(UpdateKnockedMotion());
+
 		if (blocking_animation_remaining_msec <= 0 && current_animation != &dying)
 		{
 			UpdateCurrentAnimation(&dying, dying_duration);
@@ -44,40 +48,43 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 		return true;
 	}
 
-	if (upd_logic)
+	move_speed = { 0,0 };
+	if (grounded == false)
 	{
-		if (blocking_animation_remaining_msec > 0)
-			blocking_animation_remaining_msec -= msec_elapsed;
-
-		// animation and status transition
-		if (blocking_animation_remaining_msec <= 0)
+		if (air_remaining_msec > 0)
+			move_speed = UpdateKnockedMotion();
+		else
 		{
-			if (current_animation == &being_hold_front_hit)
-				UpdateCurrentAnimation(&being_hold_front);
-			else if (current_animation == &being_thrown_front || current_animation == &being_thrown_back || current_animation == &being_knocked)
-				UpdateCurrentAnimation(&standing_up, standing_up_duration);
-			else if (current_animation == &standing_up)
-				UpdateCurrentAnimation(&idle);
-		}
 
-		if (unhittable_remaining_msec > 0)
-			unhittable_remaining_msec -= msec_elapsed;
-
-		if (unhittable_remaining_msec <= 0 && (current_animation == &being_hit || current_animation == &being_hold_front_hit))
-		{
-			unhittable_remaining_msec = 0;
-			is_hittable = true;
-		}
-
-		if (AllowAnimationInterruption())
-		{
-			if (is_being_hold_front == false && is_being_hold_back == false)
-			{
-				UpdateCurrentAnimation(&idle);
-			}
-			UpdatePosition({ 0,0 });
 		}
 	}
+
+	if (blocking_animation_remaining_msec <= 0)
+	{
+		if (current_animation == &being_hold_front_hit)
+			UpdateCurrentAnimation(&being_hold_front);
+		else if (current_animation == &being_thrown_front || current_animation == &being_thrown_back || current_animation == &being_knocked)
+			UpdateCurrentAnimation(&standing_up, standing_up_duration);
+		else if (current_animation == &standing_up)
+			UpdateCurrentAnimation(&idle);
+	}
+
+	if (unhittable_remaining_msec <= 0 && (current_animation == &being_hit || current_animation == &being_hold_front_hit))
+	{
+		unhittable_remaining_msec = 0;
+		is_hittable = true;
+	}
+
+	if (AllowAnimationInterruption())
+	{
+		if (is_being_hold_front == false && is_being_hold_back == false)
+		{
+			UpdateCurrentAnimation(&idle);
+		}
+	}
+	if (upd_logic)
+		UpdatePosition({ 0,0 });
+
 	return true;
 }
 
@@ -111,13 +118,13 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	attack_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.attack", colliderType::ENEMY_ATTACK, &attack_collider_offset);
 
 //----------------------- duration ---------------------------
-	attacks_duration = (int)json_object_dotget_number(root_object, "garcia.duration.attacks");
-	being_hit_duration = (int)json_object_dotget_number(root_object, "garcia.duration.being_hit");
-	being_knocked_duration = (int)json_object_dotget_number(root_object, "garcia.duration.being_knocked");
-	being_thrown_duration = (int)json_object_dotget_number(root_object, "garcia.duration.being_thrown");
-	standing_up_duration = (int)json_object_dotget_number(root_object, "garcia.duration.standing_up");
-	unhittable_max_msec = (int)json_object_dotget_number(root_object, "garcia.duration.unhittable");
-	dying_duration = (int)json_object_dotget_number(root_object, "garcia.duration.dying");
+	attacks_duration = (int)json_object_dotget_number(root_object, "durations.attacks");
+	being_hit_duration = (int)json_object_dotget_number(root_object, "durations.being_hit");
+	being_knocked_duration = (int)json_object_dotget_number(root_object, "durations.being_knocked");
+	being_thrown_duration = (int)json_object_dotget_number(root_object, "durations.being_thrown");
+	standing_up_duration = (int)json_object_dotget_number(root_object, "durations.standing_up");
+	unhittable_max_msec = (int)json_object_dotget_number(root_object, "durations.unhittable");
+	dying_duration = (int)json_object_dotget_number(root_object, "durations.dying");
 
 	
 //----------------------- sprites ---------------------------

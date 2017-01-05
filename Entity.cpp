@@ -258,26 +258,26 @@ void Entity::SetBeingHit(int damage){
 	is_hittable = false;
 	unhittable_remaining_msec = unhittable_max_msec;
 	DecreaseHealth(damage);
-	if (health <= 0)
+	if (IsAlive())
+		UpdateCurrentAnimation(&being_hit, being_hit_duration);
+	else
 	{
 		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death);
 		air_remaining_msec = being_knocked_duration;
 	}
-	else
-		UpdateCurrentAnimation(&being_hit, being_hit_duration);
 }
 
 void Entity::SetBeingHoldFrontHit(int damage) {
 	is_hittable = false;   
 	unhittable_remaining_msec = unhittable_max_msec;
 	DecreaseHealth(damage);
-	if (health <= 0)
+	if (IsAlive())
+		UpdateCurrentAnimation(&being_hold_front_hit, being_hit_duration);
+	else
 	{
 		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death);
 		air_remaining_msec = being_knocked_duration;
 	}
-	else
-		UpdateCurrentAnimation(&being_hold_front_hit, being_hit_duration);
 }
 
 void Entity::SetHoldingFront(Entity* held)
@@ -307,6 +307,18 @@ void Entity::SetBeingThrownFront( iPoint pivot) {
 }
 void Entity::SetBeingThrownBack( iPoint pivot) {
 	UpdateCurrentAnimation(&being_thrown_back, being_thrown_duration);
+}
+
+void Entity::SetBeingKnocked(int damage)
+{
+	is_hittable = false;
+	DecreaseHealth(damage);
+	air_remaining_msec = being_knocked_duration;
+	if (IsAlive())
+		UpdateCurrentAnimation(&being_knocked, being_knocked_duration);
+	else
+		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death);
+
 }
 
 //----------------------------------------------------

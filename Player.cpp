@@ -72,7 +72,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			else
 				move_speed = UpdateKnockedMotion();
 		}
-		if (air_remaining_msec <= 0)
+		else
 		{
 			respawn_fall = false;
 			move_speed.y = 0;
@@ -214,6 +214,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					UpdateCurrentAnimation(&jump_prep, jump_prep_duration, fx_jump);
 				else if (input_attack)
 				{
+					LOG("attacking with block time = %d, combo_hits = %d", blocking_animation_remaining_msec, current_combo_hits);
 					if (current_combo_hits <= 2)
 						UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
 					else  if (current_combo_hits == 3)
@@ -457,18 +458,18 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	throw_dmg = (int)json_object_dotget_number(root_object, "player.damage.throw");
 
 
-//----------------------- animation durations---------------------------
-	attacks_duration = (int)json_object_dotget_number(root_object, "player.duration.attacks");
-	jump_prep_duration = (int)json_object_dotget_number(root_object, "player.duration.jump_prep");
-	jump_duration = (int)json_object_dotget_number(root_object, "player.duration.jump");
-	throwing_duration = (int)json_object_dotget_number(root_object, "player.duration.throwing");
-	being_hit_duration = (int)json_object_dotget_number(root_object, "player.duration.being_hit");
-	being_thrown_duration = (int)json_object_dotget_number(root_object, "player.duration.being_thrown");
-	being_knocked_duration= (int)json_object_dotget_number(root_object, "player.duration.being_knocked");
-	standing_up_duration = (int)json_object_dotget_number(root_object, "player.duration.standing_up");
-	holding_swap_duration = (int)json_object_dotget_number(root_object, "player.duration.holding_swap");
-	combo_window_msec = (int)json_object_dotget_number(root_object, "player.duration.combo_window");
-	dying_duration = (int)json_object_dotget_number(root_object, "player.duration.dying");
+//----------------------- logic durations---------------------------
+	attacks_duration = (int)json_object_dotget_number(root_object, "durations.attacks");
+	jump_prep_duration = (int)json_object_dotget_number(root_object, "durations.jump_prep");
+	jump_duration = (int)json_object_dotget_number(root_object, "durations.jump");
+	throwing_duration = (int)json_object_dotget_number(root_object, "durations.throwing");
+	being_hit_duration = (int)json_object_dotget_number(root_object, "durations.being_hit");
+	being_thrown_duration = (int)json_object_dotget_number(root_object, "durations.being_thrown");
+	being_knocked_duration= (int)json_object_dotget_number(root_object, "durations.being_knocked");
+	standing_up_duration = (int)json_object_dotget_number(root_object, "durations.standing_up");
+	holding_swap_duration = (int)json_object_dotget_number(root_object, "durations.holding_swap");
+	combo_window_msec = (int)json_object_dotget_number(root_object, "durations.combo_window");
+	dying_duration = (int)json_object_dotget_number(root_object, "durations.dying");
 
 //----------------------- colliders ---------------------------
 	hit_collider = LoadColliderFromJSONObject(root_object, "player.colliders.hit", colliderType::PLAYER, &hit_collider_offset);

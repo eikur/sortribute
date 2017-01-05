@@ -53,13 +53,18 @@ public:
 
 	void SetIdle();
 	void SetBeingHit(int damage = 0);
+
 	void SetHoldingFront(Entity* held = nullptr);
 	void SetHoldingBack(Entity* held = nullptr);
+
 	void SetBeingHoldFront();
 	void SetBeingHoldFrontHit(int damage = 0);
 	void SetBeingHoldBack();
+
 	void SetBeingThrownFront( iPoint pivot);
 	void SetBeingThrownBack( iPoint pivot);
+
+	void SetBeingKnocked(int damage = 0);
 
 	virtual void AddScore(int amount);
 	

@@ -82,7 +82,7 @@
 		"being_thrown": 768,
 		"standing_up": 544,
 		"holding_swap": 1024,
-		"combo_window": 360,
+		"combo_window": 300,
 		"unhittable": 200,
 		"dying": 2048
 	},	
