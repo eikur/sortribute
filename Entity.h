@@ -82,6 +82,11 @@ public:
 
 	unsigned int fx_attack_hit = 0;
 
+// combo control
+	int current_combo_hits = 0;
+	int combo_remaining_msec = 0;
+	int combo_window_msec = 0;
+
 	Types m_type = Types::unknown;
 
 protected:
@@ -97,9 +102,12 @@ protected:
 	int jump_prep_duration = 0;
 	int jump_duration = 0;
 
+// hit control
+	int unhittable_max_msec = 0;
+	int unhittable_remaining_msec = 0;
+
 //animation blocking	
 	int blocking_animation_remaining_msec = 0;
-
 	int attacks_duration = 0;
 	int take_item_duration = 0;
 	int throwing_duration = 0;

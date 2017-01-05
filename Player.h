@@ -39,7 +39,11 @@ private:
 	bool input_attack = false;
 	bool input_attack_back = false;
 	bool input_jump = false;
-	
+
+	int max_hold_swaps = 2;
+	int current_hold_swaps = 0;
+
+
 };
 
 #endif // __PLAYER_H__

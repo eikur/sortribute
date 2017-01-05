@@ -131,11 +131,15 @@ void Entity::SetIdle()
 }
 
 void Entity::SetBeingHit(int damage){
+	is_hittable = false;
+	unhittable_remaining_msec = unhittable_max_msec;
 	DecreaseHealth(damage);
 	UpdateCurrentAnimation(&being_hit, being_hit_duration);
 }
 
 void Entity::SetBeingHoldFrontHit(int damage) {
+	is_hittable = false;
+	unhittable_remaining_msec = unhittable_max_msec;
 	DecreaseHealth(damage);
 	UpdateCurrentAnimation(&being_hold_front_hit, being_hit_duration);
 }

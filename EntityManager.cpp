@@ -209,13 +209,22 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			{
 				if (first->is_attacking  && second->is_hittable )	
 				{
-					second->SetBeingHit();
-					App->audio->PlayFx(first->fx_attack_hit);	
-					second->DecreaseHealth(8); 
+					first->current_combo_hits += 1;
+					first->combo_remaining_msec = first->combo_window_msec;
+					App->audio->PlayFx(first->fx_attack_hit);
+
+					if (first->current_combo_hits <= 2)
+						second->SetBeingHit(8);	// attck dmg 1
+					else if (first->current_combo_hits == 3)
+						second->SetBeingHit(8);	// attck dmg 2
+					else
+						second->SetBeingHit(12);	// attck dmg 3
+
 					if (first->position.x <= second->position.x)
 						second->facing_right = false;
 					else
 						second->facing_right = true;
+
 
 				}
 			}

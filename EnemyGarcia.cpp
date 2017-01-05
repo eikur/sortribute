@@ -45,6 +45,15 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 				UpdateCurrentAnimation(&idle);
 		}
 
+		if (unhittable_remaining_msec > 0)
+			unhittable_remaining_msec -= msec_elapsed;
+		
+		if (unhittable_remaining_msec <= 0 && (current_animation == &being_hit || current_animation == &being_hold_front_hit))
+		{
+			unhittable_remaining_msec = 0;
+			is_hittable = true;
+		}
+
 		if (AllowAnimationInterruption())
 		{
 			if( is_being_hold_front == false && is_being_hold_back == false)
@@ -54,7 +63,7 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			UpdatePosition({ 0,0 });
 		}
 	}
-	
+
 	return true;
 }
 
@@ -101,12 +110,14 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 		colliderType::ENEMY_ATTACK, *this);
 	json_array_clear(j_array);
 
-//----------------------- animation duration ---------------------------
+//----------------------- duration ---------------------------
 	attacks_duration = (int)json_object_dotget_number(root_object, "garcia.duration.attacks");
 	being_hit_duration = (int)json_object_dotget_number(root_object, "garcia.duration.being_hit");
 	being_knocked_duration = (int)json_object_dotget_number(root_object, "garcia.duration.being_knocked");
 	being_thrown_duration = (int)json_object_dotget_number(root_object, "garcia.duration.being_thrown");
 	standing_up_duration = (int)json_object_dotget_number(root_object, "garcia.duration.standing_up");
+	unhittable_max_msec = (int)json_object_dotget_number(root_object, "garcia.duration.unhittable");
+
 	
 //----------------------- sprites ---------------------------
 	j_array = json_object_dotget_array(root_object, "garcia.sprite_offset");

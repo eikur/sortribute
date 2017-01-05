@@ -63,19 +63,36 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				{
 					is_holding_back = !is_holding_back;	is_holding_front = !is_holding_front; 	facing_right = !facing_right;
 					position.y = ground_y;
-					if (is_holding_front)
+					current_hold_swaps += 1;
+					if (current_hold_swaps < max_hold_swaps)
 					{
-						held_entity->SetBeingHoldFront();	UpdateCurrentAnimation(&holding_front, 0, fx_landing_jump);
+						if (is_holding_front)
+						{
+							held_entity->SetBeingHoldFront();	UpdateCurrentAnimation(&holding_front, 0, fx_landing_jump);
+						}
+						else if (is_holding_back)
+						{
+							held_entity->SetBeingHoldBack(); UpdateCurrentAnimation(&holding_back, 0, fx_landing_jump);
+						}
 					}
-					else if (is_holding_back)
+					else
 					{
-						held_entity->SetBeingHoldBack(); UpdateCurrentAnimation(&holding_back, 0, fx_landing_jump);
+						current_hold_swaps = 0;
+						held_entity->SetIdle();
+						held_entity = nullptr;
+						UpdateCurrentAnimation(&idle);
 					}
 				}
 			}
 
+			if( combo_remaining_msec > 0)
+				combo_remaining_msec -= msec_elapsed;
+			if (combo_remaining_msec <= 0)
+			{
+				combo_remaining_msec = 0;
+				current_combo_hits = 0;
+			}
 
-			// gravity calculations
 			if (grounded == false)
 			{
 				if (air_remaining_msec > 0)
@@ -84,7 +101,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					if (respawn_fall == true)	
 					{
 						air_remaining_msec -= msec_elapsed;
-						move_speed.y += 9;// TODO: CHANGE
+						move_speed.y += 9;
 					}
 					else if (jumping)
 					{
@@ -160,14 +177,24 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				}
 				else if (input_attack )
 				{
-					held_entity->SetBeingHoldFrontHit(attack1_dmg);
-					UpdateCurrentAnimation(&holding_front_attack, attacks_duration, fx_attack_hit);
+					current_combo_hits += 1;
+					combo_remaining_msec = combo_window_msec;
+					if (current_combo_hits <= 2)
+					{
+						held_entity->SetBeingHoldFrontHit(attack1_dmg);
+						UpdateCurrentAnimation(&holding_front_attack, attacks_duration, fx_attack_hit);
+					}
+					else
+					{
+						held_entity->SetBeingHoldFrontHit(attack2_dmg);									 // tmp
+						UpdateCurrentAnimation(&holding_front_attack2, attacks_duration, fx_attack_hit); // tmp
+					}
+						
 				}
 				else if (input_jump)
 				{
 					UpdateCurrentAnimation(&holding_swap, holding_swap_duration, fx_jump);
 					air_remaining_msec = holding_swap_duration;
-					
 				}
 				else if ((facing_right == true && input_horizontal < 0 )|| (facing_right == false && input_horizontal > 0))
 				{
@@ -220,7 +247,17 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					else if (input_jump)
 						UpdateCurrentAnimation(&jump_prep, jump_prep_duration, fx_jump);
 					else if (input_attack)
-						UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
+					{
+						if (current_combo_hits <= 2)
+							UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
+						else  if (current_combo_hits == 3)
+							UpdateCurrentAnimation(&attack2, attacks_duration, fx_attack_miss);
+						else if (current_combo_hits == 4)
+						{
+							UpdateCurrentAnimation(&attack3, attacks_duration, fx_attack_miss);
+							current_combo_hits = 0;
+						}
+					}
 					else if (move_speed.IsZero())
 						UpdateCurrentAnimation(&idle);
 					else
@@ -410,7 +447,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	being_knocked_duration= (int)json_object_dotget_number(root_object, "player.duration.being_knocked");
 	standing_up_duration = (int)json_object_dotget_number(root_object, "player.duration.standing_up");
 	holding_swap_duration = (int)json_object_dotget_number(root_object, "player.duration.holding_swap");
-
+	combo_window_msec = (int)json_object_dotget_number(root_object, "player.duration.combo_window");
 //----------------------- colliders ---------------------------
 	j_array = json_object_dotget_array(root_object, "player.colliders.hit");
 	hit_collider_offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
