@@ -60,9 +60,13 @@ protected:
 	bool IsAlive() const;
 	bool Die();
 	bool AllowAnimationInterruption();
+	
 	virtual bool LoadFromConfigFile(const char* file_path);
-	void LoadAnimationFromJSONObject(JSON_Object *j_object, const char *dotget_path, Animation *animation);
+	void LoadAnimationFromJSONObject(JSON_Object *j_object, const char *dotget_path, Animation* animation);
 	void LoadSDLRectFromJSONObject(JSON_Object* j_object, const char *dotget_path, SDL_Rect *rect);
+	void LoadSoundFXFromJSONObject(JSON_Object* j_object, const char *dotget_path, unsigned int *fx );
+	void LoadiPointFromJSONObject(JSON_Object* j_object, const char *dotget_path, iPoint *point);
+	Collider* LoadColliderFromJSONObject(JSON_Object* j_object, const char *dotget_path, colliderType type, iPoint *offset);
 
 public: 
 	iPoint position = {0, 0};

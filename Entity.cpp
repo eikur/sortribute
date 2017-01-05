@@ -251,11 +251,11 @@ bool Entity::LoadFromConfigFile(const char* file_path) {
 	return true; 
 }
 
-void Entity::LoadAnimationFromJSONObject(JSON_Object* j_object, const char *dotget_path, Animation *animation)
+void Entity::LoadAnimationFromJSONObject(JSON_Object* j_object, const char *dotget_path, Animation* animation)
 {
 	JSON_Array *j_array, *j_array_inner;
 	std::string tmp = dotget_path;
-	
+
 	tmp.append(".speed");
 	animation->speed = (float)json_object_dotget_number(j_object, tmp.c_str());
 	
@@ -278,3 +278,30 @@ void Entity::LoadSDLRectFromJSONObject(JSON_Object* j_object, const char *dotget
 	json_array_clear(j_array);
 }
 
+void Entity::LoadSoundFXFromJSONObject(JSON_Object* j_object, const char *dotget_path, unsigned int *fx)
+{
+	if (json_object_dothas_value_of_type(j_object, dotget_path, JSONString))
+		*fx = App->audio->LoadFx(json_object_dotget_string(j_object, dotget_path));
+}
+
+void Entity::LoadiPointFromJSONObject(JSON_Object* j_object, const char *dotget_path, iPoint *point)
+{
+	JSON_Array *j_array;
+	j_array = json_object_dotget_array(j_object, dotget_path);
+	point->x = (int)json_array_get_number(j_array, 0);
+	point->y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+}
+
+Collider* Entity::LoadColliderFromJSONObject(JSON_Object* j_object, const char *dotget_path, colliderType type, iPoint *offset)
+{
+	JSON_Array *j_array;
+	Collider* ret;
+	j_array = json_object_dotget_array(j_object, dotget_path);
+	*offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
+	ret = App->collision->AddCollider(
+	{ offset->x + position.x, offset->y + position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3) },
+		type, *this);
+	json_array_clear(j_array);
+	return ret;
+}

@@ -415,14 +415,8 @@ bool Player::LoadFromConfigFile(const char* file_path)
 		return false;
 	}
 
-//----------------------- position and speed ---------------------------
-	//move speed
-	j_array = json_object_dotget_array(root_object, "player.speed");
-	speed.x = (int)json_array_get_number(j_array, 0);
-	speed.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-	
 //----------------------- game variables ---------------------------
+	LoadiPointFromJSONObject(root_object, "player.speed", &speed);
 	max_health = (int)json_object_dotget_number(root_object, "player.max_health");
 	health = max_health;
 	lives = (int)json_object_dotget_number(root_object, "player.lives");
@@ -449,34 +443,14 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	holding_swap_duration = (int)json_object_dotget_number(root_object, "player.duration.holding_swap");
 	combo_window_msec = (int)json_object_dotget_number(root_object, "player.duration.combo_window");
 //----------------------- colliders ---------------------------
-	j_array = json_object_dotget_array(root_object, "player.colliders.hit");
-	hit_collider_offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
-	hit_collider = App->collision->AddCollider( 
-		{hit_collider_offset.x + position.x, hit_collider_offset.y +position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3)}, 
-		colliderType::PLAYER, *this);
-	
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "player.colliders.attack");
-	attack_collider_offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
-	attack_collider = App->collision->AddCollider(
-		{attack_collider_offset.x + position.x, attack_collider_offset.y + position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3) },
-		colliderType::PLAYER_ATTACK, *this);
-	json_array_clear(j_array);
+	hit_collider = LoadColliderFromJSONObject(root_object, "player.colliders.hit", colliderType::PLAYER, &hit_collider_offset);
+	attack_collider = LoadColliderFromJSONObject(root_object, "player.colliders.attack", colliderType::PLAYER_ATTACK, &attack_collider_offset);
 
 //----------------------- sprite offsets ---------------------------
-	
-	
-	j_array = json_object_dotget_array(root_object, "player.sprite_offset");
-	sprite_offset.x = (int)json_array_get_number(j_array, 0);
-	sprite_offset.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
+	LoadiPointFromJSONObject(root_object, "player.sprite_offset", &sprite_offset);
+	LoadiPointFromJSONObject(root_object, "player.sprite_offset_flip", &sprite_offset_flip);
 
-	j_array = json_object_dotget_array(root_object, "player.sprite_offset_flip");
-	sprite_offset_flip.x = (int)json_array_get_number(j_array, 0);
-	sprite_offset_flip.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-
+// ------------------ animations -------------------------------------
 	LoadAnimationFromJSONObject(root_object, "player.idle", &idle);
 	LoadAnimationFromJSONObject(root_object, "player.walk", &walk);
 	LoadAnimationFromJSONObject(root_object, "player.jump_prep", &jump_prep);
@@ -496,19 +470,12 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	LoadSDLRectFromJSONObject(root_object, "player.shadow", &shadow);
 
 // ---------------------- sound effects ----------------------------
-	if (json_object_dothas_value_of_type(root_object, "player.fx.voice", JSONString))
-		fx_voice = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.voice"));
-	if (json_object_dothas_value_of_type(root_object, "player.fx.life_up", JSONString))
-		fx_extra_life = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.life_up"));
-	if (json_object_dothas_value_of_type(root_object, "player.fx.attack_miss", JSONString))
-		fx_attack_miss = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.attack_miss"));
-	if (json_object_dothas_value_of_type(root_object, "player.fx.attack_hit", JSONString))
-		fx_attack_hit = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.attack_hit"));
-	if (json_object_dothas_value_of_type(root_object, "player.fx.jump", JSONString))
-		fx_jump = App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.jump"));
-	if (json_object_dothas_value_of_type(root_object, "player.fx.jump_land", JSONString))
-		fx_landing_jump= App->audio->LoadFx(json_object_dotget_string(root_object, "player.fx.jump_land"));
-	
+	LoadSoundFXFromJSONObject(root_object, "player.fx.voice", &fx_voice);
+	LoadSoundFXFromJSONObject(root_object, "player.fx.life_up", &fx_extra_life);
+	LoadSoundFXFromJSONObject(root_object, "player.fx.attack_miss", &fx_attack_miss);
+	LoadSoundFXFromJSONObject(root_object, "player.fx.attack_hit", &fx_attack_hit);
+	LoadSoundFXFromJSONObject(root_object, "player.fx.jump", &fx_jump);
+	LoadSoundFXFromJSONObject(root_object, "player.fx.jump_land", &fx_landing_jump);
 
 	json_value_free(root_value);
 

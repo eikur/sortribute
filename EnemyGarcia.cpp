@@ -72,7 +72,6 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	JSON_Value *root_value;
 	JSON_Object *root_object;
 	JSON_Array *j_array;
-	JSON_Array *j_array_inner;
 
 	root_value = json_parse_file(file_path);
 	if (root_value == nullptr)
