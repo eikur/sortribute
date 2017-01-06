@@ -218,18 +218,16 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 
 					if (first->IsGrounded())
 					{
-						if (first->current_combo_hits <= 1)
+						if (first->current_combo_hits <= 2)
 							second->SetBeingHit(8);
-						else if (first->current_combo_hits <= 2)
+						else if (first->current_combo_hits <= 3)
 							second->SetBeingHit(8);
-						else if( first->current_combo_hits == 3)
+						else if( first->current_combo_hits == 4)
 						{					
 							second->SetBeingKnocked(12);
-							first->current_combo_hits = -1;
 							first->combo_remaining_msec = 0;
 						}
 
-						first->current_combo_hits += 1;
 						first->combo_remaining_msec = first->combo_window_msec;
 					}
 					else {	// jump attack
@@ -366,7 +364,7 @@ void EntityManager::CheatCodes()
 	{
 		Entity *a = (Entity*) CreateEntity(Entity::Types::npc_garcia);
 		if (a != nullptr){
-			a->SetPosition({ player->position.x + 150, player->position.y });
+			a->SetPosition({ player->position.x + 48, player->position.y });
 
 		}
 	}

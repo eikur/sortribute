@@ -83,7 +83,7 @@
 		"standing_up_player": 1536,
 		"standing_up_enemy": 512,
 		"holding_swap": 1024,
-		"combo_window": 360,
+		"combo_window": 500,
 		"unhittable": 240,
 		"dying": 2048
 	},	

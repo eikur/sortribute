@@ -30,6 +30,8 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		blocking_animation_remaining_msec = MAX(blocking_animation_remaining_msec - msec_elapsed, 0);
 	if (air_remaining_msec > 0)
 		air_remaining_msec = MAX(air_remaining_msec - msec_elapsed, 0);
+	if (combo_remaining_msec > 0)
+		combo_remaining_msec = MAX(combo_remaining_msec - msec_elapsed, 0);
 
 	if (IsAlive() == false)
 	{
@@ -127,14 +129,8 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			}
 		}
 
-
-		if( combo_remaining_msec > 0)
-			combo_remaining_msec -= msec_elapsed;
 		if (combo_remaining_msec <= 0)
-		{
-			combo_remaining_msec = 0;
 			current_combo_hits = 0;
-		}
 	}
 
 	if (AllowAnimationInterruption())
@@ -221,11 +217,12 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					UpdateCurrentAnimation(&jump_prep, jump_prep_duration, fx_jump);
 				else if (input_attack)
 				{
-					if (current_combo_hits <= 1)
+					current_combo_hits += 1;
+					if (current_combo_hits <= 2)
 						UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
-					else  if (current_combo_hits == 2)
+					else  if (current_combo_hits == 3)
 						UpdateCurrentAnimation(&attack2, attacks_duration, fx_attack_miss);
-					else if (current_combo_hits == 3)
+					else if (current_combo_hits == 4)
 						UpdateCurrentAnimation(&attack3, attacks_duration, fx_attack_miss);
 				}
 				else if (move_speed.IsZero())
