@@ -223,6 +223,12 @@ void Entity::IncreaseHealth(int amount) {
 
 void Entity::DecreaseHealth(int amount) {
 	health = MAX(health - amount, 0);
+	if (IsAlive() == false)
+	{
+		// add animation detection
+		air_remaining_msec = being_knocked_duration;
+		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death, true);
+	}
 }
 
 void Entity::TimeOver()
@@ -233,8 +239,7 @@ void Entity::TimeOver()
 		held_entity->SetIdle();
 		held_entity = nullptr;
 	}
-	UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death);
-	air_remaining_msec = being_knocked_duration;
+	DecreaseHealth(max_health);
 }
 void Entity::RemoveColliders()
 {
@@ -257,27 +262,15 @@ void Entity::SetIdle()
 void Entity::SetBeingHit(int damage){
 	is_hittable = false;
 	unhittable_remaining_msec = unhittable_max_msec;
+	UpdateCurrentAnimation(&being_hit, being_hit_duration, -1, true);
 	DecreaseHealth(damage);
-	if (IsAlive())
-		UpdateCurrentAnimation(&being_hit, being_hit_duration,-1,true);
-	else
-	{
-		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death, true);
-		air_remaining_msec = being_knocked_duration;
-	}
 }
 
 void Entity::SetBeingHoldFrontHit(int damage) {
 	is_hittable = false;   
 	unhittable_remaining_msec = unhittable_max_msec;
+	UpdateCurrentAnimation(&being_hold_front_hit, being_hit_duration, -1, true);
 	DecreaseHealth(damage);
-	if (IsAlive())
-		UpdateCurrentAnimation(&being_hold_front_hit, being_hit_duration, -1, true);
-	else
-	{
-		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death, true);
-		air_remaining_msec = being_knocked_duration;
-	}
 }
 
 void Entity::SetHoldingFront(Entity* held)
@@ -312,13 +305,9 @@ void Entity::SetBeingThrownBack( iPoint pivot) {
 void Entity::SetBeingKnocked(int damage)
 {
 	is_hittable = false;
-	DecreaseHealth(damage);
 	air_remaining_msec = being_knocked_duration;
-	if (IsAlive())
-		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, -1, true);
-	else
-		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death, true);
-
+	UpdateCurrentAnimation(&being_knocked, being_knocked_duration, -1, true);
+	DecreaseHealth(damage);
 }
 
 //----------------------------------------------------

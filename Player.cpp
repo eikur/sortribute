@@ -100,7 +100,8 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		{
 			held_entity->SetBeingKnocked(attack2_dmg);
 			held_entity = nullptr;
-			UpdateCurrentAnimation(&idle, 0, fx_attack_hit_hard);
+			UpdateCurrentAnimation(&idle, 200 , fx_attack_hit_hard);	// TODO revisar
+			current_combo_hits = 0;
 		}
 		else if (current_animation == &holding_swap)
 		{
