@@ -2,6 +2,7 @@
 #include "ModuleRender.h"
 #include "ModuleAudio.h"
 #include "ModuleCollision.h"
+#include "ModuleTextures.h"
 
 #include "Entity.h"
 
@@ -57,15 +58,18 @@ void Entity::SetPosition(const iPoint new_position)
 
 	if (facing_right)
 	{
-		attack_collider->rect.x = position.x + attack_collider_offset.x;
+		if (attack_collider != nullptr)
+			attack_collider->rect.x = position.x + attack_collider_offset.x;
 		hit_collider->rect.x = position.x + hit_collider_offset.x;
 	}
 	else
 	{
-		attack_collider->rect.x = position.x + -(attack_collider_offset.x + attack_collider->rect.w);
+		if (attack_collider != nullptr)
+			attack_collider->rect.x = position.x + -(attack_collider_offset.x + attack_collider->rect.w);
 		hit_collider->rect.x = position.x - (hit_collider_offset.x + hit_collider->rect.w);
 	}
-	attack_collider->rect.y = position.y + attack_collider_offset.y;
+	if (attack_collider != nullptr)
+		attack_collider->rect.y = position.y + attack_collider_offset.y;
 	hit_collider->rect.y = position.y + hit_collider_offset.y;
 }
 
@@ -214,6 +218,7 @@ iPoint Entity::UpdateThrownFrontMotion()
 
 	return ret;
 }
+
 void Entity::UpdateThrownBackMotion() {
 	
 	int divisor = being_thrown_duration / 8;
@@ -234,8 +239,8 @@ void Entity::UpdateThrownBackMotion() {
 	case 0: grounded = true; SetPosition({ pivot.x - mod * 60, pivot.y }); break;
 	}
 }
-// ----------------- Depth related ------------------------
 
+// ----------------- Depth related ------------------------
 int Entity::GetDepth() const {
 	return ground_y;
 }
@@ -284,12 +289,20 @@ void Entity::TimeOver()
 	}
 	DecreaseHealth(max_health);
 }
+
+
+
 void Entity::RemoveColliders()
 {
 	if (hit_collider != nullptr)
 		hit_collider->to_delete = true;
 	if (attack_collider != nullptr)
 		attack_collider->to_delete = true;
+}
+void Entity::CleanUp()
+{
+	if (graphics != nullptr)
+		App->textures->Unload(graphics);
 }
 
 void Entity::AddScore(int amount) 
@@ -300,6 +313,12 @@ void Entity::AddScore(int amount)
 void Entity::SetIdle()
 {
 	UpdateCurrentAnimation(&idle);
+}
+
+void Entity::SetReachableItem(Entity* reachable)
+{
+	if (reachable != nullptr)
+		reachable_item = reachable;
 }
 
 void Entity::SetBeingHit(int damage){
@@ -356,6 +375,11 @@ void Entity::SetBeingKnocked(int damage)
 	air_remaining_msec = being_knocked_duration;
 	UpdateCurrentAnimation(&being_knocked, being_knocked_duration, -1, true);
 	DecreaseHealth(damage);
+}
+
+bool Entity::IsHoldingSomeone()
+{
+	return held_entity != nullptr;
 }
 
 //----------------------------------------------------

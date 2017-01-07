@@ -44,7 +44,10 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			UpdateCurrentAnimation(&dying, dying_duration);
 		}
 		if (blocking_animation_remaining_msec <= 0 && current_animation == &dying)
+		{
+			CleanUp();
 			return false;
+		}
 		return true;
 	}
 

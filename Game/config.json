@@ -85,6 +85,7 @@
 		"being_hit": 1024,
 		"being_knocked": 768,
 		"being_thrown": 1536,
+		"take_item": 256,
 		"standing_up_player": 1536,
 		"standing_up_enemy": 512,
 		"dying": 2048
@@ -105,6 +106,7 @@
 		"attack_hit_hard": "Assets/fx_attack_hit_hard.wav",
 		"ground_hit": "Assets/fx_ground_hit.wav",
 		"life_up": "Assets/fx_life_up.wav",
+		"health_item": "Assets/fx_health_item.wav",
 		"death_player": "Assets/fx_voice_axel_death.wav", 
 		"death_garcia": "Assets/fx_voice_garcia.wav",
 		"attack_hit_enemy": "Assets/fx_attack_hit_enemy.wav"
@@ -280,6 +282,29 @@
 		},
 		"shadow": [480,0, 96,80]
 		
+	},
+	"item_apple" :{
+		"graphics_file": "Assets/health_items.png",
+		"max_health" : 20,
+		"sprite_offset": [-8,-16],
+		"idle": {
+			"frames": [[0,0, 16,16]],
+			"speed" : 0
+		},
+		"colliders": {
+			"hit": [-5,-5,10,5]
+		}
+	},
+	"item_chicken" :{
+		"graphics_file": "Assets/health_items.png",
+		"max_health" : 80,
+		"sprite_offset": [-8,-16],
+		"idle": {
+			"frames": [[0,16, 16,16]],
+			"speed" : 0
+		},
+		"colliders": {
+			"hit": [-5,-5,10,5]
+		}
 	}
-	
 }

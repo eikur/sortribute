@@ -2,7 +2,6 @@
 #define __ENEMYGARCIA_H__
 
 #include "Entity.h"
-class EntityManager;
 
 class EnemyGarcia: public Entity {
 
@@ -15,9 +14,7 @@ public:
 
 private:
 	bool LoadFromConfigFile(const char* file_path);
-	
-private: 
-	EntityManager* parent = nullptr;
+
 
 };
 

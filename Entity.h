@@ -18,6 +18,8 @@ public:
 	{
 		player,
 		npc_garcia,
+		item_apple,
+		item_chicken,
 		unknown
 	};
 
@@ -48,23 +50,23 @@ public:
 	bool IsGrounded() const;
 
 	void IncreaseHealth(int amount);
-	void DecreaseHealth(int amount);
+	virtual void DecreaseHealth(int amount);
 	void TimeOver();
 
-	void SetIdle();
-	void SetBeingHit(int damage = 0);
 
+	void SetIdle();
+	void SetReachableItem( Entity* reachable = nullptr);
 	void SetHoldingFront(Entity* held = nullptr);
 	void SetHoldingBack(Entity* held = nullptr);
-
+	void SetBeingHit(int damage = 0);
 	void SetBeingHoldFront();
 	void SetBeingHoldFrontHit(int damage = 0);
 	void SetBeingHoldBack();
-
 	void SetBeingThrownFront( iPoint pvt);
 	void SetBeingThrownBack( iPoint pvt);
-
 	void SetBeingKnocked(int damage = 0);
+
+	bool IsHoldingSomeone();
 
 	virtual void AddScore(int amount);
 	
@@ -74,6 +76,7 @@ protected:
 	bool AllowAnimationInterruption();
 
 	void RemoveColliders();
+	void CleanUp();
 	
 	virtual bool LoadFromConfigFile(const char* file_path);
 	void LoadAnimationFromJSONObject(JSON_Object *j_object, const char *dotget_path, Animation* animation);
@@ -215,8 +218,9 @@ protected:
 	unsigned int fx_health_restore = 0;
 	unsigned int fx_extra_life = 0;
 
-// Hold enemy
+// Interactions and collisions
 	Entity* held_entity = nullptr;
+	Entity* reachable_item = nullptr;
 };
 
 #endif // __ENTITY_H__

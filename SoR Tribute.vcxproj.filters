@@ -82,6 +82,9 @@
     <ClInclude Include="EnemyGarcia.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
+    <ClInclude Include="Apple.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -139,6 +142,9 @@
       <Filter>Core Modules</Filter>
     </ClCompile>
     <ClCompile Include="EnemyGarcia.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Apple.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
   </ItemGroup>

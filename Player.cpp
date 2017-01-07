@@ -53,6 +53,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			else
 			{
 				RemoveColliders();
+				CleanUp();
 				return false;
 			}
 		}
@@ -236,14 +237,23 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					UpdateCurrentAnimation(&jump_prep, jump_prep_duration, fx_jump);
 				else if (input_attack)
 				{
-					if (current_combo_hits <= 1) 
-						UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
-					else  if (current_combo_hits == 2)
-						UpdateCurrentAnimation(&attack2, attacks_duration, fx_attack_miss);
-					else if (current_combo_hits == 3)
-						UpdateCurrentAnimation(&attack3, attacks_duration, fx_attack_miss);
-					current_combo_hits += 1;
-					
+					if (reachable_item != nullptr)
+					{
+						UpdateCurrentAnimation(&take_item, take_item_duration, fx_health_restore);
+						IncreaseHealth(reachable_item->max_health);
+						reachable_item->DecreaseHealth(reachable_item->max_health);	
+						reachable_item = nullptr;
+					}
+					else
+					{
+						if (current_combo_hits <= 1)
+							UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
+						else  if (current_combo_hits == 2)
+							UpdateCurrentAnimation(&attack2, attacks_duration, fx_attack_miss);
+						else if (current_combo_hits == 3)
+							UpdateCurrentAnimation(&attack3, attacks_duration, fx_attack_miss);
+						current_combo_hits += 1;
+					}
 				}
 				else if (move_speed.IsZero())
 					UpdateCurrentAnimation(&idle);
@@ -252,6 +262,8 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			}
 		}
 	}
+
+	reachable_item = nullptr;
 
 	if (upd_logic)
 	{
@@ -387,7 +399,7 @@ void Player::UpdateHoldingSwapMotion()
 {
 	int divisor = holding_swap_duration / 5;
 	int frames_left = air_remaining_msec / divisor;
-	LOG("frames_left %d", frames_left);
+
 	int mod = facing_right ? 1 : -1;
 
 	holding_swap.SetCurrentFrame(4 - frames_left);
@@ -506,6 +518,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	being_knocked_duration= (int)json_object_dotget_number(root_object, "durations.being_knocked");
 	standing_up_duration = (int)json_object_dotget_number(root_object, "durations.standing_up_player");
 	holding_swap_duration = (int)json_object_dotget_number(root_object, "durations.holding_swap");
+	take_item_duration = (int)json_object_dotget_number(root_object, "durations.take_item");
 	combo_window_msec = (int)json_object_dotget_number(root_object, "durations.combo_window");
 	combo_hold_window_msec = (int)json_object_dotget_number(root_object, "durations.hold_combo_window");
 	dying_duration = (int)json_object_dotget_number(root_object, "durations.dying");
@@ -548,6 +561,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 // ---------------------- sound effects ----------------------------
 	LoadSoundFXFromJSONObject(root_object, "fx.voice_player", &fx_voice);
 	LoadSoundFXFromJSONObject(root_object, "fx.life_up", &fx_extra_life);
+	LoadSoundFXFromJSONObject(root_object, "fx.health_item", &fx_health_restore);
 	LoadSoundFXFromJSONObject(root_object, "fx.attack_miss", &fx_attack_miss);
 	LoadSoundFXFromJSONObject(root_object, "fx.attack_hit", &fx_attack_hit);
 	LoadSoundFXFromJSONObject(root_object, "fx.attack_hit_hard", &fx_attack_hit_hard);
@@ -555,7 +569,8 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	LoadSoundFXFromJSONObject(root_object, "fx.jump", &fx_jump);
 	LoadSoundFXFromJSONObject(root_object, "fx.jump_land", &fx_landing_jump);
 	LoadSoundFXFromJSONObject(root_object, "fx.death_player", &fx_death);
-
+	
+	
 
 	json_value_free(root_value);
 

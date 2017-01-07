@@ -11,6 +11,7 @@
 
 #include "Player.h"
 #include "EnemyGarcia.h"
+#include "Apple.h"
 
 #include "EntityManager.h"
 
@@ -112,13 +113,15 @@ bool EntityManager::CleanUp()
 //---------------------- Entity Management ------------------
 Entity* EntityManager::CreateEntity(Entity::Types type)
 {
-	static_assert(Entity::Types::unknown == 2, "code needs update");
+	static_assert(Entity::Types::unknown == 4, "code needs update");
 	Entity* ret = nullptr;
 
 	switch (type)
 	{
 	case Entity::Types::player: ret = new Player(); break;
 	case Entity::Types::npc_garcia: ret = new EnemyGarcia(); break;
+	case Entity::Types::item_apple: ret = new Apple();
+		// case Entity::Types::item_chicken: ret = new Chicken();
 	}
 
 	if (ret != nullptr)
@@ -165,11 +168,11 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 		case colliderType::PLAYER:
 			if (second_col->type == colliderType::ITEMS)	
 			{
-				//Take item!
+				first->SetReachableItem(second);
 			}
 			else if (second_col->type == colliderType::ENEMY)
 			{
-				if ( first->IsGrounded() && second->IsGrounded() && !second->is_being_thrown_back &&
+				if ( first->IsGrounded() && second->IsGrounded() && !second->is_being_thrown_back && !first->IsHoldingSomeone() &&
 					( (first->facing_right == true && first->position.x <= second->position.x) || (first->facing_right == false && second->position.x <= first->position.x) ) )
 				{
 					if (first->facing_right == second->facing_right)
@@ -366,6 +369,14 @@ void EntityManager::CheatCodes()
 	{
 		Entity *a = (Entity*) CreateEntity(Entity::Types::npc_garcia);
 		if (a != nullptr){
+			a->SetPosition({ player->position.x + 147, player->GetDepth() });
+
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN && player != nullptr)
+	{
+		Entity *a = (Entity*)CreateEntity(Entity::Types::item_apple);
+		if (a != nullptr) {
 			a->SetPosition({ player->position.x + 48, player->GetDepth() });
 
 		}

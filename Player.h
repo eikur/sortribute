@@ -2,7 +2,6 @@
 #define __PLAYER_H__
 
 #include "Entity.h"
-class EntityManager;
 
 class Player : public Entity {
 
@@ -33,7 +32,6 @@ private:
 
 private: 
 	SDL_Rect position_limits = { 28, 162, 264, 55 };	// initial margins
-	EntityManager *parent = nullptr;
 	
 	bool respawn_fall = true;
 
