@@ -30,12 +30,12 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		blocking_animation_remaining_msec = MAX(blocking_animation_remaining_msec - msec_elapsed, 0);
 	if (air_remaining_msec > 0)
 		air_remaining_msec = MAX(air_remaining_msec - msec_elapsed, 0);
-	
+
 	if (combo_remaining_msec > 0)
 		combo_remaining_msec = MAX(combo_remaining_msec - msec_elapsed, 0);
 	if (combo_hold_remaining_msec > 0)
 		combo_hold_remaining_msec = MAX(combo_hold_remaining_msec - msec_elapsed, 0);
-	
+
 	current_combo_hits = combo_remaining_msec <= 0 ? 0 : (current_combo_hits >= 4 ? 0 : current_combo_hits);
 	current_combo_hold_hits = combo_hold_remaining_msec <= 0 ? 0 : current_combo_hold_hits;
 
@@ -60,10 +60,10 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		}
 		return true;
 	}
-
 	GetInput(upd_logic);
 	move_speed = { 0,0 };
 
+	// animation update
 	if (grounded == false) 
 	{
 		if (air_remaining_msec > 0)
@@ -89,7 +89,10 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				UpdateCurrentAnimation(&jump_land, jump_prep_duration, fx_landing_jump);
 		}
 	}
+	if (current_animation == &throwing_back)
+		UpdateThrowingBackMotion();
 	
+	// animation transition
 	if (blocking_animation_remaining_msec <= 0)
 	{
 		if (current_animation == &jump_prep){
@@ -199,9 +202,9 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			}
 			else if (input_attack)
 			{
-				UpdateCurrentAnimation(&throwing_back, throwing_duration);
 				held_entity->SetBeingThrownBack(position);
 				held_entity = nullptr;
+				UpdateCurrentAnimation(&throwing_back, throwing_duration);
 				current_hold_swaps = 0;
 			}
 			else if ((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0))
@@ -392,6 +395,13 @@ void Player::UpdateHoldingSwapMotion()
 	case 1: SetPosition({ held_entity->position.x, held_entity->position.y - 50 }); break;
 	case 0: SetPosition({ held_entity->position.x + mod * 24 , held_entity->position.y - 6 }); break;
 	}
+}
+void Player::UpdateThrowingBackMotion()
+{
+	int divisor = throwing_duration / 5;
+	int frames_left = blocking_animation_remaining_msec / divisor;
+
+	throwing_back.SetCurrentFrame(4 - frames_left);
 }
 
 //--- Input related -------

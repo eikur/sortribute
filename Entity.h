@@ -39,8 +39,8 @@ public:
 	void UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration = 0, int fx_new_anim = -1, bool override_current = false);
 
 	iPoint UpdateKnockedMotion();
-	iPoint UpdateThrownFrontMotion( iPoint pivot);
-	iPoint UpdateThrownBackMotion( iPoint pivot);
+	iPoint UpdateThrownFrontMotion();
+	iPoint UpdateThrownBackMotion();
 
 	bool Draw() const;
 	int  GetDepth() const;
@@ -61,8 +61,8 @@ public:
 	void SetBeingHoldFrontHit(int damage = 0);
 	void SetBeingHoldBack();
 
-	void SetBeingThrownFront( iPoint pivot);
-	void SetBeingThrownBack( iPoint pivot);
+	void SetBeingThrownFront( iPoint pvt);
+	void SetBeingThrownBack( iPoint pvt);
 
 	void SetBeingKnocked(int damage = 0);
 

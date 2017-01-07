@@ -40,7 +40,7 @@ public:
 private:
 	std::list<Entity*> entities;
 	
-	int time_left_msec = 100000;
+	int time_left_msec = 50*2*1000;
 
 	bool pause = false; 
 	Uint32 elapsed_msec = 0;

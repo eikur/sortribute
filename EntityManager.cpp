@@ -169,7 +169,8 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			}
 			else if (second_col->type == colliderType::ENEMY)
 			{
-				if ( first->IsGrounded() && second->IsGrounded() && ( (first->facing_right == true && first->position.x <= second->position.x) || (first->facing_right == false && second->position.x <= first->position.x) ) )
+				if ( first->IsGrounded() && second->IsGrounded() && !second->is_being_thrown_back &&
+					( (first->facing_right == true && first->position.x <= second->position.x) || (first->facing_right == false && second->position.x <= first->position.x) ) )
 				{
 					if (first->facing_right == second->facing_right)
 					{
@@ -352,6 +353,7 @@ bool EntityManager::LoadConfigFromFile(const char* file_path)
 
 	if (json_object_dothas_value_of_type(root_object, "hud.fx_pause", JSONString))
 		fx_pause = App->audio->LoadFx(json_object_dotget_string(root_object, "hud.fx_pause"));
+
 	json_value_free(root_value);
 
 

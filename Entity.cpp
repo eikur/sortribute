@@ -105,7 +105,7 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration
 		if (current_animation == &jump ||
 			current_animation == &jump_attack ||
 			current_animation == &being_thrown_front ||
-			current_animation == &being_thrown_back ||
+			//current_animation == &being_thrown_back ||
 			current_animation == &being_knocked ||
 			current_animation == &holding_swap)
 			grounded = false;
@@ -164,12 +164,18 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration
 			is_being_hold_front = true;
 		else
 			is_being_hold_front = false;
+
+		// being thrown status 
+		if (current_animation == &being_thrown_back)
+			is_being_thrown_back = true;
+		else
+			is_being_thrown_back = false;
 	}
 }
 
 iPoint Entity::UpdateKnockedMotion()
 {
-	int divisor = being_thrown_duration / 7;
+	int divisor = being_knocked_duration / 7;
 	int frames_left = air_remaining_msec / divisor;
 	iPoint ret = { 0,0 };
 
@@ -187,12 +193,32 @@ iPoint Entity::UpdateKnockedMotion()
 	return ret;
 }
 
-iPoint Entity::UpdateThrownFrontMotion( iPoint pivot)
+iPoint Entity::UpdateThrownFrontMotion()
 {
 	return{ 0,0 };
 }
-iPoint Entity::UpdateThrownBackMotion(iPoint pivot) {
-	return{ 0,0 };
+iPoint Entity::UpdateThrownBackMotion() {
+	
+	int divisor = being_thrown_duration / 7;
+	int frames_left = blocking_animation_remaining_msec / divisor;
+	iPoint ret = { 0,0 };
+
+	int mod = facing_right ? 1 : -1;
+
+	switch (frames_left)
+	{
+	case 6: SetPosition({ pivot.x + mod * 16, pivot.y }); being_thrown_back.SetCurrentFrame(0); break;
+	case 5: SetPosition({ pivot.x + mod * 8, pivot.y - 30 });  being_thrown_back.SetCurrentFrame(1); break;
+	case 4: SetPosition({ pivot.x - mod * 16, pivot.y - 26 });  being_thrown_back.SetCurrentFrame(2); break;
+	case 3: SetPosition({ pivot.x - mod * 30, pivot.y });  being_thrown_back.SetCurrentFrame(2); break;
+	case 2: SetPosition({ pivot.x - mod*30, pivot.y});  being_thrown_back.SetCurrentFrame(2); break;
+		
+	case 1: SetPosition({ pivot.x - mod *34, pivot.y -3 });  being_thrown_back.SetCurrentFrame(2); break;
+	case 0: SetPosition({ pivot.x - mod *38, pivot.y });  being_thrown_back.SetCurrentFrame(3); break;
+	}
+	return ret;
+
+	return ret;
 }
 // ----------------- Depth related ------------------------
 
@@ -233,7 +259,6 @@ void Entity::DecreaseHealth(int amount) {
 
 void Entity::TimeOver()
 {
-	health = 0;
 	if (held_entity != nullptr)
 	{
 		held_entity->SetIdle();
@@ -295,10 +320,15 @@ void Entity::SetBeingHoldBack()
 	UpdateCurrentAnimation(&being_hold_back);
 }
 
-void Entity::SetBeingThrownFront( iPoint pivot) {
+void Entity::SetBeingThrownFront( iPoint pvt) {
+	is_hittable = false;
+	air_remaining_msec = being_thrown_duration;
+	pivot = pvt;
 	UpdateCurrentAnimation(&being_thrown_front, being_thrown_duration);
 }
-void Entity::SetBeingThrownBack( iPoint pivot) {
+void Entity::SetBeingThrownBack( iPoint pvt) {
+	is_hittable = false;
+	pivot = pvt;
 	UpdateCurrentAnimation(&being_thrown_back, being_thrown_duration);
 }
 

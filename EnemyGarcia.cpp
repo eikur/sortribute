@@ -52,12 +52,12 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 	if (grounded == false)
 	{
 		if (air_remaining_msec > 0)
-			move_speed = UpdateKnockedMotion();
-		else
 		{
-
+			move_speed = UpdateKnockedMotion();
 		}
 	}
+	if(is_being_thrown_back)
+		move_speed = UpdateThrownBackMotion();
 
 	if (blocking_animation_remaining_msec <= 0)
 	{
@@ -142,7 +142,7 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	LoadAnimationFromJSONObject(root_object, "garcia.being_hold_back", &being_hold_back);
 	LoadAnimationFromJSONObject(root_object, "garcia.being_knocked", &being_knocked);
 	LoadAnimationFromJSONObject(root_object, "garcia.being_thrown_front", &being_thrown_front);
-	being_thrown_back = being_thrown_front;// missing being_thrown_back proper animation
+	LoadAnimationFromJSONObject(root_object, "garcia.being_thrown_back", &being_thrown_back);
 	LoadAnimationFromJSONObject(root_object, "garcia.standing_up", &standing_up);
 	LoadAnimationFromJSONObject(root_object, "garcia.dying", &dying);
 	LoadSDLRectFromJSONObject(root_object, "garcia.shadow", &shadow);
