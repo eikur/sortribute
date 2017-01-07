@@ -91,7 +91,9 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 	}
 	if (current_animation == &throwing_back)
 		UpdateThrowingBackMotion();
-	
+	if (current_animation == &throwing_front)
+		UpdateThrowingFrontMotion();
+
 	// animation transition
 	if (blocking_animation_remaining_msec <= 0)
 	{
@@ -396,12 +398,21 @@ void Player::UpdateHoldingSwapMotion()
 	case 0: SetPosition({ held_entity->position.x + mod * 24 , held_entity->position.y - 6 }); break;
 	}
 }
-void Player::UpdateThrowingBackMotion()
+
+void Player::UpdateThrowingFrontMotion()
 {
-	int divisor = throwing_duration / 5;
+	int divisor = throwing_duration / 4;
 	int frames_left = blocking_animation_remaining_msec / divisor;
 
-	throwing_back.SetCurrentFrame(4 - frames_left);
+	throwing_front.SetCurrentFrame(3 - frames_left);
+}
+
+void Player::UpdateThrowingBackMotion()
+{
+	int divisor = throwing_duration / 4;
+	int frames_left = blocking_animation_remaining_msec / divisor;
+
+	throwing_back.SetCurrentFrame(3 - frames_left);
 }
 
 //--- Input related -------
@@ -435,6 +446,9 @@ void Player::GetInput( bool upd_logic )
 		(App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN);
 
 	input_attack = App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN && input_hold_front_throw == false && input_attack_back == false;
+
+	// to be removed
+	input_hold_front_throw = App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN;
 	
 	
 	
@@ -561,4 +575,6 @@ void Player::CheatCodes() {
 		SetBeingHit(attack1_dmg);
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
 		SetBeingKnocked(attack3_dmg);
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
+		UpdateCurrentAnimation(&throwing_front, throwing_duration);
 }

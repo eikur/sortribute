@@ -53,11 +53,14 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 	{
 		if (air_remaining_msec > 0)
 		{
-			move_speed = UpdateKnockedMotion();
+			if (is_being_thrown_front)
+				move_speed = UpdateThrownFrontMotion();
+			else
+				move_speed = UpdateKnockedMotion();
 		}
 	}
 	if(is_being_thrown_back)
-		move_speed = UpdateThrownBackMotion();
+		UpdateThrownBackMotion();
 
 	if (blocking_animation_remaining_msec <= 0)
 	{
@@ -70,11 +73,9 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 	}
 
 	if (unhittable_remaining_msec <= 0 && (current_animation == &being_hit || current_animation == &being_hold_front_hit))
-	{
-		unhittable_remaining_msec = 0;
 		is_hittable = true;
-	}
 
+	// IA starts here
 	if (AllowAnimationInterruption())
 	{
 		if (is_being_hold_front == false && is_being_hold_back == false)

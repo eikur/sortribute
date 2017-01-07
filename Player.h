@@ -22,6 +22,7 @@ private:
 	void UpdatePosition(const iPoint new_speed);
 	int  UpdateJumpVerticalSpeed();
 	void UpdateHoldingSwapMotion();
+	void UpdateThrowingFrontMotion();
 	void UpdateThrowingBackMotion();
 
 	void GetInput( bool upd_logic);

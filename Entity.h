@@ -40,7 +40,7 @@ public:
 
 	iPoint UpdateKnockedMotion();
 	iPoint UpdateThrownFrontMotion();
-	iPoint UpdateThrownBackMotion();
+	void UpdateThrownBackMotion();
 
 	bool Draw() const;
 	int  GetDepth() const;
