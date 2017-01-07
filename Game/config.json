@@ -73,18 +73,22 @@
 		"fx_pause" : "Assets/fx_pause.wav"
 	},
 	"durations": {
-		"attacks": 240,
+		"attacks": 256,
+		"combo_window": 512,
+		"hold_attacks": 380,
+		"hold_combo_window": 636,
+		"unhittable": 256,
 		"jump_prep": 240,
 		"jump": 768,
+		"holding_swap": 1024,
 		"throwing": 544,
 		"being_hit": 1024,
 		"being_knocked": 768,
 		"being_thrown": 768,
 		"standing_up_player": 1536,
 		"standing_up_enemy": 512,
-		"holding_swap": 1024,
-		"combo_window": 500,
-		"unhittable": 240,
+
+
 		"dying": 2048
 	},	
 	"player": {

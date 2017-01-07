@@ -107,6 +107,10 @@ public:
 	int combo_remaining_msec = 0;
 	int combo_window_msec = 0;
 
+	int current_combo_hold_hits = 0;
+	int combo_hold_remaining_msec = 0;
+	int combo_hold_window_msec = 0;
+
 	Types m_type = Types::unknown;
 
 protected:
@@ -129,9 +133,10 @@ protected:
 // throw control 
 	iPoint pivot = { 0,0 };
 
-//animation blocking	
+// animation durations
 	int blocking_animation_remaining_msec = 0;
 	int attacks_duration = 0;
+	int hold_attacks_duration = 0;
 	int take_item_duration = 0;
 	int throwing_duration = 0;
 	int holding_swap_duration = 0;

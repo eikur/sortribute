@@ -32,6 +32,8 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		air_remaining_msec = MAX(air_remaining_msec - msec_elapsed, 0);
 	if (combo_remaining_msec > 0)
 		combo_remaining_msec = MAX(combo_remaining_msec - msec_elapsed, 0);
+	if (combo_hold_remaining_msec > 0)
+		combo_hold_remaining_msec = MAX(combo_hold_remaining_msec - msec_elapsed, 0);
 
 	if (IsAlive() == false)
 	{
@@ -101,7 +103,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			held_entity->SetBeingKnocked(attack2_dmg);
 			held_entity = nullptr;
 			UpdateCurrentAnimation(&idle, 200 , fx_attack_hit_hard);	// TODO revisar
-			current_combo_hits = 0;
+			current_combo_hold_hits = 0;
 		}
 		else if (current_animation == &holding_swap)
 		{
@@ -130,8 +132,8 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			}
 		}
 
-		if (combo_remaining_msec <= 0)
-			current_combo_hits = 0;
+		current_combo_hits = combo_remaining_msec <= 0 ? 0 : (current_combo_hits >= 4 ? 0 : current_combo_hits);
+		current_combo_hold_hits = combo_hold_remaining_msec <= 0 ? 0 : current_combo_hold_hits;
 	}
 
 	if (AllowAnimationInterruption())
@@ -152,18 +154,19 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			}
 			else if (input_attack )
 			{
-				current_combo_hits += 1;
-				combo_remaining_msec = combo_window_msec;
-				if (current_combo_hits <= 2)
+				if (current_combo_hold_hits <= 1)
 				{
 					held_entity->SetBeingHoldFrontHit(attack1_dmg);
-					UpdateCurrentAnimation(&holding_front_attack, attacks_duration, fx_attack_hit);
+					UpdateCurrentAnimation(&holding_front_attack, hold_attacks_duration, fx_attack_hit);
+					current_combo_hold_hits += 1;
+					combo_hold_remaining_msec = combo_hold_window_msec;
 				}
 				else
 				{
-					UpdateCurrentAnimation(&holding_front_attack2, attacks_duration); 
+					UpdateCurrentAnimation(&holding_front_attack2, hold_attacks_duration);
+	//				current_combo_hold_hits = 0;
 				}
-						
+		
 			}
 			else if (input_jump)
 			{
@@ -218,13 +221,14 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 					UpdateCurrentAnimation(&jump_prep, jump_prep_duration, fx_jump);
 				else if (input_attack)
 				{
-					current_combo_hits += 1;
-					if (current_combo_hits <= 2)
+					if (current_combo_hits <= 1) 
 						UpdateCurrentAnimation(&attack1, attacks_duration, fx_attack_miss);
-					else  if (current_combo_hits == 3)
+					else  if (current_combo_hits == 2)
 						UpdateCurrentAnimation(&attack2, attacks_duration, fx_attack_miss);
-					else if (current_combo_hits == 4)
+					else if (current_combo_hits == 3)
 						UpdateCurrentAnimation(&attack3, attacks_duration, fx_attack_miss);
+					current_combo_hits += 1;
+					
 				}
 				else if (move_speed.IsZero())
 					UpdateCurrentAnimation(&idle);
@@ -461,6 +465,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 
 //----------------------- logic durations---------------------------
 	attacks_duration = (int)json_object_dotget_number(root_object, "durations.attacks");
+	hold_attacks_duration = (int)json_object_dotget_number(root_object, "durations.hold_attacks");
 	jump_prep_duration = (int)json_object_dotget_number(root_object, "durations.jump_prep");
 	jump_duration = (int)json_object_dotget_number(root_object, "durations.jump");
 	throwing_duration = (int)json_object_dotget_number(root_object, "durations.throwing");
@@ -470,6 +475,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	standing_up_duration = (int)json_object_dotget_number(root_object, "durations.standing_up_player");
 	holding_swap_duration = (int)json_object_dotget_number(root_object, "durations.holding_swap");
 	combo_window_msec = (int)json_object_dotget_number(root_object, "durations.combo_window");
+	combo_hold_window_msec = (int)json_object_dotget_number(root_object, "durations.hold_combo_window");
 	dying_duration = (int)json_object_dotget_number(root_object, "durations.dying");
 
 //----------------------- colliders ---------------------------
