@@ -90,6 +90,13 @@ public:
 	int score = 0;
 	int help = 0;
 
+// health & damage variables
+	int attack1_dmg = 0;
+	int attack2_dmg = 0;
+	int attack3_dmg = 0;
+	int attack_back_dmg = 0;
+	int throw_dmg = 0;
+
 	bool facing_right = true;
 	bool is_hittable = true;
 	bool is_attacking = false;
@@ -146,13 +153,6 @@ protected:
 	int being_knocked_duration = 0;
 	int standing_up_duration = 0;
 	int dying_duration = 0;
-
-// health & damage variables
-	int attack1_dmg= 0;
-	int attack2_dmg = 0;
-	int attack3_dmg = 0;
-	int attack_back_dmg = 0;
-	int throw_dmg = 0;
 
 // Colliders
 	Collider *attack_collider = nullptr;

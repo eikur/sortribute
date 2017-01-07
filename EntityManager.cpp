@@ -195,7 +195,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			{
 				if (second->is_attacking && first->is_hittable)
 				{
-					first->SetBeingHit(8);
+					first->SetBeingHit(second->attack1_dmg);	// TODO: define enemy attacks
 				}
 			}
 			else
@@ -219,19 +219,19 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 					if (first->IsGrounded())
 					{
 						if (first->current_combo_hits <= 2)
-							second->SetBeingHit(8);
+							second->SetBeingHit(first->attack1_dmg);
 						else if (first->current_combo_hits <= 3)
-							second->SetBeingHit(8);
+							second->SetBeingHit(first->attack2_dmg);
 						else if( first->current_combo_hits == 4)
 						{					
-							second->SetBeingKnocked(12);
+							second->SetBeingKnocked(first->attack3_dmg);
 							first->combo_remaining_msec = 0;
 						}
 
 						first->combo_remaining_msec = first->combo_window_msec;
 					}
 					else {	// jump attack
-						second->SetBeingKnocked(12);
+						second->SetBeingKnocked(first->attack3_dmg);
 					}
 				}
 			}
@@ -364,7 +364,7 @@ void EntityManager::CheatCodes()
 	{
 		Entity *a = (Entity*) CreateEntity(Entity::Types::npc_garcia);
 		if (a != nullptr){
-			a->SetPosition({ player->position.x + 48, player->position.y });
+			a->SetPosition({ player->position.x + 48, player->GetDepth() });
 
 		}
 	}

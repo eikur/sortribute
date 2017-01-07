@@ -30,10 +30,14 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		blocking_animation_remaining_msec = MAX(blocking_animation_remaining_msec - msec_elapsed, 0);
 	if (air_remaining_msec > 0)
 		air_remaining_msec = MAX(air_remaining_msec - msec_elapsed, 0);
+	
 	if (combo_remaining_msec > 0)
 		combo_remaining_msec = MAX(combo_remaining_msec - msec_elapsed, 0);
 	if (combo_hold_remaining_msec > 0)
 		combo_hold_remaining_msec = MAX(combo_hold_remaining_msec - msec_elapsed, 0);
+	
+	current_combo_hits = combo_remaining_msec <= 0 ? 0 : (current_combo_hits >= 4 ? 0 : current_combo_hits);
+	current_combo_hold_hits = combo_hold_remaining_msec <= 0 ? 0 : current_combo_hold_hits;
 
 	if (IsAlive() == false)
 	{
@@ -102,8 +106,13 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		{
 			held_entity->SetBeingKnocked(attack2_dmg);
 			held_entity = nullptr;
-			UpdateCurrentAnimation(&idle, 200 , fx_attack_hit_hard);	// TODO revisar
+			UpdateCurrentAnimation(&idle, hold_attacks_duration, fx_attack_hit_hard);
 			current_combo_hold_hits = 0;
+		}
+		else if (current_animation == &throwing_back)
+		{
+			held_entity = nullptr;
+			UpdateCurrentAnimation(&idle, hold_attacks_duration, fx_attack_hit_hard);
 		}
 		else if (current_animation == &holding_swap)
 		{
@@ -131,9 +140,6 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				UpdateCurrentAnimation(&idle, 0, fx_landing_jump);
 			}
 		}
-
-		current_combo_hits = combo_remaining_msec <= 0 ? 0 : (current_combo_hits >= 4 ? 0 : current_combo_hits);
-		current_combo_hold_hits = combo_hold_remaining_msec <= 0 ? 0 : current_combo_hold_hits;
 	}
 
 	if (AllowAnimationInterruption())
@@ -144,6 +150,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			{
 				held_entity = nullptr;
 				UpdateCurrentAnimation(&idle);
+				current_hold_swaps = 0;
 			}
 			else if (input_hold_front_throw)
 			{
@@ -151,6 +158,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				UpdateCurrentAnimation(&throwing_front, throwing_duration);
 				held_entity->SetBeingThrownFront( position);
 				held_entity = nullptr;
+				current_hold_swaps = 0;
 			}
 			else if (input_attack )
 			{
@@ -164,7 +172,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				else
 				{
 					UpdateCurrentAnimation(&holding_front_attack2, hold_attacks_duration);
-	//				current_combo_hold_hits = 0;
+					current_combo_hold_hits = 0;
 				}
 		
 			}
@@ -179,6 +187,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				held_entity = nullptr;
 				UpdateCurrentAnimation(&idle);
 				facing_right = !facing_right;
+				current_hold_swaps = 0;
 			}
 		}
 		else if (is_holding_back)
@@ -193,6 +202,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				UpdateCurrentAnimation(&throwing_back, throwing_duration);
 				held_entity->SetBeingThrownBack(position);
 				held_entity = nullptr;
+				current_hold_swaps = 0;
 			}
 			else if ((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0))
 			{
@@ -200,6 +210,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 				held_entity = nullptr;
 				UpdateCurrentAnimation(&idle);
 				facing_right = !facing_right;
+				current_hold_swaps = 0;
 			}
 		}
 		else
@@ -456,11 +467,11 @@ bool Player::LoadFromConfigFile(const char* file_path)
 
 	//----------------------- damages ---------------------------
 
-	attack1_dmg = (int)json_object_dotget_number(root_object, "player.damage.attack1");
-	attack2_dmg = (int)json_object_dotget_number(root_object, "player.damage.attack2");
-	attack3_dmg = (int)json_object_dotget_number(root_object, "player.damage.attack3");
-	attack_back_dmg = (int)json_object_dotget_number(root_object, "player.damage.attack_back");
-	throw_dmg = (int)json_object_dotget_number(root_object, "player.damage.throw");
+	attack1_dmg = (int)json_object_dotget_number(root_object, "damages.attack1");
+	attack2_dmg = (int)json_object_dotget_number(root_object, "damages.attack2");
+	attack3_dmg = (int)json_object_dotget_number(root_object, "damages.attack3");
+	attack_back_dmg = (int)json_object_dotget_number(root_object, "damages.attack_back");
+	throw_dmg = (int)json_object_dotget_number(root_object, "damages.throw");
 
 
 //----------------------- logic durations---------------------------
@@ -537,7 +548,7 @@ void Player::CheatCodes() {
 	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN && help < 9)
 		help += 1;
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN)
-		SetBeingHit(8);
+		SetBeingHit(attack1_dmg);
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
-		SetBeingKnocked(12);
+		SetBeingKnocked(attack3_dmg);
 }

@@ -81,16 +81,22 @@
 		"jump_prep": 240,
 		"jump": 768,
 		"holding_swap": 1024,
-		"throwing": 544,
+		"throwing": 1024,
 		"being_hit": 1024,
 		"being_knocked": 768,
-		"being_thrown": 768,
+		"being_thrown": 1536,
 		"standing_up_player": 1536,
 		"standing_up_enemy": 512,
-
-
 		"dying": 2048
 	},	
+	"damages":{
+		"attack1": 8,
+		"attack2": 8, 
+		"attack3": 12,
+		"attack_back": 12,
+		"throw": 20
+	},
+	
 	"player": {
 		"graphics_file": "Assets/axel.png",
 		"speed" : [3,1],
@@ -98,13 +104,6 @@
 		"lives": 3,
 		"score": 0,
 		"help": 1,
-		"damage":{
-			"attack1": 8,
-			"attack2": 8, 
-			"attack3": 12,
-			"attack_back": 12,
-			"throw": 20
-		},
 		"colliders": {
 			"attack": [10,-52,40,32],
 			"hit": [-12,-52,24,52]
@@ -172,7 +171,7 @@
 			"speed" : 0.2
 		},
 		"throwing_back":{
-			"frames": [[96,320, 96,80],[192,320, 96,80],[288,320, 96,80],[384,320, 96,80]],
+			"frames": [[96,320, 96,80],[192,320, 96,80],[288,320, 96,80],[384,320, 96,80],[384,320, 96,80]],
 			"speed" : 0.12
 		},		
 		"take_item":{
@@ -219,11 +218,6 @@
 		"max_health" : 48,
 		"lives": 1,
 		"score": 600,
-		"dmg":{
-			"attack1": 8,
-			"attack2": 8, 
-			"attack3": 8
-		},
 		"colliders": {
 			"attack": [10,-52,48,32],
 			"hit": [-12,-52,24,52]
@@ -268,6 +262,10 @@
 		},
 		"being_thrown_front":{
 			"frames": [[96,80, 96,80],[576,80, 96,80],[288,80, 96,80],[384,80, 96,80]],	
+			"speed" : 0.1		
+		},
+		"being_thrown_back":{
+			"frames": [[192,80, 96,80],[288,80, 96,80],[576	,80, 96,80],[384,80, 96,80]],	
 			"speed" : 0.1		
 		},
 		"standing_up":{
