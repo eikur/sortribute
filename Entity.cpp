@@ -205,10 +205,10 @@ iPoint Entity::UpdateThrownFrontMotion()
 	case 7: SetPosition({ pivot.x - mod * 14, pivot.y });   break;
 	case 6: SetPosition({ pivot.x + mod * 34, pivot.y - 30 });  break;
 	case 5: ret.x += mod * 5; ret.y = -1;     break;
-	case 4:  ret.x += mod * 4; ret.y += 0;   break;
-	case 3:  ret.x += mod * 4; ret.y += 1; break;
-	case 2:  ret.x += mod * 3; ret.y += 2;  break;
-	case 1:  ret.x += mod * 3; ret.y += 3;  break;
+	case 4:  ret.x += mod * 4; ret.y += 2;   break;
+	case 3:  ret.x += mod * 4; ret.y += 3; break;
+	case 2:  ret.x += mod * 3; ret.y += 3;  break;
+	case 1:  ret.x += mod * 3; ret.y -= 3;  break;
 	case 0:  ret.x += mod * 2; ret.y += 3;  break;
 	}
 
@@ -265,9 +265,13 @@ void Entity::DecreaseHealth(int amount) {
 	health = MAX(health - amount, 0);
 	if (IsAlive() == false)
 	{
-		// add animation detection
-		air_remaining_msec = being_knocked_duration;
-		UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death, true);
+		if (current_animation == &being_thrown_back || current_animation == &being_thrown_front)
+			UpdateCurrentAnimation(&dying, dying_duration, fx_death, true);
+		else
+		{
+			air_remaining_msec = being_knocked_duration;
+			UpdateCurrentAnimation(&being_knocked, being_knocked_duration, fx_death, true);
+		}
 	}
 }
 

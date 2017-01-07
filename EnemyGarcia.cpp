@@ -58,6 +58,10 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			else
 				move_speed = UpdateKnockedMotion();
 		}
+		else
+		{
+			position.y = ground_y;
+		}
 	}
 	if(is_being_thrown_back)
 		UpdateThrownBackMotion();
@@ -66,8 +70,10 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 	{
 		if (current_animation == &being_hold_front_hit)
 			UpdateCurrentAnimation(&being_hold_front);
-		else if (current_animation == &being_thrown_front || current_animation == &being_thrown_back || current_animation == &being_knocked)
-			UpdateCurrentAnimation(&standing_up, standing_up_duration);
+		else if (current_animation == &being_thrown_front || current_animation == &being_thrown_back)
+			DecreaseHealth(throw_dmg);
+		else if(current_animation == &being_knocked)
+			UpdateCurrentAnimation(&standing_up, standing_up_duration, fx_ground_hit);
 		else if (current_animation == &standing_up)
 			UpdateCurrentAnimation(&idle);
 	}
@@ -114,6 +120,11 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	lives = (int)json_object_dotget_number(root_object, "garcia.lives");
 	score = (int)json_object_dotget_number(root_object, "garcia.score");
 
+// -------------------- damages -------------------------
+	attack1_dmg = (int)json_object_dotget_number(root_object, "damages.attack1");
+	attack2_dmg = (int)json_object_dotget_number(root_object, "damages.attack2");
+	throw_dmg = (int)json_object_dotget_number(root_object, "damages.throw");
+
 //----------------------- colliders ---------------------------
 	hit_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.hit", colliderType::ENEMY, &hit_collider_offset);
 	attack_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.attack", colliderType::ENEMY_ATTACK, &attack_collider_offset);
@@ -149,8 +160,9 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	LoadSDLRectFromJSONObject(root_object, "garcia.shadow", &shadow);
 
 //----------------------- sounds ---------------------------
-	LoadSoundFXFromJSONObject(root_object, "garcia.fx.death_voice", &fx_death);
-	LoadSoundFXFromJSONObject(root_object, "garcia.fx.attack_hit", &fx_attack_hit);
+	LoadSoundFXFromJSONObject(root_object, "fx.death_garcia", &fx_death);
+	LoadSoundFXFromJSONObject(root_object, "fx.attack_hit", &fx_attack_hit);
+	LoadSoundFXFromJSONObject(root_object, "fx.ground_hit", &fx_ground_hit);
 
 	//--- free json 
 	json_value_free(root_value);

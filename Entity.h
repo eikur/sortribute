@@ -210,6 +210,7 @@ protected:
 	unsigned int fx_landing_knocked = 0;
 	unsigned int fx_attack_miss = 0;
 	unsigned int fx_attack_hit_hard = 0;
+	unsigned int fx_ground_hit = 0;
 	unsigned int fx_death = 0;
 	unsigned int fx_health_restore = 0;
 	unsigned int fx_extra_life = 0;

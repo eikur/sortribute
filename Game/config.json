@@ -96,7 +96,20 @@
 		"attack_back": 12,
 		"throw": 20
 	},
-	
+	"fx":{
+		"voice_player": "Assets/fx_voice_axel.wav",
+		"jump": "Assets/fx_jump.wav",
+		"jump_land": "Assets/fx_land.wav",
+		"attack_miss": "Assets/fx_attack_miss.wav",
+		"attack_hit": "Assets/fx_attack_hit.wav",
+		"attack_hit_hard": "Assets/fx_attack_hit_hard.wav",
+		"ground_hit": "Assets/fx_ground_hit.wav",
+		"life_up": "Assets/fx_life_up.wav",
+		"death_player": "Assets/fx_voice_axel_death.wav", 
+		"death_garcia": "Assets/fx_voice_garcia.wav",
+		"attack_hit_enemy": "Assets/fx_attack_hit_enemy.wav"
+
+	},
 	"player": {
 		"graphics_file": "Assets/axel.png",
 		"speed" : [3,1],
@@ -199,18 +212,7 @@
 			"speed" : 0.08
 		},
 		
-		"shadow": [288,160, 96,80],
-		"fx":{
-			"voice": "Assets/fx_voice_axel.wav",
-			"jump": "Assets/fx_jump.wav",
-			"jump_land": "Assets/fx_land.wav",
-			"attack_miss": "Assets/fx_attack_miss.wav",
-			"attack_hit": "Assets/fx_attack_hit.wav",
-			"attack_hit_hard": "Assets/fx_attack_hit_hard.wav",
-			"life_up": "Assets/fx_life_up.wav",
-			"death": "Assets/fx_voice_axel_death.wav"
-		}
-		
+		"shadow": [288,160, 96,80]		
 	},
 	"garcia": {
 		"graphics_file": "Assets/enemy_garcia.png",
@@ -276,12 +278,7 @@
 			"frames": [[384,80, 96,80],[576,0, 96,80]],
 			"speed" : 0.1
 		},
-		"shadow": [480,0, 96,80],
-		"fx":{
-			"death_voice": "Assets/fx_voice_garcia.wav",
-			"attack_hit": "Assets/fx_attack_hit_enemy.wav"
-			
-		}
+		"shadow": [480,0, 96,80]
 		
 	}
 	

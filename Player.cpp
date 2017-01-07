@@ -8,8 +8,6 @@
 
 #include "Player.h"
 
-
-
 Player::Player() : Entity(Types::player) {}
 Player::~Player(){}
 
@@ -114,11 +112,12 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			UpdateCurrentAnimation(&idle, hold_attacks_duration, fx_attack_hit_hard);
 			current_combo_hold_hits = 0;
 		}
-		else if (current_animation == &throwing_back)
+		else if (current_animation == &throwing_back || current_animation == &throwing_front)
 		{
 			held_entity = nullptr;
-			UpdateCurrentAnimation(&idle, hold_attacks_duration, fx_attack_hit_hard);
+			UpdateCurrentAnimation(&idle, hold_attacks_duration, fx_ground_hit);
 		}
+
 		else if (current_animation == &holding_swap)
 		{
 			is_holding_back = !is_holding_back;	is_holding_front = !is_holding_front; 	facing_right = !facing_right;
@@ -323,19 +322,22 @@ void Player::UpdatePosition(const iPoint new_speed) {
 	int left = position_limits.x;
 	int right = left + position_limits.w;
 
-	if (position.x > right)
-		position.x = right;
-	else
-		if (position.x < left)
-			position.x = left;
-	if (grounded)
+	if (held_entity == nullptr && current_animation != &throwing_back)
 	{
-		if (position.y < up)
-			position.y = up;
+		if (position.x > right)
+			position.x = right;
 		else
-			if (position.y > down)
-				position.y = down;
-		ground_y = position.y;
+			if (position.x < left)
+				position.x = left;
+		if (grounded)
+		{
+			if (position.y < up)
+				position.y = up;
+			else
+				if (position.y > down)
+					position.y = down;
+			ground_y = position.y;
+		}
 	}
 
 	//apply offset to colliders
@@ -446,11 +448,6 @@ void Player::GetInput( bool upd_logic )
 		(App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN);
 
 	input_attack = App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN && input_hold_front_throw == false && input_attack_back == false;
-
-	// to be removed
-	input_hold_front_throw = App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN;
-	
-	
 	
 }
 
@@ -549,14 +546,16 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	LoadSDLRectFromJSONObject(root_object, "player.shadow", &shadow);
 
 // ---------------------- sound effects ----------------------------
-	LoadSoundFXFromJSONObject(root_object, "player.fx.voice", &fx_voice);
-	LoadSoundFXFromJSONObject(root_object, "player.fx.life_up", &fx_extra_life);
-	LoadSoundFXFromJSONObject(root_object, "player.fx.attack_miss", &fx_attack_miss);
-	LoadSoundFXFromJSONObject(root_object, "player.fx.attack_hit", &fx_attack_hit);
-	LoadSoundFXFromJSONObject(root_object, "player.fx.attack_hit_hard", &fx_attack_hit_hard);
-	LoadSoundFXFromJSONObject(root_object, "player.fx.jump", &fx_jump);
-	LoadSoundFXFromJSONObject(root_object, "player.fx.jump_land", &fx_landing_jump);
-	LoadSoundFXFromJSONObject(root_object, "player.fx.death", &fx_death);
+	LoadSoundFXFromJSONObject(root_object, "fx.voice_player", &fx_voice);
+	LoadSoundFXFromJSONObject(root_object, "fx.life_up", &fx_extra_life);
+	LoadSoundFXFromJSONObject(root_object, "fx.attack_miss", &fx_attack_miss);
+	LoadSoundFXFromJSONObject(root_object, "fx.attack_hit", &fx_attack_hit);
+	LoadSoundFXFromJSONObject(root_object, "fx.attack_hit_hard", &fx_attack_hit_hard);
+	LoadSoundFXFromJSONObject(root_object, "fx.ground_hit", &fx_ground_hit);
+	LoadSoundFXFromJSONObject(root_object, "fx.jump", &fx_jump);
+	LoadSoundFXFromJSONObject(root_object, "fx.jump_land", &fx_landing_jump);
+	LoadSoundFXFromJSONObject(root_object, "fx.death_player", &fx_death);
+
 
 	json_value_free(root_value);
 
@@ -575,6 +574,4 @@ void Player::CheatCodes() {
 		SetBeingHit(attack1_dmg);
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
 		SetBeingKnocked(attack3_dmg);
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN)
-		UpdateCurrentAnimation(&throwing_front, throwing_duration);
 }
