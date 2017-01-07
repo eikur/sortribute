@@ -12,6 +12,7 @@
 #include "Player.h"
 #include "EnemyGarcia.h"
 #include "Apple.h"
+#include "Chicken.h"
 
 #include "EntityManager.h"
 
@@ -120,8 +121,8 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 	{
 	case Entity::Types::player: ret = new Player(); break;
 	case Entity::Types::npc_garcia: ret = new EnemyGarcia(); break;
-	case Entity::Types::item_apple: ret = new Apple();
-		// case Entity::Types::item_chicken: ret = new Chicken();
+	case Entity::Types::item_apple: ret = new Apple(); break;
+	case Entity::Types::item_chicken: ret = new Chicken(); break;
 	}
 
 	if (ret != nullptr)
@@ -380,6 +381,16 @@ void EntityManager::CheatCodes()
 			a->SetPosition({ player->position.x + 48, player->GetDepth() });
 
 		}
+		return;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN && player != nullptr)
+	{
+		Entity *a = (Entity*)CreateEntity(Entity::Types::item_chicken);
+		if (a != nullptr) {
+			a->SetPosition({ player->position.x + 48, player->GetDepth() });
+
+		}
+		return;
 	}
 }
 
