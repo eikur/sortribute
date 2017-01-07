@@ -1,5 +1,5 @@
-#ifndef __ITEM_H__
-#define __ITEM_H__
+#ifndef __APPLE_H__
+#define __APPLE_H__
 
 #include "Entity.h"
 
@@ -17,4 +17,4 @@ private:
 	bool LoadFromConfigFile(const char* file_path);
 };
 
-#endif // __ITEM_H__
+#endif // __APPLE_H__
