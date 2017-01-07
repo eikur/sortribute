@@ -120,7 +120,7 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 	switch (type)
 	{
 	case Entity::Types::player: ret = new Player(); break;
-	case Entity::Types::npc_garcia: ret = new EnemyGarcia(); break;
+	case Entity::Types::npc_garcia: ret = new EnemyGarcia(player); break;
 	case Entity::Types::item_apple: ret = new Apple(); break;
 	case Entity::Types::item_chicken: ret = new Chicken(); break;
 	}

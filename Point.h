@@ -90,7 +90,7 @@ public:
 		TYPE fx = x - v.x;
 		TYPE fy = y - v.y;
 
-		return sqrt((fx*fx) + (fy*fy));
+		return (int) sqrt((fx*fx) + (fy*fy));
 	}
 };
 

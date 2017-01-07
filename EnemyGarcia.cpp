@@ -7,7 +7,7 @@
 
 #include "EnemyGarcia.h"
 
-EnemyGarcia::EnemyGarcia(): Entity(Entity::Types::npc_garcia)
+EnemyGarcia::EnemyGarcia( Entity* target): Entity(Entity::Types::npc_garcia), target(target)
 { }
 
 EnemyGarcia::~EnemyGarcia(){}
@@ -21,6 +21,7 @@ bool EnemyGarcia::Init()
 	}
 	UpdateCurrentAnimation(&idle);
 	facing_right = false;
+	state = AI_idle;
 	return true;
 }
 
@@ -38,11 +39,8 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 		RemoveColliders();
 		if (upd_logic && current_animation == &being_knocked)
 			UpdatePosition(UpdateKnockedMotion());
-
 		if (blocking_animation_remaining_msec <= 0 && current_animation != &dying)
-		{
 			UpdateCurrentAnimation(&dying, dying_duration);
-		}
 		if (blocking_animation_remaining_msec <= 0 && current_animation == &dying)
 		{
 			CleanUp();
@@ -66,6 +64,7 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			position.y = ground_y;
 		}
 	}
+
 	if(is_being_thrown_back)
 		UpdateThrownBackMotion();
 
@@ -74,10 +73,18 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 		if (current_animation == &being_hold_front_hit)
 			UpdateCurrentAnimation(&being_hold_front);
 		else if (current_animation == &being_thrown_front || current_animation == &being_thrown_back)
+		{
 			DecreaseHealth(throw_dmg);
-		else if(current_animation == &being_knocked)
+			if (IsAlive())
+				UpdateCurrentAnimation(&standing_up, standing_up_duration);
+		}
+		else if (current_animation == &being_knocked)
 			UpdateCurrentAnimation(&standing_up, standing_up_duration, fx_ground_hit);
 		else if (current_animation == &standing_up)
+			UpdateCurrentAnimation(&idle);
+		else if (current_animation == &being_hit)
+			UpdateCurrentAnimation(&idle);
+		else if (current_animation == &attack1 || current_animation == &attack2)
 			UpdateCurrentAnimation(&idle);
 	}
 
@@ -85,17 +92,51 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 		is_hittable = true;
 
 	// IA starts here
-	if (AllowAnimationInterruption())
+	if (AllowAnimationInterruption() && is_being_hold_front == false && is_being_hold_back == false)
 	{
-		if (is_being_hold_front == false && is_being_hold_back == false)
+		int approach_front = rand() % 101;
+		int attack_range = attack_collider->rect.w + attack_collider_offset.x;
+
+		switch (state) 
 		{
-			UpdateCurrentAnimation(&idle);
+			case AIState::AI_idle: 
+				if (approach_front >= 75)
+					state = (facing_right ? AI_go_player_left : AI_go_player_right);
+				else
+					state = (facing_right ? AI_go_player_right : AI_go_player_left);
+				break;
+			case AIState::AI_attack: break;
+			case AIState::AI_queuing: UpdateCurrentAnimation(&idle); break;
+			default:break;
 		}
 	}
+	
 	if (upd_logic)
 		UpdatePosition(move_speed);
 
 	return true;
+}
+
+iPoint EnemyGarcia::FollowTarget()
+{
+	iPoint ret = { 0,0 };
+	int distance = position.DistanceTo(target->position);
+	int threshold_orientation = 20;
+
+	//orientation
+	if (position.x <= target->position.x - threshold_orientation)
+		facing_right = true;
+	else if (position.x > target->position.x + threshold_orientation)
+		facing_right = false;
+	
+
+	if (distance >= 50)
+	{
+		//if ()
+	}
+
+	
+	return ret;
 }
 
 bool EnemyGarcia::LoadFromConfigFile(const char* file_path) 

@@ -1,6 +1,7 @@
 #ifndef __ENTITY_H__
 #define __ENTITY_H__
 
+#include <math.h>
 #include "parson.h"
 #include "Point.h"
 #include "Globals.h"
@@ -21,6 +22,16 @@ public:
 		item_apple,
 		item_chicken,
 		unknown
+	};
+
+	enum AIState
+	{
+		AI_idle,
+		AI_go_player_left,
+		AI_go_player_right,
+		AI_attack,
+		AI_queuing,
+		AI_inactive
 	};
 
 	struct ptrEntityDepthComparison {
@@ -130,6 +141,7 @@ protected:
 	iPoint move_speed = {0, 0};
 	bool grounded = true;
 	bool jumping = false;
+	SDL_Rect position_limits = { 28, 162, 264, 55 };	// initial margins
 
 // jumping control
 	int air_remaining_msec = 0;
@@ -221,6 +233,10 @@ protected:
 // Interactions and collisions
 	Entity* held_entity = nullptr;
 	Entity* reachable_item = nullptr;
+
+// IA for enemies
+	AIState state = AIState::AI_inactive;
+
 };
 
 #endif // __ENTITY_H__

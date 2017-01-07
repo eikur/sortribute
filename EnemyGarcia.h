@@ -6,16 +6,19 @@
 class EnemyGarcia: public Entity {
 
 public:
-	EnemyGarcia();
+	EnemyGarcia( Entity* target = nullptr);
 	~EnemyGarcia();
 
 	bool Init();
 	bool Update(unsigned int msec_elapsed, const bool upd_logic = false);
 
 private:
+	iPoint FollowTarget();
+
 	bool LoadFromConfigFile(const char* file_path);
 
-
+private:
+	Entity* target = nullptr;
 };
 
 #endif // __ENEMYGARCIA_H__

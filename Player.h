@@ -31,8 +31,6 @@ private:
 	void CheatCodes();
 
 private: 
-	SDL_Rect position_limits = { 28, 162, 264, 55 };	// initial margins
-	
 	bool respawn_fall = true;
 
 	int input_horizontal = 0; 
