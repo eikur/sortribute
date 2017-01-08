@@ -75,6 +75,7 @@
 	"durations": {
 		"attacks": 256,
 		"combo_window": 512,
+		"combo_window_enemy": 756,
 		"attack_pause": 420,
 		"hold_attacks": 380,
 		"hold_combo_window": 636,

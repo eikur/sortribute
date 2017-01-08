@@ -28,7 +28,6 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		blocking_animation_remaining_msec = MAX(blocking_animation_remaining_msec - msec_elapsed, 0);
 	if (air_remaining_msec > 0)
 		air_remaining_msec = MAX(air_remaining_msec - msec_elapsed, 0);
-
 	if (combo_remaining_msec > 0)
 		combo_remaining_msec = MAX(combo_remaining_msec - msec_elapsed, 0);
 	if (combo_hold_remaining_msec > 0)

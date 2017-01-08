@@ -207,17 +207,12 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 					else
 						first->facing_right = true;
 
+					App->audio->PlayFx(second->fx_attack_hit);
 					if (second->current_combo_hits <= 2)
-					{ 
 						first->SetBeingHit(second->attack1_dmg);
-						App->audio->PlayFx(second->fx_attack_hit);
-					}
 					else if (second->current_combo_hits == 3)
-					{
 						first->SetBeingKnocked(second->attack2_dmg);
-						App->audio->PlayFx(second->fx_attack_hit);
-					}
-
+					second->combo_remaining_msec = second->combo_window_msec;
 
 				}
 			}

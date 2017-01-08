@@ -36,6 +36,9 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 		air_remaining_msec = MAX(air_remaining_msec - msec_elapsed, 0);
 	if (unhittable_remaining_msec > 0)
 		unhittable_remaining_msec = MAX(unhittable_remaining_msec - msec_elapsed, 0);
+	if (combo_remaining_msec > 0)
+		combo_remaining_msec = MAX(combo_remaining_msec - msec_elapsed, 0);
+	current_combo_hits = current_combo_hits == 3? current_combo_hits : (combo_remaining_msec <= 0 ? 0 : current_combo_hits);
 
 	if (IsAlive() == false)
 	{
@@ -127,7 +130,7 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			facing_right = target->position.x > position.x;
 			UpdateAIDestinationPoint(frontal_attack);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
-			if (current_combo_hits == 3 && move_speed.IsZero())	// change this
+			if (current_combo_hits == 3 && move_speed.IsZero())	
 				UpdateAIState(retreat);
 			if (abs(target->position.x - position.x) <= attack_range && abs(target->GetDepth() - GetDepth()) <= layer_depth && current_combo_hits < 3 && target->IsAlive() )
 			{
@@ -150,7 +153,6 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			break;
 		case switching_sides:
 			UpdateCurrentAnimation(&walk);
-			//UpdateAIDestinationPoint(switching_sides);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
 			if (move_speed.IsZero())
 				UpdateAIState(approach); 
@@ -195,19 +197,33 @@ bool EnemyGarcia::InEnemyActionQueue() const
 iPoint EnemyGarcia::SpeedTowardsPoint( iPoint to_point) const
 {
 	iPoint ret = { 0,0 };
-	
 	int horizontal_diff = to_point.x - position.x;
 	int vertical_diff = to_point.y - position.y;
-	int horizontal = horizontal_diff < 0 ? -1 : (horizontal_diff > 0 ? +1 : 0);
-	int vertical = vertical_diff < 0 ? -1 : (vertical_diff > 0 ? +1 : 0);
+	int hmod = horizontal_diff < 0 ? -1 : (horizontal_diff > 0 ? +1 : 0);
+	int vmod = vertical_diff < 0 ? -1 : (vertical_diff > 0 ? +1 : 0);
+	
+	float speed_slope = (float) speed.y / (float) speed.x;
+	float straight_line_slope;
+	
+	if (hmod == 0)
+		straight_line_slope = INFINITY;
+	else if (vmod == 0)
+		straight_line_slope = 0;
+	else
+		straight_line_slope = (float)vertical_diff / (float)horizontal_diff;
 
-	ret = { horizontal * speed.x, vertical * speed.y };
-	// fine tune
+	if (abs(straight_line_slope) > speed_slope )
+		ret = {0, vmod * speed.y };
+	else
+		ret = { hmod * speed.x, vmod * speed.y };
+	
 	if (abs(ret.x) > abs(horizontal_diff))
 		ret.x = horizontal_diff;
 	if (abs(ret.y) > abs(vertical_diff))
-		ret.y = vertical_diff;	
+		ret.y = vertical_diff;
+
 	return ret;
+
 }
 
 void EnemyGarcia::UpdateAIDestinationPoint( AIState state)
@@ -290,6 +306,7 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	unhittable_max_msec = (int)json_object_dotget_number(root_object, "durations.unhittable");
 	dying_duration = (int)json_object_dotget_number(root_object, "durations.dying");
 	attack_pause = (int)json_object_dotget_number(root_object, "durations.attack_pause");
+	combo_window_msec = (int)json_object_dotget_number(root_object, "durations.combo_window_enemy");
 	
 //----------------------- sprites ---------------------------
 	LoadiPointFromJSONObject(root_object, "garcia.sprite_offset", &sprite_offset);
