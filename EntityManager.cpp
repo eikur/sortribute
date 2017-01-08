@@ -13,6 +13,7 @@
 #include "EnemyGarcia.h"
 #include "Apple.h"
 #include "Chicken.h"
+#include "Boss3.h"
 
 #include "EntityManager.h"
 
@@ -115,7 +116,7 @@ bool EntityManager::CleanUp()
 //---------------------- Entity Management ------------------
 Entity* EntityManager::CreateEntity(Entity::Types type)
 {
-	static_assert(Entity::Types::unknown == 4, "code needs update");
+	static_assert(Entity::Types::unknown == 5, "code needs update");
 	Entity* ret = nullptr;
 
 	switch (type)
@@ -124,6 +125,7 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 	case Entity::Types::npc_garcia: ret = new EnemyGarcia(player); break;
 	case Entity::Types::item_apple: ret = new Apple(); break;
 	case Entity::Types::item_chicken: ret = new Chicken(); break;
+	case Entity::Types::npc_boss: ret = new Boss3(player); break;
 	}
 
 	if (ret != nullptr)
@@ -397,6 +399,14 @@ void EntityManager::CheatCodes()
 	{
 		Entity *a = (Entity*) CreateEntity(Entity::Types::npc_garcia);
 		if (a != nullptr){
+			a->SetPosition({ player->position.x + 147, player->GetDepth() });
+
+		}
+	}
+	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN && player != nullptr)
+	{
+		Entity *a = (Entity*)CreateEntity(Entity::Types::npc_boss);
+		if (a != nullptr) {
 			a->SetPosition({ player->position.x + 147, player->GetDepth() });
 
 		}

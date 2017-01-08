@@ -21,6 +21,7 @@ public:
 		npc_garcia,
 		item_apple,
 		item_chicken,
+		npc_boss,
 		unknown
 	};
 

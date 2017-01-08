@@ -6,14 +6,14 @@
 #include "ModuleCollision.h"
 #include "EntityManager.h"
 
-#include "EnemyGarcia.h"
+#include "Boss3.h"
 
-EnemyGarcia::EnemyGarcia( Entity* target): Entity(Entity::Types::npc_garcia), target(target)
+Boss3::Boss3(Entity* target) : Entity(Entity::Types::npc_garcia), target(target)
 { }
 
-EnemyGarcia::~EnemyGarcia(){}
+Boss3::~Boss3() {}
 
-bool EnemyGarcia::Init() 
+bool Boss3::Init()
 {
 	if (LoadFromConfigFile(CONFIG_FILE) == false)
 	{
@@ -25,7 +25,7 @@ bool EnemyGarcia::Init()
 	return true;
 }
 
-bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
+bool Boss3::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
 	if (state == none && !position.IsZero())
 		UpdateAIState(approach);
@@ -38,7 +38,7 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 		unhittable_remaining_msec = MAX(unhittable_remaining_msec - msec_elapsed, 0);
 	if (combo_remaining_msec > 0)
 		combo_remaining_msec = MAX(combo_remaining_msec - msec_elapsed, 0);
-	current_combo_hits = current_combo_hits == 3? current_combo_hits : (combo_remaining_msec <= 0 ? 0 : current_combo_hits);
+	current_combo_hits = current_combo_hits == 3 ? current_combo_hits : (combo_remaining_msec <= 0 ? 0 : current_combo_hits);
 
 	if (IsAlive() == false)
 	{
@@ -71,7 +71,7 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 		}
 	}
 
-	if(is_being_thrown_back)
+	if (is_being_thrown_back)
 		UpdateThrownBackMotion();
 
 	if (blocking_animation_remaining_msec <= 0)
@@ -111,16 +111,16 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 	{
 		int attack_decision = rand() % 101;
 		int attack_range = attack_collider->rect.w + attack_collider_offset.x;
-			
+
 		switch (state) {
-			
+
 		case approach:
 			facing_right = target->position.x > position.x;
 			UpdateCurrentAnimation(&walk);
 			UpdateAIDestinationPoint(approach);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
 			if (move_speed.IsZero())
-				if (attack_decision > 20 && InEnemyActionQueue() )
+				if (attack_decision > 20 && InEnemyActionQueue())
 					UpdateAIState(frontal_attack);
 				else
 					UpdateAIState(retreat);
@@ -130,9 +130,9 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			facing_right = target->position.x > position.x;
 			UpdateAIDestinationPoint(frontal_attack);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
-			if (current_combo_hits == 3 && move_speed.IsZero())	
+			if (current_combo_hits == 3 && move_speed.IsZero())
 				UpdateAIState(retreat);
-			if (abs(target->position.x - position.x) <= attack_range && abs(target->GetDepth() - GetDepth()) <= layer_depth && current_combo_hits < 3 && target->IsAlive() )
+			if (abs(target->position.x - position.x) <= attack_range && abs(target->GetDepth() - GetDepth()) <= layer_depth && current_combo_hits < 3 && target->IsAlive())
 			{
 				if (current_combo_hits <= 1)
 					UpdateCurrentAnimation(&attack1, attacks_duration);
@@ -155,25 +155,25 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			UpdateCurrentAnimation(&walk);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
 			if (move_speed.IsZero())
-				UpdateAIState(approach); 
+				UpdateAIState(approach);
 			break;
 		}
 	}
-	
+
 	if (upd_logic)
 		UpdatePosition(move_speed);
 
 	return true;
 }
 
-void EnemyGarcia::CleanUp()
+void Boss3::CleanUp()
 {
 	App->manager->enemy_queue.remove(this);
 }
 
-bool EnemyGarcia::InEnemyActionQueue() const
+bool Boss3::InEnemyActionQueue() const
 {
-	unsigned int max_enemies_queue = 2;	
+	unsigned int max_enemies_queue = 3;
 	unsigned int enemies_in_queue = App->manager->enemy_queue.size();
 
 	if (enemies_in_queue == 0)
@@ -185,26 +185,26 @@ bool EnemyGarcia::InEnemyActionQueue() const
 	for (std::list<Entity*>::const_iterator it = App->manager->enemy_queue.cbegin(); it != App->manager->enemy_queue.cend(); ++it)
 		if (*it == this)
 			return true;
-	
+
 	if (enemies_in_queue < max_enemies_queue) {
 		App->manager->enemy_queue.push_back((Entity*) this);
 		return true;
 	}
 	else
-		return false;	
+		return false;
 }
 
-iPoint EnemyGarcia::SpeedTowardsPoint( iPoint to_point) const
+iPoint Boss3::SpeedTowardsPoint(iPoint to_point) const
 {
 	iPoint ret = { 0,0 };
 	int horizontal_diff = to_point.x - position.x;
 	int vertical_diff = to_point.y - position.y;
 	int hmod = horizontal_diff < 0 ? -1 : (horizontal_diff > 0 ? +1 : 0);
 	int vmod = vertical_diff < 0 ? -1 : (vertical_diff > 0 ? +1 : 0);
-	
-	float speed_slope = (float) speed.y / (float) speed.x;
+
+	float speed_slope = (float)speed.y / (float)speed.x;
 	float straight_line_slope;
-	
+
 	if (hmod == 0)
 		straight_line_slope = INFINITY;
 	else if (vmod == 0)
@@ -212,11 +212,11 @@ iPoint EnemyGarcia::SpeedTowardsPoint( iPoint to_point) const
 	else
 		straight_line_slope = (float)vertical_diff / (float)horizontal_diff;
 
-	if (abs(straight_line_slope) > speed_slope )
-		ret = {0, vmod * speed.y };
+	if (abs(straight_line_slope) > speed_slope)
+		ret = { 0, vmod * speed.y };
 	else
 		ret = { hmod * speed.x, vmod * speed.y };
-	
+
 	if (state == switching_sides)
 		ret.x += hmod * 2;
 
@@ -229,7 +229,7 @@ iPoint EnemyGarcia::SpeedTowardsPoint( iPoint to_point) const
 
 }
 
-void EnemyGarcia::UpdateAIDestinationPoint( AIState state)
+void Boss3::UpdateAIDestinationPoint(AIState state)
 {
 	App->renderer->GetPlayerPositionLimits(position_limits);
 	int up = position_limits.y;
@@ -247,13 +247,13 @@ void EnemyGarcia::UpdateAIDestinationPoint( AIState state)
 	case frontal_attack:
 		AI_move_destination = { target->position.x + left_of_target_mod * 30, target->GetDepth() };
 		break;
-	case retreat: 
+	case retreat:
 		if (position.y - up <= down - position.y)
 			AI_move_destination = { position.x, down };
 		else
 			AI_move_destination = { position.x, up };
 		break;
-	case switching_sides: 
+	case switching_sides:
 		AI_move_destination.y = position.y;
 		AI_move_destination.x = target->position.x + facing_right_mod * 120;	
 		AI_move_destination.x = MIN(MAX(AI_move_destination.x, left - 20), right);
@@ -262,7 +262,7 @@ void EnemyGarcia::UpdateAIDestinationPoint( AIState state)
 	}
 }
 
-bool EnemyGarcia::LoadFromConfigFile(const char* file_path) 
+bool Boss3::LoadFromConfigFile(const char* file_path)
 {
 	JSON_Value *root_value;
 	JSON_Object *root_object;
@@ -281,19 +281,19 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 		return false;
 	}
 
-// ------------------------ health ----------------------------
+	// ------------------------ health ----------------------------
 	max_health = (int)json_object_dotget_number(root_object, "garcia.max_health");
 	health = max_health;
 	lives = (int)json_object_dotget_number(root_object, "garcia.lives");
 	score = (int)json_object_dotget_number(root_object, "garcia.score");
 	LoadiPointFromJSONObject(root_object, "garcia.speed", &speed);
 
-// -------------------- damages -------------------------
+	// -------------------- damages -------------------------
 	attack1_dmg = (int)json_object_dotget_number(root_object, "damages.attack1");
 	attack2_dmg = (int)json_object_dotget_number(root_object, "damages.attack2");
 	throw_dmg = (int)json_object_dotget_number(root_object, "damages.throw");
 
-//----------------------- colliders ---------------------------
+	//----------------------- colliders ---------------------------
 	while (hit_collider == nullptr)
 		hit_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.hit", colliderType::ENEMY, &hit_collider_offset);
 	while (attack_collider == nullptr)
@@ -301,7 +301,7 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 
 	layer_depth = (int)json_object_dotget_number(root_object, "collision.layer_depth");
 
-//----------------------- duration ---------------------------
+	//----------------------- duration ---------------------------
 	attacks_duration = (int)json_object_dotget_number(root_object, "durations.attacks");
 	being_hit_duration = (int)json_object_dotget_number(root_object, "durations.being_hit_enemy");
 	being_knocked_duration = (int)json_object_dotget_number(root_object, "durations.being_knocked");
@@ -311,12 +311,12 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	dying_duration = (int)json_object_dotget_number(root_object, "durations.dying");
 	attack_pause = (int)json_object_dotget_number(root_object, "durations.attack_pause");
 	combo_window_msec = (int)json_object_dotget_number(root_object, "durations.combo_window_enemy");
-	
-//----------------------- sprites ---------------------------
+
+	//----------------------- sprites ---------------------------
 	LoadiPointFromJSONObject(root_object, "garcia.sprite_offset", &sprite_offset);
 	LoadiPointFromJSONObject(root_object, "garcia.sprite_offset_flip", &sprite_offset_flip);
 
-//----------------------- animations ---------------------------
+	//----------------------- animations ---------------------------
 	LoadAnimationFromJSONObject(root_object, "garcia.idle", &idle);
 	LoadAnimationFromJSONObject(root_object, "garcia.walk", &walk);
 	LoadAnimationFromJSONObject(root_object, "garcia.attack1", &attack1);
@@ -332,7 +332,7 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	LoadAnimationFromJSONObject(root_object, "garcia.dying", &dying);
 	LoadSDLRectFromJSONObject(root_object, "garcia.shadow", &shadow);
 
-//----------------------- sounds ---------------------------
+	//----------------------- sounds ---------------------------
 	LoadSoundFXFromJSONObject(root_object, "fx.death_garcia", &fx_death);
 	LoadSoundFXFromJSONObject(root_object, "fx.attack_hit_enemy", &fx_attack_hit);
 	LoadSoundFXFromJSONObject(root_object, "fx.ground_hit", &fx_ground_hit);
