@@ -53,7 +53,7 @@ private:
 
 	std::list<Collider*> colliders;
 	bool debug = false;
-	int collision_matrix[5][5] = { { 0,0,1,1,1 },{ 0,0,1,1,0 },{ 1,1,0,1,1 },{ 1,1,1,0,0 },{ 1,0,1,0,0 } };	// TODO: Load from file
+	int collision_matrix[5][5] = { { 0,0,1,1,1 },{ 0,0,0,1,0 },{ 1,0,0,0,0 },{ 1,1,0,1,0 },{ 1,0,0,0,0 } };	// TODO: Load from file
 	Module* report_to = nullptr;
 };
 

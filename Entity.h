@@ -66,6 +66,7 @@ public:
 	virtual void AddScore(int amount);
 	void TimeOver();
 
+	bool AllowAnimationInterruption() const;
 	void SetIdle();
 	void SetReachableItem( Entity* reachable = nullptr);
 	void SetHoldingFront(Entity* held = nullptr);
@@ -83,8 +84,6 @@ public:
 protected:
 	void RemoveColliders();
 	virtual void CleanUp();
-
-	bool AllowAnimationInterruption() const;
 
 	virtual void UpdateAIDestinationPoint(AIState new_state);
 	

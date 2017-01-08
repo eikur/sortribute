@@ -174,7 +174,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			}
 			else if (second_col->type == colliderType::ENEMY)
 			{
-				if ( first->IsGrounded() && second->IsGrounded() && !second->is_being_thrown_back && !first->IsHoldingSomeone() &&
+				if ( first->IsGrounded() && second->IsGrounded() && !second->is_being_thrown_back && !first->IsHoldingSomeone() && first->AllowAnimationInterruption() &&
 					( (first->facing_right == true && first->position.x <= second->position.x) || 
 					(first->facing_right == false && second->position.x <= first->position.x) ) )
 				{
@@ -260,11 +260,12 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			break;
 
 		case colliderType::ENEMY:
-			if (second_col->type == colliderType::ENEMY)
+			if (second_col->type == colliderType::ENEMY) 
 			{
-				/*
-					if (first->is_being_thrown || second->is_being_thrown)...
-				*/
+				if (first->is_being_thrown_front && second->is_hittable)
+					second->SetBeingKnocked(first->throw_dmg);
+				else if (second->is_being_thrown_front && first->is_hittable)
+					first->SetBeingKnocked(second->throw_dmg);
 			}
 			else
 			{

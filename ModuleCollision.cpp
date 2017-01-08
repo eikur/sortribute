@@ -37,9 +37,9 @@ update_status ModuleCollision::Update()
 {
 	for (list<Collider*>::const_iterator it = colliders.cbegin(); it != colliders.cend();++it )
 	{
-		for (list<Collider*>::const_iterator it2 = it; it2 != colliders.cend(); ++it2)	
+		for (list<Collider*>::const_iterator it2 = it; it2 != colliders.cend();++it2)	
 		{
-			if ((*it)->CheckCollision((*it2)->rect) == true)
+			if ((*it)->CheckCollision((*it2)->rect) == true && (*it) != (*it2))
 			{
 				if (collision_matrix[(*it)->type][(*it2)->type] == 1)
 				{

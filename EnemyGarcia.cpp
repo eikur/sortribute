@@ -252,7 +252,7 @@ void EnemyGarcia::UpdateAIDestinationPoint( AIState state)
 		break;
 	case switching_sides: 
 		AI_move_destination.y = position.y;
-		AI_move_destination.x = target->position.x + facing_right_mod * 120;
+		AI_move_destination.x = target->position.x + facing_right_mod * 120;	// update limits
 		break;
 	default: break;
 	}
