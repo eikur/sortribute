@@ -24,14 +24,11 @@ public:
 		unknown
 	};
 
-	enum AIState
-	{
-		AI_idle,
-		AI_go_player_left,
-		AI_go_player_right,
-		AI_attack,
-		AI_queuing,
-		AI_inactive
+	enum AIState {
+		none,
+		frontal_attack,
+		taunting,
+		switching_sides
 	};
 
 	struct ptrEntityDepthComparison {
@@ -60,6 +57,7 @@ public:
 	void SetDepth( int new_depth);
 	bool IsGrounded() const;
 
+	bool IsAlive() const;
 	void IncreaseHealth(int amount);
 	virtual void DecreaseHealth(int amount);
 	void TimeOver();
@@ -77,17 +75,17 @@ public:
 	void SetBeingThrownBack( iPoint pvt);
 	void SetBeingKnocked(int damage = 0);
 
+	
 	bool IsHoldingSomeone();
 
 	virtual void AddScore(int amount);
 	
 
 protected:
-	bool IsAlive() const;
-	bool AllowAnimationInterruption();
+	bool AllowAnimationInterruption() const;
 
 	void RemoveColliders();
-	void CleanUp();
+	virtual void CleanUp();
 	
 	virtual bool LoadFromConfigFile(const char* file_path);
 	void LoadAnimationFromJSONObject(JSON_Object *j_object, const char *dotget_path, Animation* animation);
@@ -158,6 +156,7 @@ protected:
 // animation durations
 	int blocking_animation_remaining_msec = 0;
 	int attacks_duration = 0;
+	int attack_pause = 0;
 	int hold_attacks_duration = 0;
 	int take_item_duration = 0;
 	int throwing_duration = 0;
@@ -234,8 +233,7 @@ protected:
 	Entity* held_entity = nullptr;
 	Entity* reachable_item = nullptr;
 
-// IA for enemies
-	AIState state = AIState::AI_inactive;
+	AIState state = none;
 
 };
 

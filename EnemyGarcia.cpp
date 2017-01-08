@@ -4,6 +4,7 @@
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "ModuleCollision.h"
+#include "EntityManager.h"
 
 #include "EnemyGarcia.h"
 
@@ -21,7 +22,7 @@ bool EnemyGarcia::Init()
 	}
 	UpdateCurrentAnimation(&idle);
 	facing_right = false;
-	state = AI_idle;
+	state = none;
 	return true;
 }
 
@@ -76,38 +77,65 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 		{
 			DecreaseHealth(throw_dmg);
 			if (IsAlive())
+			{
 				UpdateCurrentAnimation(&standing_up, standing_up_duration);
+				state = none;
+			}
 		}
 		else if (current_animation == &being_knocked)
+		{
 			UpdateCurrentAnimation(&standing_up, standing_up_duration, fx_ground_hit);
+			state = none;
+		}
 		else if (current_animation == &standing_up)
 			UpdateCurrentAnimation(&idle);
 		else if (current_animation == &being_hit)
 			UpdateCurrentAnimation(&idle);
 		else if (current_animation == &attack1 || current_animation == &attack2)
-			UpdateCurrentAnimation(&idle);
+			UpdateCurrentAnimation(&idle, attack_pause);
 	}
 
 	if (unhittable_remaining_msec <= 0 && (current_animation == &being_hit || current_animation == &being_hold_front_hit))
 		is_hittable = true;
 
-	// IA starts here
+	// IA start
 	if (AllowAnimationInterruption() && is_being_hold_front == false && is_being_hold_back == false)
 	{
-		int approach_front = rand() % 101;
+		int decision = rand() % 101;
 		int attack_range = attack_collider->rect.w + attack_collider_offset.x;
-
-		switch (state) 
-		{
-			case AIState::AI_idle: 
-				if (approach_front >= 75)
-					state = (facing_right ? AI_go_player_left : AI_go_player_right);
-				else
-					state = (facing_right ? AI_go_player_right : AI_go_player_left);
+			
+		if (InEnemyActionQueue() )		
+		{ 
+			switch (state) {
+			case none:
+				if (target->IsAlive())
+				{
+					if (decision >= 50)	// direct 
+						state = frontal_attack;
+					else if (decision >= 20)
+						state = taunting;
+					else
+					{
+						state = switching_sides;
+						// destination point needed
+					}
+				}
 				break;
-			case AIState::AI_attack: break;
-			case AIState::AI_queuing: UpdateCurrentAnimation(&idle); break;
-			default:break;
+			case frontal_attack:
+				facing_right = target->position.x > position.x;
+				if (abs(target->position.x - position.x) <= attack_range && abs(target->GetDepth() - GetDepth()) <= 5)
+					UpdateCurrentAnimation(&attack1, attacks_duration);
+				else
+				{
+					move_speed = SpeedTowardsTarget();
+					UpdateCurrentAnimation(&walk);
+				}
+				break;
+			}
+		}
+		else
+		{
+			state = none;
 		}
 	}
 	
@@ -117,28 +145,42 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 	return true;
 }
 
-iPoint EnemyGarcia::FollowTarget()
+void EnemyGarcia::CleanUp()
 {
-	iPoint ret = { 0,0 };
-	int distance = position.DistanceTo(target->position);
-	int threshold_orientation = 20;
+	App->manager->enemy_queue.remove(this);
+}
 
-	//orientation
-	if (position.x <= target->position.x - threshold_orientation)
-		facing_right = true;
-	else if (position.x > target->position.x + threshold_orientation)
-		facing_right = false;
-	
+bool EnemyGarcia::InEnemyActionQueue() const
+{
+	unsigned int max_enemies_queue = 2;	
+	unsigned int enemies_in_queue = App->manager->enemy_queue.size();
 
-	if (distance >= 50)
+	if (enemies_in_queue == 0)
 	{
-		//if ()
+		App->manager->enemy_queue.push_back((Entity*) this);
+		return true;
 	}
 
+	for (std::list<Entity*>::const_iterator it = App->manager->enemy_queue.cbegin(); it != App->manager->enemy_queue.cend(); ++it)
+		if (*it == this)
+			return true;
+	
+	if (enemies_in_queue < max_enemies_queue) {
+		App->manager->enemy_queue.push_back((Entity*) this);
+		return true;
+	}
+	else
+		return false;	
+}
+
+iPoint EnemyGarcia::SpeedTowardsTarget() const
+{
+	iPoint ret = { 0,0 };
+	ret.x = (target->position.x - position.x) / 10;
+	ret.y = (target->position.y - position.y) / 10;
 	
 	return ret;
 }
-
 bool EnemyGarcia::LoadFromConfigFile(const char* file_path) 
 {
 	JSON_Value *root_value;
@@ -175,13 +217,13 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 
 //----------------------- duration ---------------------------
 	attacks_duration = (int)json_object_dotget_number(root_object, "durations.attacks");
-	being_hit_duration = (int)json_object_dotget_number(root_object, "durations.being_hit");
+	being_hit_duration = (int)json_object_dotget_number(root_object, "durations.being_hit_enemy");
 	being_knocked_duration = (int)json_object_dotget_number(root_object, "durations.being_knocked");
 	being_thrown_duration = (int)json_object_dotget_number(root_object, "durations.being_thrown");
 	standing_up_duration = (int)json_object_dotget_number(root_object, "durations.standing_up_enemy");
 	unhittable_max_msec = (int)json_object_dotget_number(root_object, "durations.unhittable");
 	dying_duration = (int)json_object_dotget_number(root_object, "durations.dying");
-
+	attack_pause = (int)json_object_dotget_number(root_object, "durations.attack_pause");
 	
 //----------------------- sprites ---------------------------
 	LoadiPointFromJSONObject(root_object, "garcia.sprite_offset", &sprite_offset);

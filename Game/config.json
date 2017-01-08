@@ -75,6 +75,7 @@
 	"durations": {
 		"attacks": 256,
 		"combo_window": 512,
+		"attack_pause": 420,
 		"hold_attacks": 380,
 		"hold_combo_window": 636,
 		"unhittable": 256,
@@ -82,7 +83,8 @@
 		"jump": 768,
 		"holding_swap": 1024,
 		"throwing": 768,
-		"being_hit": 1024,
+		"being_hit_player": 512,
+		"being_hit_enemy": 1024,
 		"being_knocked": 768,
 		"being_thrown": 1536,
 		"take_item": 256,
@@ -223,7 +225,7 @@
 		"lives": 1,
 		"score": 600,
 		"colliders": {
-			"attack": [10,-52,48,32],
+			"attack": [10,-52,40,32],
 			"hit": [-12,-52,24,52]
 		},
 		"sprite_offset": [-35,-80],

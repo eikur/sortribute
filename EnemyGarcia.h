@@ -13,12 +13,18 @@ public:
 	bool Update(unsigned int msec_elapsed, const bool upd_logic = false);
 
 private:
-	iPoint FollowTarget();
+	void CleanUp();
+
+	bool InEnemyActionQueue() const;
+	iPoint SpeedTowardsTarget() const;
 
 	bool LoadFromConfigFile(const char* file_path);
 
 private:
 	Entity* target = nullptr;
+
+// AI related
+
 };
 
 #endif // __ENEMYGARCIA_H__

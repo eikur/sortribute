@@ -36,6 +36,7 @@ private:
 
 public:
 	Entity* player = nullptr;
+	std::list<Entity*> enemy_queue;
 
 private:
 	std::list<Entity*> entities;

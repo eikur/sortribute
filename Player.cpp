@@ -513,7 +513,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	jump_prep_duration = (int)json_object_dotget_number(root_object, "durations.jump_prep");
 	jump_duration = (int)json_object_dotget_number(root_object, "durations.jump");
 	throwing_duration = (int)json_object_dotget_number(root_object, "durations.throwing");
-	being_hit_duration = (int)json_object_dotget_number(root_object, "durations.being_hit");
+	being_hit_duration = (int)json_object_dotget_number(root_object, "durations.being_hit_player");
 	being_thrown_duration = (int)json_object_dotget_number(root_object, "durations.being_thrown");
 	being_knocked_duration= (int)json_object_dotget_number(root_object, "durations.being_knocked");
 	standing_up_duration = (int)json_object_dotget_number(root_object, "durations.standing_up_player");

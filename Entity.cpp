@@ -90,7 +90,7 @@ bool Entity::Draw() const
 	return true;
 }
 
-bool Entity::AllowAnimationInterruption()
+bool Entity::AllowAnimationInterruption() const
 {
 	return blocking_animation_remaining_msec <= 0;
 }
@@ -129,6 +129,7 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration
 			current_animation == &throwing_front ||
 			current_animation == &throwing_back ||
 			current_animation == &standing_up ||
+			current_animation == &jump ||
 			current_animation == &jump_attack ||
 			current_animation == &holding_swap
 			)

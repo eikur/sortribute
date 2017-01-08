@@ -118,7 +118,6 @@ bool ModuleRender::Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* sect
 	rect.w *= m_screen_size;
 	rect.h *= m_screen_size;
 
-	//if(SDL_RenderCopy(renderer, texture, section, &rect) != 0)
 	if (SDL_RenderCopyEx(renderer, texture, section, &rect,0,NULL,rflip) != 0)
 	{
 		LOG("Cannot blit to screen. SDL_RenderCopy error: %s", SDL_GetError());

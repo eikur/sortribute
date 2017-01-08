@@ -107,6 +107,7 @@ bool EntityManager::CleanUp()
 	for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
 		delete *it;
 	entities.clear();
+	enemy_queue.clear();
 
 	return true;
 }
@@ -200,7 +201,13 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			{
 				if (second->is_attacking && first->is_hittable)
 				{
-					first->SetBeingHit(second->attack1_dmg);	// TODO: define enemy attacks
+					first->is_hittable = false;
+					first->SetBeingHit(second->attack1_dmg);	
+					App->audio->PlayFx(second->fx_attack_hit);
+					if (second->position.x <= first->position.x)
+						first->facing_right = false;
+					else
+						first->facing_right = true;
 				}
 			}
 			else
