@@ -175,7 +175,8 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			else if (second_col->type == colliderType::ENEMY)
 			{
 				if ( first->IsGrounded() && second->IsGrounded() && !second->is_being_thrown_back && !first->IsHoldingSomeone() &&
-					( (first->facing_right == true && first->position.x <= second->position.x) || (first->facing_right == false && second->position.x <= first->position.x) ) )
+					( (first->facing_right == true && first->position.x <= second->position.x) || 
+					(first->facing_right == false && second->position.x <= first->position.x) ) )
 				{
 					if (first->facing_right == second->facing_right)
 					{
@@ -201,8 +202,6 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			{
 				if (second->is_attacking && first->is_hittable)
 				{
-					second->is_attacking = false;
-					first->is_hittable = false;
 					if (second->position.x <= first->position.x)
 						first->facing_right = false;
 					else
@@ -220,10 +219,6 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 					}
 
 
-				}
-				else if (second->is_attacking && !first->is_hittable )
-				{
-					second->UpdateAIState(Entity::AIState::retreat);	// little bit of improvement here
 				}
 			}
 			else

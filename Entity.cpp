@@ -337,6 +337,11 @@ void Entity::SetBeingHit(int damage){
 	is_hittable = false;
 	unhittable_remaining_msec = unhittable_max_msec;
 	UpdateCurrentAnimation(&being_hit, being_hit_duration, -1, true);
+	if (held_entity != nullptr)
+	{
+		held_entity->SetIdle();
+		held_entity = nullptr;
+	}
 	DecreaseHealth(damage);
 }
 
@@ -384,6 +389,11 @@ void Entity::SetBeingThrownBack( iPoint pvt) {
 void Entity::SetBeingKnocked(int damage)
 {
 	is_hittable = false;
+	if (held_entity != nullptr)
+	{
+		held_entity->SetIdle();
+		held_entity = nullptr;
+	}
 	air_remaining_msec = being_knocked_duration;
 	UpdateCurrentAnimation(&being_knocked, being_knocked_duration, -1, true);
 	DecreaseHealth(damage);

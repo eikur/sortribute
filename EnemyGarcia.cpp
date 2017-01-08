@@ -79,16 +79,21 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 		{
 			DecreaseHealth(throw_dmg);
 			if (IsAlive())
-			{
 				UpdateCurrentAnimation(&standing_up, standing_up_duration);
-			}
 		}
 		else if (current_animation == &being_knocked)
 		{
 			UpdateCurrentAnimation(&standing_up, standing_up_duration, fx_ground_hit);
 		}
 		else if (current_animation == &standing_up)
+		{
 			UpdateCurrentAnimation(&idle);
+			if (state == switching_sides)
+			{
+				facing_right = target->position.x > position.x;
+				UpdateAIDestinationPoint(switching_sides);
+			}
+		}
 		else if (current_animation == &being_hit)
 			UpdateCurrentAnimation(&idle);
 		else if (current_animation == &attack1 || current_animation == &attack2)
@@ -101,15 +106,15 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 	// IA start
 	if (AllowAnimationInterruption() && is_being_hold_front == false && is_being_hold_back == false)
 	{
-		facing_right = target->position.x > position.x;
-
 		int attack_decision = rand() % 101;
 		int attack_range = attack_collider->rect.w + attack_collider_offset.x;
 			
 		switch (state) {
 			
 		case approach:
+			facing_right = target->position.x > position.x;
 			UpdateCurrentAnimation(&walk);
+			UpdateAIDestinationPoint(approach);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
 			if (move_speed.IsZero())
 				if (attack_decision > 20 && InEnemyActionQueue() )
@@ -119,6 +124,7 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			break;
 
 		case frontal_attack:
+			facing_right = target->position.x > position.x;
 			UpdateAIDestinationPoint(frontal_attack);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
 			if (current_combo_hits == 3 && move_speed.IsZero())	// change this
@@ -135,6 +141,7 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 				UpdateCurrentAnimation(&walk);
 			break;
 		case retreat:
+			facing_right = target->position.x > position.x;
 			current_combo_hits = 0;
 			UpdateCurrentAnimation(&walk);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
@@ -143,6 +150,7 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			break;
 		case switching_sides:
 			UpdateCurrentAnimation(&walk);
+			//UpdateAIDestinationPoint(switching_sides);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
 			if (move_speed.IsZero())
 				UpdateAIState(approach); 
@@ -163,7 +171,7 @@ void EnemyGarcia::CleanUp()
 
 bool EnemyGarcia::InEnemyActionQueue() const
 {
-	unsigned int max_enemies_queue = 2;	
+	unsigned int max_enemies_queue = 3;	
 	unsigned int enemies_in_queue = App->manager->enemy_queue.size();
 
 	if (enemies_in_queue == 0)
@@ -204,31 +212,21 @@ iPoint EnemyGarcia::SpeedTowardsPoint( iPoint to_point) const
 
 void EnemyGarcia::UpdateAIDestinationPoint( AIState state)
 {
-	int up, down;
-	bool left_of_target; 
-
-	up = position_limits.y;
-	down = position_limits.y + position_limits.h;
-	left_of_target = target->position.x > position.x;
-
+	int up = position_limits.y;
+	int down = position_limits.y + position_limits.h;
+	int left_of_target_mod = position.x < target->position.x ? -1 : 1;
+	int facing_right_mod = facing_right ? +1 : -1;
 
 	switch (state)
 	{
 	case approach:
 		AI_move_destination = target->position;
-		// improve approach
-		if (left_of_target)
-			AI_move_destination.x -= 50;
-		else
-			AI_move_destination.x += 50;
+		AI_move_destination.x += left_of_target_mod * 50;
 		
 		break;
 	case frontal_attack:
 		AI_move_destination = target->position;
-		if (left_of_target)
-			AI_move_destination.x -= 30;
-		else
-			AI_move_destination.x += 30;
+		AI_move_destination.x += left_of_target_mod* 30;
 		break;
 	case retreat: 
 		if (position.y - up <= down - position.y)
@@ -237,10 +235,8 @@ void EnemyGarcia::UpdateAIDestinationPoint( AIState state)
 			AI_move_destination = { position.x, up };
 		break;
 	case switching_sides: 
-		if (left_of_target)
-			AI_move_destination = { position.x + 150, position.y };
-		else
-			AI_move_destination = { position.x - 150, position.y };
+		AI_move_destination.y = position.y;
+		AI_move_destination.x = target->position.x + facing_right_mod * 120;
 		break;
 	default: break;
 	}
