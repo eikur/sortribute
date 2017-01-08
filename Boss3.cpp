@@ -284,6 +284,9 @@ bool Boss3::LoadFromConfigFile(const char* file_path)
 	// ------------------------ health ----------------------------
 	max_health = (int)json_object_dotget_number(root_object, "garcia.max_health");
 	health = max_health;
+	// remove
+	max_health = 200;
+	health = max_health;
 	lives = (int)json_object_dotget_number(root_object, "garcia.lives");
 	score = (int)json_object_dotget_number(root_object, "garcia.score");
 	LoadiPointFromJSONObject(root_object, "garcia.speed", &speed);

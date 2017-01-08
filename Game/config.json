@@ -70,7 +70,13 @@
 		"health_section": [88,32,2,6],
 		"lives_pos": [96,8],
 		"help_pos": [136,8],
-		"time_pos" : [152,8]
+		"time_pos" : [152,8],
+		"boss_section": [0,65,320,13],
+		"boss_pos": [0,27],
+		"boss_msg_pos": [136,24],
+		"boss_health_pos": [8,26],
+		"medium_health_section":[92,32,2,6],
+		"high_health_section":[90,32,2,6]
 	},
 	"durations": {
 		"attacks": 256,

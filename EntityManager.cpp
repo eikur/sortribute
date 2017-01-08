@@ -75,6 +75,8 @@ update_status EntityManager::Update()
 					player = nullptr;
 				else
 					player->AddScore((*it)->score);
+				if (*it == boss)
+					boss = nullptr;
 				RELEASE(*it);
 				it = entities.erase(it);
 			}
@@ -311,6 +313,12 @@ void EntityManager::PrintStatus()
 		App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, "0");
 		App->fonts->Print(146, 110, ModuleFonts::Fonts::scene_overlap, "END");
 	}
+	if (boss != nullptr)
+	{
+		App->renderer->Blit(hud_graphics, hud_boss_pos.x, hud_boss_pos.y, &hud_boss_section, 0.0F);
+		App->fonts->Print(hud_boss_msg_pos.x, hud_boss_msg_pos.y, ModuleFonts::Fonts::hud_small, "-BOSS-");
+		PrintBossHealth();
+	}
 
 }
 
@@ -323,6 +331,32 @@ void EntityManager::PrintPlayerHealth()
 	{
 		App->renderer->Blit(hud_graphics, hud_health_pos.x + i*hud_health_section.w, hud_health_pos.y, &hud_health_section, 0.0F);
 	}
+}
+
+void EntityManager::PrintBossHealth()
+{
+	int max_pixels = 80;
+	int min_pixels = 2;
+	int sections_to_draw;
+	SDL_Rect *h_section;
+
+	if (boss->health > 120)
+	{
+		sections_to_draw = 40;
+		h_section = &hud_high_health_section;
+	}
+	else if (boss->health > 80)
+	{
+		sections_to_draw = 40;
+		h_section = &hud_medium_health_section;
+	}
+	else
+	{
+		sections_to_draw = boss->health / min_pixels;
+		h_section = &hud_health_section;
+	}
+	for (int i = 0; i < sections_to_draw; ++i)
+		App->renderer->Blit(hud_graphics, hud_health_boss_pos.x + i*hud_health_section.w, hud_health_boss_pos.y, h_section, 0.0F);
 }
 
 
@@ -384,11 +418,37 @@ bool EntityManager::LoadConfigFromFile(const char* file_path)
 	hud_health_section = { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
 	json_array_clear(j_array);
 
+	j_array = json_object_dotget_array(root_object, "hud.boss_section");
+	hud_boss_section = { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
+	json_array_clear(j_array);
+
+	j_array = json_object_dotget_array(root_object, "hud.high_health_section");
+	hud_high_health_section= { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
+	json_array_clear(j_array);
+
+	j_array = json_object_dotget_array(root_object, "hud.medium_health_section");
+	hud_medium_health_section = { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
+	json_array_clear(j_array);
+
+	j_array = json_object_dotget_array(root_object, "hud.boss_pos");
+	hud_boss_pos.x = (int)json_array_get_number(j_array, 0);
+	hud_boss_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
+	j_array = json_object_dotget_array(root_object, "hud.boss_health_pos");
+	hud_health_boss_pos.x = (int)json_array_get_number(j_array, 0);
+	hud_health_boss_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
+	j_array = json_object_dotget_array(root_object, "hud.boss_msg_pos");
+	hud_boss_msg_pos.x = (int)json_array_get_number(j_array, 0);
+	hud_boss_msg_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
 	if (json_object_dothas_value_of_type(root_object, "fx.pause", JSONString))
 		fx_pause = App->audio->LoadFx(json_object_dotget_string(root_object, "fx.pause"));
 
 	json_value_free(root_value);
-
 
 	return true;
 }
@@ -408,7 +468,7 @@ void EntityManager::CheatCodes()
 		Entity *a = (Entity*)CreateEntity(Entity::Types::npc_boss);
 		if (a != nullptr) {
 			a->SetPosition({ player->position.x + 147, player->GetDepth() });
-
+			boss = a;
 		}
 	}
 	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN && player != nullptr)
