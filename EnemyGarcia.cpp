@@ -221,6 +221,9 @@ iPoint EnemyGarcia::SpeedTowardsPoint( iPoint to_point) const
 		ret.x = horizontal_diff;
 	if (abs(ret.y) > abs(vertical_diff))
 		ret.y = vertical_diff;
+	
+	if (state == switching_sides)
+		ret.x += hmod * 2;
 
 	return ret;
 

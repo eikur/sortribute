@@ -221,8 +221,8 @@
 	},
 	"garcia": {
 		"graphics_file": "Assets/enemy_garcia.png",
-		"speed" : [4,1],
-		"max_health" : 48,
+		"speed" : [3,1],
+		"max_health" : 32,
 		"lives": 1,
 		"score": 600,
 		"colliders": {
