@@ -59,6 +59,8 @@ private:
 	iPoint hud_help_pos = { 0,0 };
 	iPoint hud_lives_pos = { 0,0 };
 		
+	//collision check
+	int layer_depth = 0;
 };
 
 #endif // __ENTITYMANAGER_H__

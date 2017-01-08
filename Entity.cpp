@@ -309,6 +309,17 @@ void Entity::CleanUp()
 void Entity::AddScore(int amount) 
 {}
 
+void Entity::UpdateAIState(AIState new_state)
+{
+	UpdateAIDestinationPoint();
+	state = new_state;
+}
+
+void Entity::UpdateAIDestinationPoint()
+{
+
+}
+
 //-------------------    Interaction between entities ---------------------------------
 
 void Entity::SetIdle()

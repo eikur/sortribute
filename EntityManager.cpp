@@ -161,7 +161,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 	}
 
 	int depth_difference = first->GetDepth() - second->GetDepth();
-	if (depth_difference < -5 || depth_difference > 5)
+	if (depth_difference < -layer_depth || depth_difference > layer_depth)
 		return;
 
 
@@ -201,6 +201,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			{
 				if (second->is_attacking && first->is_hittable)
 				{
+					second->is_attacking = false;
 					first->is_hittable = false;
 					if (second->position.x <= first->position.x)
 						first->facing_right = false;
@@ -218,6 +219,10 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 						App->audio->PlayFx(second->fx_attack_hit);
 					}
 
+				}
+				else if (second->is_attacking && !first->is_hittable )
+				{
+					second->UpdateAIState(Entity::AIState::retreat);	// little bit of improvement here
 				}
 			}
 			else
@@ -329,6 +334,10 @@ bool EntityManager::LoadConfigFromFile(const char* file_path)
 		return false;
 	else
 		root_object = json_object(root_value);
+
+	// depth for collisions
+	layer_depth = (int)json_object_dotget_number(root_object, "collision.layer_depth");
+
 
 	// hud load
 	if (json_object_dothas_value_of_type(root_object, "hud.graphics_file", JSONString))

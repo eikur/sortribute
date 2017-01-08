@@ -22,7 +22,7 @@ bool EnemyGarcia::Init()
 	}
 	UpdateCurrentAnimation(&idle);
 	facing_right = false;
-	state = none;
+	state = frontal_attack;
 	return true;
 }
 
@@ -107,20 +107,10 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 		if (InEnemyActionQueue() )		
 		{ 
 			switch (state) {
-			case none:
-				if (target->IsAlive())
-				{
-					if (decision >= 50)	// direct 
-						state = frontal_attack;
-					else if (decision >= 20)
-						state = taunting;
-					else
-					{
-						state = switching_sides;
-						// destination point needed
-					}
-				}
+			
+			case approach:
 				break;
+
 			case frontal_attack:
 				facing_right = target->position.x > position.x;
 				if (abs(target->position.x - position.x) <= attack_range && abs(target->GetDepth() - GetDepth()) <= 5)
@@ -133,9 +123,12 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 				}
 				else
 				{
-					move_speed = SpeedTowardsTarget();
+					move_speed = SpeedTowardsPoint( target->position );	// they move TOO fast, improve it
 					UpdateCurrentAnimation(&walk);
 				}
+				break;
+			case retreat:
+				move_speed = SpeedTowardsPoint(AI_move_destination);
 				break;
 			}
 		}
@@ -179,7 +172,7 @@ bool EnemyGarcia::InEnemyActionQueue() const
 		return false;	
 }
 
-iPoint EnemyGarcia::SpeedTowardsTarget() const
+iPoint EnemyGarcia::SpeedTowardsPoint( iPoint to_point) const
 {
 	iPoint ret = { 0,0 };
 	ret.x = (target->position.x - position.x) / 10;
@@ -187,6 +180,18 @@ iPoint EnemyGarcia::SpeedTowardsTarget() const
 	
 	return ret;
 }
+
+void EnemyGarcia::UpdateAIDestinationPoint()
+{
+	switch (state)
+	{
+	case approach: break;
+	case retreat: break;
+	case switching_sides: break;
+	default: break;
+	}
+}
+
 bool EnemyGarcia::LoadFromConfigFile(const char* file_path) 
 {
 	JSON_Value *root_value;
@@ -218,8 +223,10 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	throw_dmg = (int)json_object_dotget_number(root_object, "damages.throw");
 
 //----------------------- colliders ---------------------------
-	hit_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.hit", colliderType::ENEMY, &hit_collider_offset);
-	attack_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.attack", colliderType::ENEMY_ATTACK, &attack_collider_offset);
+	while (hit_collider == nullptr)
+		hit_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.hit", colliderType::ENEMY, &hit_collider_offset);
+	while (attack_collider == nullptr)
+		attack_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.attack", colliderType::ENEMY_ATTACK, &attack_collider_offset);
 
 //----------------------- duration ---------------------------
 	attacks_duration = (int)json_object_dotget_number(root_object, "durations.attacks");

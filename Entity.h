@@ -48,21 +48,23 @@ public:
 	virtual void UpdatePosition(const iPoint new_speed);
 	virtual void SetPosition(const iPoint new_position);
 	void UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration = 0, int fx_new_anim = -1, bool override_current = false);
+	bool Draw() const;
 
 	iPoint UpdateKnockedMotion();
 	iPoint UpdateThrownFrontMotion();
 	void UpdateThrownBackMotion();
 
-	bool Draw() const;
 	int  GetDepth() const;
 	void SetDepth( int new_depth);
 	bool IsGrounded() const;
 
 	bool IsAlive() const;
+	bool IsHoldingSomeone();
+
 	void IncreaseHealth(int amount);
 	virtual void DecreaseHealth(int amount);
+	virtual void AddScore(int amount);
 	void TimeOver();
-
 
 	void SetIdle();
 	void SetReachableItem( Entity* reachable = nullptr);
@@ -75,18 +77,16 @@ public:
 	void SetBeingThrownFront( iPoint pvt);
 	void SetBeingThrownBack( iPoint pvt);
 	void SetBeingKnocked(int damage = 0);
-
-	
-	bool IsHoldingSomeone();
-
-	virtual void AddScore(int amount);
-	
+		
+	virtual void UpdateAIState(AIState new_state);
 
 protected:
-	bool AllowAnimationInterruption() const;
-
 	void RemoveColliders();
 	virtual void CleanUp();
+
+	bool AllowAnimationInterruption() const;
+
+	virtual void UpdateAIDestinationPoint();
 	
 	virtual bool LoadFromConfigFile(const char* file_path);
 	void LoadAnimationFromJSONObject(JSON_Object *j_object, const char *dotget_path, Animation* animation);
@@ -231,6 +231,7 @@ protected:
 	unsigned int fx_extra_life = 0;
 
 // Interactions and collisions
+	int layer_depth = 0;
 	Entity* held_entity = nullptr;
 	Entity* reachable_item = nullptr;
 

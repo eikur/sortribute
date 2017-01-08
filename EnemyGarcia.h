@@ -15,15 +15,14 @@ public:
 private:
 	void CleanUp();
 
+	void UpdateAIDestinationPoint();
+	iPoint SpeedTowardsPoint(iPoint to_point) const; 
 	bool InEnemyActionQueue() const;
-	iPoint SpeedTowardsTarget() const;
 
 	bool LoadFromConfigFile(const char* file_path);
 
 private:
 	Entity* target = nullptr;
-
-// AI related
 
 };
 
