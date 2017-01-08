@@ -311,11 +311,11 @@ void Entity::AddScore(int amount)
 
 void Entity::UpdateAIState(AIState new_state)
 {
-	UpdateAIDestinationPoint();
+	UpdateAIDestinationPoint( new_state );
 	state = new_state;
 }
 
-void Entity::UpdateAIDestinationPoint()
+void Entity::UpdateAIDestinationPoint(AIState new_state)
 {
 
 }

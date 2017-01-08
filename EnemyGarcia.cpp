@@ -22,12 +22,15 @@ bool EnemyGarcia::Init()
 	}
 	UpdateCurrentAnimation(&idle);
 	facing_right = false;
-	state = frontal_attack;
+
 	return true;
 }
 
 bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
+	if (state == none)
+		UpdateAIState(approach);
+
 	if (blocking_animation_remaining_msec > 0)
 		blocking_animation_remaining_msec = MAX(blocking_animation_remaining_msec - msec_elapsed, 0);
 	if (air_remaining_msec > 0)
@@ -79,13 +82,11 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			if (IsAlive())
 			{
 				UpdateCurrentAnimation(&standing_up, standing_up_duration);
-				state = none;
 			}
 		}
 		else if (current_animation == &being_knocked)
 		{
 			UpdateCurrentAnimation(&standing_up, standing_up_duration, fx_ground_hit);
-			state = none;
 		}
 		else if (current_animation == &standing_up)
 			UpdateCurrentAnimation(&idle);
@@ -101,40 +102,51 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 	// IA start
 	if (AllowAnimationInterruption() && is_being_hold_front == false && is_being_hold_back == false)
 	{
-		int decision = rand() % 101;
+		facing_right = target->position.x > position.x;
+
+		int attack_decision = rand() % 101;
 		int attack_range = attack_collider->rect.w + attack_collider_offset.x;
 			
-		if (InEnemyActionQueue() )		
-		{ 
-			switch (state) {
+		switch (state) {
 			
-			case approach:
-				break;
-
-			case frontal_attack:
-				facing_right = target->position.x > position.x;
-				if (abs(target->position.x - position.x) <= attack_range && abs(target->GetDepth() - GetDepth()) <= 5)
-				{
-					if (current_combo_hits <= 1)
-						UpdateCurrentAnimation(&attack1, attacks_duration);
-					else
-						UpdateCurrentAnimation(&attack2, attacks_duration);
-					current_combo_hits += 1;
-				}
+		case approach:
+			UpdateCurrentAnimation(&walk);
+			move_speed = SpeedTowardsPoint(AI_move_destination);
+			if (move_speed.IsZero())
+				if (attack_decision > 102 && InEnemyActionQueue() )
+					UpdateAIState(frontal_attack);
 				else
-				{
-					move_speed = SpeedTowardsPoint( target->position );	// they move TOO fast, improve it
-					UpdateCurrentAnimation(&walk);
-				}
-				break;
-			case retreat:
-				move_speed = SpeedTowardsPoint(AI_move_destination);
-				break;
+					UpdateAIState(retreat);
+			break;
+
+		case frontal_attack:
+			move_speed = SpeedTowardsPoint(target->position);
+			if (current_combo_hits == 3 ) // && move_speed.IsZero())
+				UpdateAIState(retreat);
+				
+			if (abs(target->position.x - position.x) <= attack_range && abs(target->GetDepth() - GetDepth()) <= layer_depth)
+			{
+				if (current_combo_hits <= 1)
+					UpdateCurrentAnimation(&attack1, attacks_duration);
+				else
+					UpdateCurrentAnimation(&attack2, attacks_duration);
+				current_combo_hits += 1;
 			}
-		}
-		else
-		{
-			state = none;
+			else
+				UpdateCurrentAnimation(&walk);
+			break;
+		case retreat:
+			UpdateCurrentAnimation(&walk);
+			move_speed = SpeedTowardsPoint(AI_move_destination);
+			if (move_speed.IsZero())
+				UpdateAIState(switching_sides);
+			break;
+		case switching_sides:
+			UpdateCurrentAnimation(&walk);
+			move_speed = SpeedTowardsPoint(AI_move_destination);
+			if (move_speed.IsZero())
+				UpdateAIState(approach); 
+			break;
 		}
 	}
 	
@@ -175,19 +187,53 @@ bool EnemyGarcia::InEnemyActionQueue() const
 iPoint EnemyGarcia::SpeedTowardsPoint( iPoint to_point) const
 {
 	iPoint ret = { 0,0 };
-	ret.x = (target->position.x - position.x) / 10;
-	ret.y = (target->position.y - position.y) / 10;
 	
+	int horizontal_diff = to_point.x - position.x;
+	int vertical_diff = to_point.y - position.y;
+	int horizontal = horizontal_diff < 0 ? -1 : (horizontal_diff > 0 ? +1 : 0);
+	int vertical = vertical_diff < 0 ? -1 : (vertical_diff > 0 ? +1 : 0);
+
+	ret = { horizontal * speed.x, vertical * speed.y };
+	// fine tune
+	if (abs(ret.x) > abs(horizontal_diff))
+		ret.x = horizontal_diff;
+	if (abs(ret.y) > abs(vertical_diff))
+		ret.y = vertical_diff;	
 	return ret;
 }
 
-void EnemyGarcia::UpdateAIDestinationPoint()
+void EnemyGarcia::UpdateAIDestinationPoint( AIState new_state)
 {
-	switch (state)
+	int up, down;
+	bool left_of_target; 
+
+	up = position_limits.y;
+	down = position_limits.y + position_limits.h;
+	left_of_target = target->position.x > position.x;
+
+
+	switch (new_state)
 	{
-	case approach: break;
-	case retreat: break;
-	case switching_sides: break;
+	case approach:
+		AI_move_destination = target->position;
+		if (left_of_target)
+			AI_move_destination.x -= 40;
+		else
+			AI_move_destination.x += 40;
+		
+		break;
+	case retreat: 
+		if (position.y - up <= down - position.y)
+			AI_move_destination = { position.x, down };
+		else
+			AI_move_destination = { position.x, up };
+		break;
+	case switching_sides: 
+		if (left_of_target)
+			AI_move_destination = { position.x + 150, position.y };
+		else
+			AI_move_destination = { position.x - 150, position.y };
+		break;
 	default: break;
 	}
 }
@@ -216,6 +262,7 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	health = max_health;
 	lives = (int)json_object_dotget_number(root_object, "garcia.lives");
 	score = (int)json_object_dotget_number(root_object, "garcia.score");
+	LoadiPointFromJSONObject(root_object, "garcia.speed", &speed);
 
 // -------------------- damages -------------------------
 	attack1_dmg = (int)json_object_dotget_number(root_object, "damages.attack1");
@@ -227,6 +274,8 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 		hit_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.hit", colliderType::ENEMY, &hit_collider_offset);
 	while (attack_collider == nullptr)
 		attack_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.attack", colliderType::ENEMY_ATTACK, &attack_collider_offset);
+
+	layer_depth = (int)json_object_dotget_number(root_object, "collision.layer_depth");
 
 //----------------------- duration ---------------------------
 	attacks_duration = (int)json_object_dotget_number(root_object, "durations.attacks");

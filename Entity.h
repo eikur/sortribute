@@ -86,7 +86,7 @@ protected:
 
 	bool AllowAnimationInterruption() const;
 
-	virtual void UpdateAIDestinationPoint();
+	virtual void UpdateAIDestinationPoint(AIState new_state);
 	
 	virtual bool LoadFromConfigFile(const char* file_path);
 	void LoadAnimationFromJSONObject(JSON_Object *j_object, const char *dotget_path, Animation* animation);
