@@ -58,7 +58,7 @@ update_status EntityManager::Update()
 		if (time_left_msec <= 0)
 		{
 			player->TimeOver();
-			time_left_msec = 100000;
+			time_left_msec = 10000;
 		}
 
 		if (elapsed_msec >= upd_logic_msec)
@@ -145,7 +145,7 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 	return ret;
 }
 
-void EntityManager::KnockDownAllEnemies() const {
+void EntityManager::KnockDownAllEnemies()  {
 	for (std::list<Entity*>::const_iterator it = entities.cbegin(); it != entities.cend();++it)
 	{
 		if ((*it)->m_type == Entity::Types::npc_garcia)
