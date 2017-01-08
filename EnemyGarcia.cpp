@@ -217,13 +217,13 @@ iPoint EnemyGarcia::SpeedTowardsPoint( iPoint to_point) const
 	else
 		ret = { hmod * speed.x, vmod * speed.y };
 	
+	if (state == switching_sides)
+		ret.x += hmod * 2;
+
 	if (abs(ret.x) > abs(horizontal_diff))
 		ret.x = horizontal_diff;
 	if (abs(ret.y) > abs(vertical_diff))
 		ret.y = vertical_diff;
-	
-	if (state == switching_sides)
-		ret.x += hmod * 2;
 
 	return ret;
 
@@ -231,8 +231,11 @@ iPoint EnemyGarcia::SpeedTowardsPoint( iPoint to_point) const
 
 void EnemyGarcia::UpdateAIDestinationPoint( AIState state)
 {
+	App->renderer->GetPlayerPositionLimits(position_limits);
 	int up = position_limits.y;
 	int down = position_limits.y + position_limits.h;
+	int left = position_limits.x;
+	int right = position_limits.x + position_limits.w;
 	int left_of_target_mod = position.x < target->position.x ? -1 : 1;
 	int facing_right_mod = facing_right ? +1 : -1;
 
@@ -256,6 +259,7 @@ void EnemyGarcia::UpdateAIDestinationPoint( AIState state)
 	case switching_sides: 
 		AI_move_destination.y = position.y;
 		AI_move_destination.x = target->position.x + facing_right_mod * 120;	// update limits
+		AI_move_destination.x = MIN(MAX(AI_move_destination.x, left - 20), right);
 		break;
 	default: break;
 	}

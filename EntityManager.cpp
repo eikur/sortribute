@@ -63,7 +63,7 @@ update_status EntityManager::Update()
 		if (elapsed_msec >= upd_logic_msec)
 			upd_logic = true;
 
-		
+	
 		entities.sort(Entity::ptrEntityDepthComparison());
 		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end();)
 		{
@@ -139,6 +139,15 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 		}
 	}
 	return ret;
+}
+
+void EntityManager::KnockDownAllEnemies() const {
+	for (std::list<Entity*>::const_iterator it = entities.cbegin(); it != entities.cend();++it)
+	{
+		if ((*it)->m_type == Entity::Types::npc_garcia)
+			(*it)->SetBeingKnocked();
+	}
+
 }
 
 void EntityManager::HandleCollision(Collider* a, Collider* b)

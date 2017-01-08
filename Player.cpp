@@ -5,6 +5,7 @@
 #include "ModuleInput.h"
 #include "ModuleAudio.h"
 #include "ModuleCollision.h"
+#include "EntityManager.h"
 
 #include "Player.h"
 
@@ -308,14 +309,15 @@ void Player::ModifyLives(int mod_to_add)
 
 void Player::ReRaise()
 {
-	position = { 40, 32};
+	position = { 20, 32};
+	position.x += position_limits.x;
 	ground_y = 174;
 	UpdateCurrentAnimation(&jump, jump_duration);
 	facing_right = true;
 	respawn_fall = true;
 	air_remaining_msec = jump_duration;
-
 	health = max_health;
+	App->manager->KnockDownAllEnemies();
 }
 
 //-------------- Specific updates

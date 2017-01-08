@@ -286,6 +286,68 @@
 		"shadow": [480,0, 96,80]
 		
 	},
+	"boss3": {
+		"graphics_file": "Assets/boss3.png",
+		"speed" : [3,1],
+		"max_health" : 240,
+		"lives": 1,
+		"score": 5000,
+		"colliders": {
+			"attack": [10,-52,40,32],
+			"hit": [-12,-52,24,52]
+		},
+		"sprite_offset": [-35,-80],
+		"sprite_offset_flip": [-61,-80],
+		"idle": {
+			"frames": [[0,0, 96,80]],
+			"speed" : 0.04
+		},
+		"walk":{
+			"frames": [[0,0, 96,80],[96,0, 96,80],[192,0, 96,80],[96,0, 96,80]],
+			"speed" : 0.06
+		},
+		"attack1":{
+			"frames": [[288,0,96,80]],
+			"speed" : 0.2
+		},
+		"being_hit":{
+			"frames": [[0,80, 96,80],[0,81, 96,80]],
+			"speed" : 0.2
+		},
+		"being_hold_front":{
+			"frames": [[96,80, 96,80]],
+			"speed" : 0.1
+		},
+		"being_hold_front_hit":{
+			"frames": [[192,80, 96,80], [192,81, 96,80]],
+			"speed" : 0.2
+		},
+		"being_hold_back":{
+			"frames": [[192,80, 96,80]],
+			"speed" : 0.1
+		},
+		"being_knocked":{
+			"frames": [[288,80, 96,80],[384,80, 96,80]],
+			"speed" : 0
+		},
+		"being_thrown_front":{
+			"frames": [[96,80, 96,80],[576,80, 96,80],[576,80, 96,80],[576,80, 96,80],[384,80, 96,80],[384,80, 96,80],[384,80, 96,80],[384,80, 96,80]],	
+			"speed" : 0		
+		},
+		"being_thrown_back":{
+			"frames": [[192,80, 96,80],[288,80, 96,80],[288,80, 96,80],[576,80, 96,80],[576,80, 96,80],[576,80, 96,80],[384,80, 96,80],[384,80, 96,80]],	
+			"speed" : 0
+		},
+		"standing_up":{
+			"frames": [[480,80, 96,80]],
+			"speed" : 0.08
+		},
+		"dying":{
+			"frames": [[384,80, 96,80],[576,0, 96,80]],
+			"speed" : 0.1
+		},
+		"shadow": [480,0, 96,80]
+	},
 	"item_apple" :{
 		"graphics_file": "Assets/health_items.png",
 		"max_health" : 20,
