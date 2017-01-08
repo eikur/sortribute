@@ -124,7 +124,13 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			case frontal_attack:
 				facing_right = target->position.x > position.x;
 				if (abs(target->position.x - position.x) <= attack_range && abs(target->GetDepth() - GetDepth()) <= 5)
-					UpdateCurrentAnimation(&attack1, attacks_duration);
+				{
+					if (current_combo_hits <= 1)
+						UpdateCurrentAnimation(&attack1, attacks_duration);
+					else
+						UpdateCurrentAnimation(&attack2, attacks_duration);
+					current_combo_hits += 1;
+				}
 				else
 				{
 					move_speed = SpeedTowardsTarget();
@@ -247,7 +253,7 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 
 //----------------------- sounds ---------------------------
 	LoadSoundFXFromJSONObject(root_object, "fx.death_garcia", &fx_death);
-	LoadSoundFXFromJSONObject(root_object, "fx.attack_hit", &fx_attack_hit);
+	LoadSoundFXFromJSONObject(root_object, "fx.attack_hit_enemy", &fx_attack_hit);
 	LoadSoundFXFromJSONObject(root_object, "fx.ground_hit", &fx_ground_hit);
 
 	//--- free json 

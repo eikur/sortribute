@@ -69,8 +69,7 @@
 		"health_section": [88,32,2,6],
 		"lives_pos": [96,8],
 		"help_pos": [136,8],
-		"time_pos" : [152,8],
-		"fx_pause" : "Assets/fx_pause.wav"
+		"time_pos" : [152,8]
 	},
 	"durations": {
 		"attacks": 256,
@@ -106,13 +105,13 @@
 		"attack_miss": "Assets/fx_attack_miss.wav",
 		"attack_hit": "Assets/fx_attack_hit.wav",
 		"attack_hit_hard": "Assets/fx_attack_hit_hard.wav",
+		"attack_hit_enemy": "Assets/fx_attack_hit_enemy.wav",
 		"ground_hit": "Assets/fx_ground_hit.wav",
 		"life_up": "Assets/fx_life_up.wav",
 		"health_item": "Assets/fx_health_item.wav",
 		"death_player": "Assets/fx_voice_axel_death.wav", 
 		"death_garcia": "Assets/fx_voice_garcia.wav",
-		"attack_hit_enemy": "Assets/fx_attack_hit_enemy.wav"
-
+		"pause" : "Assets/fx_pause.wav"
 	},
 	"player": {
 		"graphics_file": "Assets/axel.png",

@@ -202,12 +202,22 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 				if (second->is_attacking && first->is_hittable)
 				{
 					first->is_hittable = false;
-					first->SetBeingHit(second->attack1_dmg);	
-					App->audio->PlayFx(second->fx_attack_hit);
 					if (second->position.x <= first->position.x)
 						first->facing_right = false;
 					else
 						first->facing_right = true;
+
+					if (second->current_combo_hits <= 2)
+					{ 
+						first->SetBeingHit(second->attack1_dmg);
+						App->audio->PlayFx(second->fx_attack_hit);
+					}
+					else if (second->current_combo_hits == 3)
+					{
+						first->SetBeingKnocked(second->attack2_dmg);
+						App->audio->PlayFx(second->fx_attack_hit);
+					}
+
 				}
 			}
 			else
@@ -362,8 +372,8 @@ bool EntityManager::LoadConfigFromFile(const char* file_path)
 	hud_health_section = { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
 	json_array_clear(j_array);
 
-	if (json_object_dothas_value_of_type(root_object, "hud.fx_pause", JSONString))
-		fx_pause = App->audio->LoadFx(json_object_dotget_string(root_object, "hud.fx_pause"));
+	if (json_object_dothas_value_of_type(root_object, "fx.pause", JSONString))
+		fx_pause = App->audio->LoadFx(json_object_dotget_string(root_object, "fx.pause"));
 
 	json_value_free(root_value);
 

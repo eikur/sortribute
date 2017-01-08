@@ -26,8 +26,9 @@ public:
 
 	enum AIState {
 		none,
+		approach,
 		frontal_attack,
-		taunting,
+		retreat,
 		switching_sides
 	};
 
@@ -234,6 +235,7 @@ protected:
 	Entity* reachable_item = nullptr;
 
 	AIState state = none;
+	iPoint AI_move_destination = { 0,0 };
 
 };
 
