@@ -218,10 +218,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 						first->SetBeingKnocked(second->attack2_dmg);
 						App->audio->PlayFx(second->fx_attack_hit);
 					}
-					else
-					{
-						second->UpdateAIState(Entity::AIState::retreat);	// little bit of improvement here
-					}
+
 
 				}
 				else if (second->is_attacking && !first->is_hittable )

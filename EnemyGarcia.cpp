@@ -22,13 +22,12 @@ bool EnemyGarcia::Init()
 	}
 	UpdateCurrentAnimation(&idle);
 	facing_right = false;
-
 	return true;
 }
 
 bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 {
-	if (state == none)
+	if (state == none && !position.IsZero())
 		UpdateAIState(approach);
 
 	if (blocking_animation_remaining_msec > 0)
@@ -113,18 +112,18 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			UpdateCurrentAnimation(&walk);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
 			if (move_speed.IsZero())
-				if (attack_decision > 102 && InEnemyActionQueue() )
+				if (attack_decision > 20 && InEnemyActionQueue() )
 					UpdateAIState(frontal_attack);
 				else
 					UpdateAIState(retreat);
 			break;
 
 		case frontal_attack:
-			move_speed = SpeedTowardsPoint(target->position);
-			if (current_combo_hits == 3 ) // && move_speed.IsZero())
+			UpdateAIDestinationPoint(frontal_attack);
+			move_speed = SpeedTowardsPoint(AI_move_destination);
+			if (current_combo_hits == 3 && move_speed.IsZero())	// change this
 				UpdateAIState(retreat);
-				
-			if (abs(target->position.x - position.x) <= attack_range && abs(target->GetDepth() - GetDepth()) <= layer_depth)
+			if (abs(target->position.x - position.x) <= attack_range && abs(target->GetDepth() - GetDepth()) <= layer_depth && current_combo_hits < 3 && target->IsAlive() )
 			{
 				if (current_combo_hits <= 1)
 					UpdateCurrentAnimation(&attack1, attacks_duration);
@@ -136,6 +135,7 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 				UpdateCurrentAnimation(&walk);
 			break;
 		case retreat:
+			current_combo_hits = 0;
 			UpdateCurrentAnimation(&walk);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
 			if (move_speed.IsZero())
@@ -202,7 +202,7 @@ iPoint EnemyGarcia::SpeedTowardsPoint( iPoint to_point) const
 	return ret;
 }
 
-void EnemyGarcia::UpdateAIDestinationPoint( AIState new_state)
+void EnemyGarcia::UpdateAIDestinationPoint( AIState state)
 {
 	int up, down;
 	bool left_of_target; 
@@ -212,15 +212,23 @@ void EnemyGarcia::UpdateAIDestinationPoint( AIState new_state)
 	left_of_target = target->position.x > position.x;
 
 
-	switch (new_state)
+	switch (state)
 	{
 	case approach:
 		AI_move_destination = target->position;
+		// improve approach
 		if (left_of_target)
-			AI_move_destination.x -= 40;
+			AI_move_destination.x -= 50;
 		else
-			AI_move_destination.x += 40;
+			AI_move_destination.x += 50;
 		
+		break;
+	case frontal_attack:
+		AI_move_destination = target->position;
+		if (left_of_target)
+			AI_move_destination.x -= 30;
+		else
+			AI_move_destination.x += 30;
 		break;
 	case retreat: 
 		if (position.y - up <= down - position.y)
