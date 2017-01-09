@@ -9,7 +9,8 @@ enum colliderType {
 	PLAYER_ATTACK,
 	ITEMS,
 	ENEMY,
-	ENEMY_ATTACK
+	ENEMY_ATTACK,
+	SCENE_TRIGGER
 };
 
 struct Collider
@@ -38,7 +39,7 @@ class ModuleCollision : public Module
 {
 public:
 
-	ModuleCollision(Module* report_to);
+	ModuleCollision(Module* entities_report_to = nullptr, Module* scene_cols_report_to = nullptr);
 	~ModuleCollision();
 
 	update_status PreUpdate();
@@ -53,8 +54,9 @@ private:
 
 	std::list<Collider*> colliders;
 	bool debug = false;
-	int collision_matrix[5][5] = { { 0,0,1,1,1 },{ 0,0,0,1,0 },{ 1,0,0,0,0 },{ 1,1,0,1,0 },{ 1,0,0,0,0 } };	// TODO: Load from file
-	Module* report_to = nullptr;
+	int collision_matrix[6][6] = { { 0,0,1,1,1,1},{ 0,0,0,1,0,0 },{ 1,0,0,0,0,0 },{ 1,1,0,1,0,0 },{ 1,0,0,0,0,0 },{ 1,0,0,0,0,0 } };
+	Module* entities_report_to = nullptr;
+	Module* scene_cols_report_to = nullptr;
 };
 
 #endif // __ModuleCollision_H__

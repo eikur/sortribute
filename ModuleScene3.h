@@ -24,6 +24,8 @@ public:
 	
 	bool LoadConfigFromFile(const char* file_path);
 
+private:
+	void HandleCollision(Collider* a, Collider* b);
 
 public:
 	Player* player;

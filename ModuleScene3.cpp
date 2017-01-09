@@ -66,6 +66,11 @@ bool ModuleScene3::CleanUp()
 	return true;
 }
 
+void ModuleScene3::HandleCollision(Collider* a, Collider* b)
+{
+
+}
+
 bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 {
 	JSON_Value *root_value;

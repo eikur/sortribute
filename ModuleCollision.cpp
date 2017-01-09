@@ -7,7 +7,7 @@
 
 using namespace std;
 
-ModuleCollision::ModuleCollision(Module* report_to) : report_to(report_to)
+ModuleCollision::ModuleCollision(Module* entities_report_to, Module* scene_cols_report_to) : entities_report_to(entities_report_to), scene_cols_report_to(scene_cols_report_to)
 {
 	
 }
@@ -43,7 +43,10 @@ update_status ModuleCollision::Update()
 			{
 				if (collision_matrix[(*it)->type][(*it2)->type] == 1)
 				{
-					report_to->HandleCollision((*it), (*it2));
+					if ((*it)->type != colliderType::SCENE_TRIGGER && (*it2)->type != colliderType::SCENE_TRIGGER )
+						entities_report_to->HandleCollision((*it), (*it2));
+					else
+						scene_cols_report_to->HandleCollision((*it), (*it2));
 					
 				}
 			}
