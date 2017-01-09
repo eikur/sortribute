@@ -216,6 +216,8 @@ protected:
 
 	Animation dying;
 
+	Animation running;
+
 	SDL_Rect shadow;
 
 // sounds

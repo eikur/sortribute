@@ -124,10 +124,13 @@ bool Boss3::Update(unsigned int msec_elapsed, const bool upd_logic)
 			facing_right = target->position.x > position.x;
 			UpdateAIDestinationPoint(frontal_attack);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
-			UpdateCurrentAnimation(&walk);
+			UpdateCurrentAnimation(&running);
+			
 			if ( move_speed.IsZero())
 				UpdateAIState(retreat);
+
 			break;
+
 		case retreat:
 			facing_right = target->position.x > position.x;;
 			UpdateCurrentAnimation(&walk);
@@ -138,7 +141,6 @@ bool Boss3::Update(unsigned int msec_elapsed, const bool upd_logic)
 		}
 		
 	}
-	//UpdateCurrentAnimation(&walk);
 	
 	if (upd_logic)
 		UpdatePosition(move_speed);
@@ -227,9 +229,9 @@ void Boss3::UpdateAIDestinationPoint(AIState state)
 		break;
 	case retreat:
 		if (position.x - left <= right - position.y)
-			AI_move_destination = { left - 30, position.y };
+			AI_move_destination = { left - 10, position.y };
 		else
-			AI_move_destination = { right + 30, position.y };
+			AI_move_destination = { right + 10, position.y };
 		break;
 	default: break;
 	}
@@ -292,8 +294,8 @@ bool Boss3::LoadFromConfigFile(const char* file_path)
 	//----------------------- animations ---------------------------
 	LoadAnimationFromJSONObject(root_object, "boss.idle", &idle);
 	LoadAnimationFromJSONObject(root_object, "boss.walk", &walk);
+	LoadAnimationFromJSONObject(root_object, "boss.run", &running);
 	LoadAnimationFromJSONObject(root_object, "boss.attack1", &attack1);
-	LoadAnimationFromJSONObject(root_object, "garcia.attack2", &attack2);
 	LoadAnimationFromJSONObject(root_object, "boss.being_hit", &being_hit);
 	LoadAnimationFromJSONObject(root_object, "boss.being_hold_front", &being_hold_front);
 	LoadAnimationFromJSONObject(root_object, "boss.being_hold_front_hit", &being_hold_front_hit);
