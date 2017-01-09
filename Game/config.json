@@ -296,7 +296,7 @@
 	"boss": {
 		"graphics_file": "Assets/enemy_boss.png",
 		"speed" : [5,1],
-		"max_health" : 200,
+		"max_health" : 140,
 		"lives": 1,
 		"score": 5000,
 		"colliders": {

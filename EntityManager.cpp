@@ -187,9 +187,9 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			}
 			else if (second_col->type == colliderType::ENEMY)
 			{
-				if ( first->IsGrounded() && second->IsGrounded() && !second->is_being_thrown_back && !first->IsHoldingSomeone() && first->AllowAnimationInterruption() &&
-					( (first->facing_right == true && first->position.x <= second->position.x) || 
-					(first->facing_right == false && second->position.x <= first->position.x) ) )
+				if (first->IsGrounded() && second->IsGrounded() && !second->is_being_thrown_back && !first->IsHoldingSomeone() && first->AllowAnimationInterruption() &&
+					((first->facing_right == true && first_col->rect.x <= second_col->rect.x) ||
+					(first->facing_right == false && second_col->rect.x <= first_col->rect.x)))
 				{
 					if (first->facing_right == second->facing_right)
 					{
@@ -202,12 +202,12 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 						second->SetBeingHoldFront();
 					}
 					
-					if (depth_difference != -1 || abs(first->position.x - second->position.x) < b->rect.w)
+					if (depth_difference != -1 || abs(first->position.x - second->position.x) < first_col->rect.w)
 					{
-						if (first->position.x <= second->position.x)
-							second->UpdatePosition({ first->position.x - second->position.x + a->rect.w, first->position.y - second->position.y -1 });
+						if (first->facing_right)
+							second->UpdatePosition({ first->position.x - second->position.x + first_col->rect.w, first->position.y - second->position.y - 1 });
 						else
-							second->UpdatePosition({ first->position.x - second->position.x - a->rect.w, first->position.y - second->position.y -1});
+							second->UpdatePosition({ first->position.x - second->position.x - first_col->rect.w, first->position.y - second->position.y - 1 });
 					}
 				}
 			}
@@ -340,7 +340,7 @@ void EntityManager::PrintBossHealth()
 	int sections_to_draw;
 	SDL_Rect *h_section;
 
-	if (boss->health > 120)
+	if (boss->health > 110)
 	{
 		sections_to_draw = 40;
 		h_section = &hud_high_health_section;

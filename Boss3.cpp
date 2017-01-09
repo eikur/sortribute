@@ -109,9 +109,6 @@ bool Boss3::Update(unsigned int msec_elapsed, const bool upd_logic)
 	// IA start
 	if (AllowAnimationInterruption() && is_being_hold_front == false && is_being_hold_back == false)
 	{
-		/*int attack_decision = rand() % 101;
-		int attack_range = attack_collider->rect.w + attack_collider_offset.x;
-
 		switch (state) {
 
 		case approach:
@@ -120,45 +117,26 @@ bool Boss3::Update(unsigned int msec_elapsed, const bool upd_logic)
 			UpdateAIDestinationPoint(approach);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
 			if (move_speed.IsZero())
-				if (attack_decision > 20 && InEnemyActionQueue())
 					UpdateAIState(frontal_attack);
-				else
-					UpdateAIState(retreat);
 			break;
 
 		case frontal_attack:
 			facing_right = target->position.x > position.x;
 			UpdateAIDestinationPoint(frontal_attack);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
-			if (current_combo_hits == 3 && move_speed.IsZero())
+			UpdateCurrentAnimation(&walk);
+			if ( move_speed.IsZero())
 				UpdateAIState(retreat);
-			if (abs(target->position.x - position.x) <= attack_range && abs(target->GetDepth() - GetDepth()) <= layer_depth && current_combo_hits < 3 && target->IsAlive())
-			{
-				if (current_combo_hits <= 1)
-					UpdateCurrentAnimation(&attack1, attacks_duration);
-				else
-					UpdateCurrentAnimation(&attack2, attacks_duration);
-				current_combo_hits += 1;
-			}
-			else
-				UpdateCurrentAnimation(&walk);
 			break;
 		case retreat:
-			facing_right = target->position.x > position.x;
-			current_combo_hits = 0;
-			UpdateCurrentAnimation(&walk);
-			move_speed = SpeedTowardsPoint(AI_move_destination);
-			if (move_speed.IsZero())
-				UpdateAIState(switching_sides);
-			break;
-		case switching_sides:
+			facing_right = target->position.x > position.x;;
 			UpdateCurrentAnimation(&walk);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
 			if (move_speed.IsZero())
 				UpdateAIState(approach);
 			break;
 		}
-		*/
+		
 	}
 	//UpdateCurrentAnimation(&walk);
 	
@@ -219,8 +197,8 @@ iPoint Boss3::SpeedTowardsPoint(iPoint to_point) const
 	else
 		ret = { hmod * speed.x, vmod * speed.y };
 
-	if (state == switching_sides)
-		ret.x += hmod * 2;
+	if (state == retreat)
+		ret.x -= hmod * 2;
 
 	if (abs(ret.x) > abs(horizontal_diff))
 		ret.x = horizontal_diff;
@@ -234,8 +212,6 @@ iPoint Boss3::SpeedTowardsPoint(iPoint to_point) const
 void Boss3::UpdateAIDestinationPoint(AIState state)
 {
 	App->renderer->GetPlayerPositionLimits(position_limits);
-	int up = position_limits.y;
-	int down = position_limits.y + position_limits.h;
 	int left = position_limits.x;
 	int right = position_limits.x + position_limits.w;
 	int left_of_target_mod = position.x < target->position.x ? -1 : 1;
@@ -244,21 +220,16 @@ void Boss3::UpdateAIDestinationPoint(AIState state)
 	switch (state)
 	{
 	case approach:
-		AI_move_destination = { target->position.x + left_of_target_mod * 50, target->GetDepth() };
+		AI_move_destination = { position.x, target->GetDepth() };
 		break;
 	case frontal_attack:
-		AI_move_destination = { target->position.x + left_of_target_mod * 30, target->GetDepth() };
+		AI_move_destination = { target->position.x + left_of_target_mod * 30,position.y };
 		break;
 	case retreat:
-		if (position.y - up <= down - position.y)
-			AI_move_destination = { position.x, down };
+		if (position.x - left <= right - position.y)
+			AI_move_destination = { left - 30, position.y };
 		else
-			AI_move_destination = { position.x, up };
-		break;
-	case switching_sides:
-		AI_move_destination.y = position.y;
-		AI_move_destination.x = target->position.x + facing_right_mod * 120;	
-		AI_move_destination.x = MIN(MAX(AI_move_destination.x, left - 20), right);
+			AI_move_destination = { right + 30, position.y };
 		break;
 	default: break;
 	}
