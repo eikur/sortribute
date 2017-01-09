@@ -148,10 +148,18 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 void EntityManager::KnockDownAllEnemies()  {
 	for (std::list<Entity*>::const_iterator it = entities.cbegin(); it != entities.cend();++it)
 	{
-		if ((*it)->m_type == Entity::Types::npc_garcia)
+		if ((*it)->m_type == Entity::Types::npc_garcia || (*it)->m_type == Entity::Types::npc_boss)
 			(*it)->SetBeingKnocked();
 	}
 	time_left_msec = 100000;
+}
+
+int EntityManager::GetEnemyCount() {
+	int ret = 0;
+	for (std::list<Entity*>::const_iterator it = entities.cbegin(); it != entities.cend(); ++it)
+		if ((*it)->m_type == Entity::Types::npc_garcia)
+			ret += 1;
+	return ret;
 }
 
 void EntityManager::HandleCollision(Collider* a, Collider* b)

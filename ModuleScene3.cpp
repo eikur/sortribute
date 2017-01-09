@@ -4,9 +4,11 @@
 #include "ModuleTextures.h"
 #include "ModuleAudio.h"
 #include "Animation.h"
-#include "ModuleScene3.h"
 #include "ModuleWindow.h"
 #include "EntityManager.h"
+#include "ModuleCollision.h"
+
+#include "ModuleScene3.h"
 
 ModuleScene3::ModuleScene3(bool active) : Module(active)
 {
@@ -25,6 +27,8 @@ bool ModuleScene3::Init()
 		LOG("Scene3: Unable to load config from file\n");
 		return false;
 	}
+	CreateSceneTriggers();
+	PlaceSceneItems();
 
 	return true;
 }
@@ -68,7 +72,82 @@ bool ModuleScene3::CleanUp()
 
 void ModuleScene3::HandleCollision(Collider* a, Collider* b)
 {
+	if (a->type)
+		TriggerCollisionManagement(a);
+	else
+		TriggerCollisionManagement(b);
+}
 
+void ModuleScene3::CreateSceneTriggers()
+{
+	triggers.push_back(spawn1 = App->collision->AddCollider({ 300,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn2 = App->collision->AddCollider({ 450,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn3 = App->collision->AddCollider({ 520,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(cam_lock1 = App->collision->AddCollider({ 590,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(battle_zone1 = App->collision->AddCollider({ 450,130,260,94 }, colliderType::SCENE_TRIGGER, nullptr));
+
+	triggers.push_back(cam_lock2 = App->collision->AddCollider({ 590,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(battle_zone2 = App->collision->AddCollider({ 450,130,260,94 }, colliderType::SCENE_TRIGGER, nullptr));
+
+	triggers.push_back(cam_lock3 = App->collision->AddCollider({ 590,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(battle_zone3 = App->collision->AddCollider({ 450,130,260,94 }, colliderType::SCENE_TRIGGER, nullptr));
+
+	triggers.push_back(cam_lock4 = App->collision->AddCollider({ 590,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(battle_zone4 = App->collision->AddCollider({ 450,130,260,94 }, colliderType::SCENE_TRIGGER, nullptr));
+
+}
+
+void ModuleScene3::PlaceSceneItems()
+{
+	Entity *tmp = App->manager->CreateEntity(Entity::Types::item_apple);
+	tmp->SetPosition({ 420,170 });
+}
+
+void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
+{
+	Entity *tmp = nullptr;
+	if (trigger == spawn1)
+	{
+		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp->SetPosition({ 130, 200 });
+		spawn1 = nullptr;
+		trigger->to_delete = true;
+	}
+	else if (trigger == spawn2)
+	{
+		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp->SetPosition({ 620, 200 });
+		spawn2 = nullptr;
+		trigger->to_delete = true;
+	}
+	else if (trigger == spawn3)
+	{
+		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp->SetPosition({ 690, 162 });
+		spawn3 = nullptr;
+		trigger->to_delete = true;
+	}
+	else if (trigger == cam_lock1)
+	{
+		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp->SetPosition({ 320, 150 });
+		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp->SetPosition({ 800, 210 });
+		App->renderer->locked = true;
+		cam_lock1 = nullptr;
+		trigger->to_delete = true;
+	}
+	else if (trigger == battle_zone1)
+	{
+		if (cam_lock1 == nullptr && App->manager->GetEnemyCount() == 0)
+		{
+			App->renderer->locked = false;
+			tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+			tmp->SetPosition({800, 210});
+			battle_zone1 = nullptr;
+			trigger->to_delete = true;
+		}
+	}
 }
 
 bool ModuleScene3::LoadConfigFromFile(const char* file_path)

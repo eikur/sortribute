@@ -462,7 +462,7 @@ Collider* Entity::LoadColliderFromJSONObject(JSON_Object* j_object, const char *
 	*offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
 	ret = App->collision->AddCollider(
 	{ offset->x + position.x, offset->y + position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3) },
-		type, *this);
+		type, this);
 	json_array_clear(j_array);
 	return ret;
 }

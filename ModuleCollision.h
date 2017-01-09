@@ -22,8 +22,8 @@ struct Collider
 	Entity* parent = nullptr;
 
 	Collider() {}
-	Collider(SDL_Rect rectangle, colliderType t, Entity& parent) :
-		rect(rectangle), type(t), parent(&parent)
+	Collider(SDL_Rect rectangle, colliderType t, Entity* parent = nullptr) :
+		rect(rectangle), type(t), parent(parent)
 	{}
 
 	void SetPos(int x, int y)
@@ -47,7 +47,7 @@ public:
 
 	bool CleanUp();
 
-	Collider* AddCollider(const SDL_Rect& rect, colliderType type, Entity& parent);
+	Collider* AddCollider(const SDL_Rect& rect, colliderType type, Entity* parent = nullptr);
 	void DebugDraw();
 
 private:

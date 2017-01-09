@@ -67,15 +67,18 @@ void ModuleCollision::DebugDraw()
 	for (list<Collider*>::iterator it = colliders.begin(); it != colliders.end(); ++it)
 	{
 		if ((*it)->type == colliderType::PLAYER_ATTACK)
-			App->renderer->DrawQuad((*it)->rect, 0, 0, 255, 80);
+			App->renderer->DrawQuad((*it)->rect, 0, 0, 255, 120);
 		else if ((*it)->type == colliderType::PLAYER)
-			App->renderer->DrawQuad((*it)->rect, 0, 255, 0, 80);
+			App->renderer->DrawQuad((*it)->rect, 0, 0, 255, 80);
 		else if ((*it)->type == colliderType::ENEMY)
-			App->renderer->DrawQuad((*it)->rect, 255, 255, 0, 80);
-		else if ((*it)->type == colliderType::ENEMY_ATTACK)
 			App->renderer->DrawQuad((*it)->rect, 255, 0, 0, 80);
-		else
+		else if ((*it)->type == colliderType::ENEMY_ATTACK)
+			App->renderer->DrawQuad((*it)->rect, 255, 0, 0, 120);
+		else if ((*it)->type == colliderType::ITEMS)
+			App->renderer->DrawQuad((*it)->rect, 0, 255, 0, 80);
+		else 
 			App->renderer->DrawQuad((*it)->rect, 255, 0, 255, 80);
+
 	}
 }
 
@@ -92,7 +95,7 @@ bool ModuleCollision::CleanUp()
 	return true;
 }
 
-Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, colliderType type, Entity& parent)
+Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, colliderType type, Entity* parent)
 {
 	Collider* ret = new Collider(rect, type, parent);
 

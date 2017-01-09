@@ -25,6 +25,7 @@ public:
 
 	Entity* CreateEntity(Entity::Types type);
 	void KnockDownAllEnemies();
+	int GetEnemyCount();
 
 private:
 	void HandleCollision(Collider* a, Collider* b);

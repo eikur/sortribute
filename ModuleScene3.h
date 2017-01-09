@@ -21,17 +21,18 @@ public:
 	update_status PreUpdate();
 	update_status Update();
 	bool CleanUp();
-	
-	bool LoadConfigFromFile(const char* file_path);
 
 private:
+	bool LoadConfigFromFile(const char* file_path);
 	void HandleCollision(Collider* a, Collider* b);
+	void CreateSceneTriggers();
+	void TriggerCollisionManagement(Collider *trigger);
+	void PlaceSceneItems();
 
 public:
 	Player* player;
 
 private:
-
 	SDL_Texture* graphics = nullptr;
 	
 	SDL_Rect background_section;
@@ -51,6 +52,22 @@ private:
 
 	std::string music_path = "";
 	unsigned int fx_waves = 0;
+
+	// scene triggers
+	std::vector<Collider*> triggers;
+	Collider *spawn1 = nullptr;
+	Collider *spawn2 = nullptr;
+	Collider *spawn3 = nullptr;
+	Collider *spawn4 = nullptr;
+	Collider *cam_lock1 = nullptr;
+	Collider *cam_lock2 = nullptr;
+	Collider *cam_lock3 = nullptr;
+	Collider *cam_lock4 = nullptr;
+	Collider *battle_zone1 = nullptr;
+	Collider *battle_zone2 = nullptr;
+	Collider *battle_zone3 = nullptr;
+	Collider *battle_zone4 = nullptr;
+
 
 };
 
