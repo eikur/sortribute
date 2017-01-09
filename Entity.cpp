@@ -142,7 +142,7 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration
 			current_animation == &attack2 ||
 			current_animation == &attack3 ||
 			//current_animation == &attack_back ||
-			current_animation == &jump_attack)
+			current_animation == &jump_attack )
 			is_attacking = true;
 		else
 			is_attacking = false;

@@ -58,7 +58,7 @@ update_status EntityManager::Update()
 		if (time_left_msec <= 0)
 		{
 			player->TimeOver();
-			time_left_msec = 100000;
+	//		time_left_msec = 100000;
 		}
 
 		if (elapsed_msec >= upd_logic_msec)
@@ -151,7 +151,7 @@ void EntityManager::KnockDownAllEnemies()  {
 		if ((*it)->m_type == Entity::Types::npc_garcia)
 			(*it)->SetBeingKnocked();
 	}
-
+	time_left_msec = 100000;
 }
 
 void EntityManager::HandleCollision(Collider* a, Collider* b)
@@ -487,6 +487,11 @@ void EntityManager::CheatCodes()
 			a->SetPosition({ player->position.x + 48, player->GetDepth() });
 
 		}
+		return;
+	}
+	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN && player != nullptr)
+	{
+		time_left_msec -= 2000;
 		return;
 	}
 }

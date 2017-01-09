@@ -22,6 +22,7 @@ bool Boss3::Init()
 	}
 	UpdateCurrentAnimation(&idle);
 	facing_right = false;
+	current_combo_hits = 3;	// knocking attack 
 	return true;
 }
 
@@ -36,9 +37,6 @@ bool Boss3::Update(unsigned int msec_elapsed, const bool upd_logic)
 		air_remaining_msec = MAX(air_remaining_msec - msec_elapsed, 0);
 	if (unhittable_remaining_msec > 0)
 		unhittable_remaining_msec = MAX(unhittable_remaining_msec - msec_elapsed, 0);
-	if (combo_remaining_msec > 0)
-		combo_remaining_msec = MAX(combo_remaining_msec - msec_elapsed, 0);
-	current_combo_hits = current_combo_hits == 3 ? current_combo_hits : (combo_remaining_msec <= 0 ? 0 : current_combo_hits);
 
 	if (IsAlive() == false)
 	{
@@ -87,6 +85,7 @@ bool Boss3::Update(unsigned int msec_elapsed, const bool upd_logic)
 		else if (current_animation == &being_knocked)
 		{
 			UpdateCurrentAnimation(&standing_up, standing_up_duration, fx_ground_hit);
+			UpdateAIState(retreat);
 		}
 		else if (current_animation == &standing_up)
 		{
@@ -99,8 +98,11 @@ bool Boss3::Update(unsigned int msec_elapsed, const bool upd_logic)
 		}
 		else if (current_animation == &being_hit)
 			UpdateCurrentAnimation(&idle);
-		else if (current_animation == &attack1 || current_animation == &attack2)
+		else if (current_animation == &attack1)
+		{
 			UpdateCurrentAnimation(&idle, attack_pause);
+			UpdateAIState(retreat);
+		}
 	}
 
 	if (unhittable_remaining_msec <= 0 && (current_animation == &being_hit || current_animation == &being_hold_front_hit))
@@ -121,14 +123,15 @@ bool Boss3::Update(unsigned int msec_elapsed, const bool upd_logic)
 			break;
 
 		case frontal_attack:
-			facing_right = target->position.x > position.x;
-			UpdateAIDestinationPoint(frontal_attack);
-			move_speed = SpeedTowardsPoint(AI_move_destination);
-			UpdateCurrentAnimation(&running);
-			
-			if ( move_speed.IsZero())
-				UpdateAIState(retreat);
-
+			if (position.DistanceTo(target->position) < 50 )
+				UpdateCurrentAnimation(&attack1, attacks_duration);
+			else
+			{
+				facing_right = target->position.x > position.x;
+				UpdateAIDestinationPoint(frontal_attack);
+				move_speed = SpeedTowardsPoint(AI_move_destination);
+				UpdateCurrentAnimation(&running);
+			}
 			break;
 
 		case retreat:
@@ -200,7 +203,7 @@ iPoint Boss3::SpeedTowardsPoint(iPoint to_point) const
 		ret = { hmod * speed.x, vmod * speed.y };
 
 	if (state == retreat)
-		ret.x -= hmod * 2;
+		ret.x -= hmod * 1;
 
 	if (abs(ret.x) > abs(horizontal_diff))
 		ret.x = horizontal_diff;
@@ -228,10 +231,11 @@ void Boss3::UpdateAIDestinationPoint(AIState state)
 		AI_move_destination = { target->position.x + left_of_target_mod * 30,position.y };
 		break;
 	case retreat:
-		if (position.x - left <= right - position.y)
-			AI_move_destination = { left - 10, position.y };
-		else
+		if (target->facing_right)
 			AI_move_destination = { right + 10, position.y };
+		else
+			AI_move_destination = { left - 10, position.y };
+
 		break;
 	default: break;
 	}
@@ -264,8 +268,7 @@ bool Boss3::LoadFromConfigFile(const char* file_path)
 	LoadiPointFromJSONObject(root_object, "boss.speed", &speed);
 
 	// -------------------- damages -------------------------
-	attack1_dmg = (int)json_object_dotget_number(root_object, "damages.attack1");
-	attack2_dmg = (int)json_object_dotget_number(root_object, "damages.attack2");
+	attack2_dmg = (int)json_object_dotget_number(root_object, "damages.attack_boss");
 	throw_dmg = (int)json_object_dotget_number(root_object, "damages.throw");
 
 	//----------------------- colliders ---------------------------

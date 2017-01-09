@@ -296,7 +296,7 @@
 	},
 	"boss": {
 		"graphics_file": "Assets/enemy_boss.png",
-		"speed" : [5,1],
+		"speed" : [6,1],
 		"max_health" : 140,
 		"lives": 1,
 		"score": 5000,
@@ -319,7 +319,7 @@
 			"speed" : 0.1		
 		},
 		"attack1":{
-			"frames": [[600,0, 100,100],[700,0,100,100]],
+			"frames": [[600,0, 100,100],[700,0,100,100],[700,0,100,100]],
 			"speed" : 0.2
 		},
 		"being_hit":{
