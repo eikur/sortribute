@@ -58,7 +58,7 @@ update_status EntityManager::Update()
 		if (time_left_msec <= 0)
 		{
 			player->TimeOver();
-			time_left_msec = 10000;
+			time_left_msec = 100000;
 		}
 
 		if (elapsed_msec >= upd_logic_msec)

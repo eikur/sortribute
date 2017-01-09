@@ -109,7 +109,7 @@ bool Boss3::Update(unsigned int msec_elapsed, const bool upd_logic)
 	// IA start
 	if (AllowAnimationInterruption() && is_being_hold_front == false && is_being_hold_back == false)
 	{
-		int attack_decision = rand() % 101;
+		/*int attack_decision = rand() % 101;
 		int attack_range = attack_collider->rect.w + attack_collider_offset.x;
 
 		switch (state) {
@@ -158,8 +158,10 @@ bool Boss3::Update(unsigned int msec_elapsed, const bool upd_logic)
 				UpdateAIState(approach);
 			break;
 		}
+		*/
 	}
-
+	//UpdateCurrentAnimation(&walk);
+	
 	if (upd_logic)
 		UpdatePosition(move_speed);
 
@@ -273,8 +275,8 @@ bool Boss3::LoadFromConfigFile(const char* file_path)
 	else
 		root_object = json_object(root_value);
 
-	if (json_object_dothas_value_of_type(root_object, "garcia.graphics_file", JSONString))
-		graphics = App->textures->Load(json_object_dotget_string(root_object, "garcia.graphics_file"));
+	if (json_object_dothas_value_of_type(root_object, "boss.graphics_file", JSONString))
+		graphics = App->textures->Load(json_object_dotget_string(root_object, "boss.graphics_file"));
 	if (graphics == nullptr)
 	{
 		json_value_free(root_value);
@@ -282,14 +284,11 @@ bool Boss3::LoadFromConfigFile(const char* file_path)
 	}
 
 	// ------------------------ health ----------------------------
-	max_health = (int)json_object_dotget_number(root_object, "garcia.max_health");
+	max_health = (int)json_object_dotget_number(root_object, "boss.max_health");
 	health = max_health;
-	// remove
-	max_health = 200;
-	health = max_health;
-	lives = (int)json_object_dotget_number(root_object, "garcia.lives");
-	score = (int)json_object_dotget_number(root_object, "garcia.score");
-	LoadiPointFromJSONObject(root_object, "garcia.speed", &speed);
+	lives = (int)json_object_dotget_number(root_object, "boss.lives");
+	score = (int)json_object_dotget_number(root_object, "boss.score");
+	LoadiPointFromJSONObject(root_object, "boss.speed", &speed);
 
 	// -------------------- damages -------------------------
 	attack1_dmg = (int)json_object_dotget_number(root_object, "damages.attack1");
@@ -298,9 +297,9 @@ bool Boss3::LoadFromConfigFile(const char* file_path)
 
 	//----------------------- colliders ---------------------------
 	while (hit_collider == nullptr)
-		hit_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.hit", colliderType::ENEMY, &hit_collider_offset);
+		hit_collider = LoadColliderFromJSONObject(root_object, "boss.colliders.hit", colliderType::ENEMY, &hit_collider_offset);
 	while (attack_collider == nullptr)
-		attack_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.attack", colliderType::ENEMY_ATTACK, &attack_collider_offset);
+		attack_collider = LoadColliderFromJSONObject(root_object, "boss.colliders.attack", colliderType::ENEMY_ATTACK, &attack_collider_offset);
 
 	layer_depth = (int)json_object_dotget_number(root_object, "collision.layer_depth");
 
@@ -316,24 +315,24 @@ bool Boss3::LoadFromConfigFile(const char* file_path)
 	combo_window_msec = (int)json_object_dotget_number(root_object, "durations.combo_window_enemy");
 
 	//----------------------- sprites ---------------------------
-	LoadiPointFromJSONObject(root_object, "garcia.sprite_offset", &sprite_offset);
-	LoadiPointFromJSONObject(root_object, "garcia.sprite_offset_flip", &sprite_offset_flip);
+	LoadiPointFromJSONObject(root_object, "boss.sprite_offset", &sprite_offset);
+	LoadiPointFromJSONObject(root_object, "boss.sprite_offset_flip", &sprite_offset_flip);
 
 	//----------------------- animations ---------------------------
-	LoadAnimationFromJSONObject(root_object, "garcia.idle", &idle);
-	LoadAnimationFromJSONObject(root_object, "garcia.walk", &walk);
-	LoadAnimationFromJSONObject(root_object, "garcia.attack1", &attack1);
+	LoadAnimationFromJSONObject(root_object, "boss.idle", &idle);
+	LoadAnimationFromJSONObject(root_object, "boss.walk", &walk);
+	LoadAnimationFromJSONObject(root_object, "boss.attack1", &attack1);
 	LoadAnimationFromJSONObject(root_object, "garcia.attack2", &attack2);
-	LoadAnimationFromJSONObject(root_object, "garcia.being_hit", &being_hit);
-	LoadAnimationFromJSONObject(root_object, "garcia.being_hold_front", &being_hold_front);
-	LoadAnimationFromJSONObject(root_object, "garcia.being_hold_front_hit", &being_hold_front_hit);
-	LoadAnimationFromJSONObject(root_object, "garcia.being_hold_back", &being_hold_back);
-	LoadAnimationFromJSONObject(root_object, "garcia.being_knocked", &being_knocked);
-	LoadAnimationFromJSONObject(root_object, "garcia.being_thrown_front", &being_thrown_front);
-	LoadAnimationFromJSONObject(root_object, "garcia.being_thrown_back", &being_thrown_back);
-	LoadAnimationFromJSONObject(root_object, "garcia.standing_up", &standing_up);
-	LoadAnimationFromJSONObject(root_object, "garcia.dying", &dying);
-	LoadSDLRectFromJSONObject(root_object, "garcia.shadow", &shadow);
+	LoadAnimationFromJSONObject(root_object, "boss.being_hit", &being_hit);
+	LoadAnimationFromJSONObject(root_object, "boss.being_hold_front", &being_hold_front);
+	LoadAnimationFromJSONObject(root_object, "boss.being_hold_front_hit", &being_hold_front_hit);
+	LoadAnimationFromJSONObject(root_object, "boss.being_hold_back", &being_hold_back);
+	LoadAnimationFromJSONObject(root_object, "boss.being_knocked", &being_knocked);
+	LoadAnimationFromJSONObject(root_object, "boss.being_thrown_front", &being_thrown_front);
+	LoadAnimationFromJSONObject(root_object, "boss.being_thrown_back", &being_thrown_back);
+	LoadAnimationFromJSONObject(root_object, "boss.standing_up", &standing_up);
+	LoadAnimationFromJSONObject(root_object, "boss.dying", &dying);
+	LoadSDLRectFromJSONObject(root_object, "boss.shadow", &shadow);
 
 	//----------------------- sounds ---------------------------
 	LoadSoundFXFromJSONObject(root_object, "fx.death_garcia", &fx_death);
