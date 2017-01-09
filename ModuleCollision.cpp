@@ -77,7 +77,7 @@ void ModuleCollision::DebugDraw()
 		else if ((*it)->type == colliderType::ITEMS)
 			App->renderer->DrawQuad((*it)->rect, 0, 255, 0, 80);
 		else 
-			App->renderer->DrawQuad((*it)->rect, 255, 0, 255, 80);
+			App->renderer->DrawQuad((*it)->rect, 255, 0, 255, 40);
 
 	}
 }

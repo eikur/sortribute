@@ -85,7 +85,9 @@ void ModuleScene3::CreateSceneTriggers()
 	triggers.push_back(spawn3 = App->collision->AddCollider({ 520,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
 	triggers.push_back(cam_lock1 = App->collision->AddCollider({ 590,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
 	triggers.push_back(battle_zone1 = App->collision->AddCollider({ 450,130,260,94 }, colliderType::SCENE_TRIGGER, nullptr));
+	
 
+	/*
 	triggers.push_back(cam_lock2 = App->collision->AddCollider({ 590,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
 	triggers.push_back(battle_zone2 = App->collision->AddCollider({ 450,130,260,94 }, colliderType::SCENE_TRIGGER, nullptr));
 
@@ -94,7 +96,7 @@ void ModuleScene3::CreateSceneTriggers()
 
 	triggers.push_back(cam_lock4 = App->collision->AddCollider({ 590,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
 	triggers.push_back(battle_zone4 = App->collision->AddCollider({ 450,130,260,94 }, colliderType::SCENE_TRIGGER, nullptr));
-
+	*/
 }
 
 void ModuleScene3::PlaceSceneItems()
@@ -106,6 +108,7 @@ void ModuleScene3::PlaceSceneItems()
 void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 {
 	Entity *tmp = nullptr;
+	/*
 	if (trigger == spawn1)
 	{
 		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
@@ -148,6 +151,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 			trigger->to_delete = true;
 		}
 	}
+	*/
 }
 
 bool ModuleScene3::LoadConfigFromFile(const char* file_path)

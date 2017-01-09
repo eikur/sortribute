@@ -151,7 +151,7 @@ void EntityManager::KnockDownAllEnemies()  {
 		if ((*it)->m_type == Entity::Types::npc_garcia || (*it)->m_type == Entity::Types::npc_boss)
 			(*it)->SetBeingKnocked();
 	}
-	time_left_msec = 100000;
+	time_left_msec = 81999;
 }
 
 int EntityManager::GetEnemyCount() {
