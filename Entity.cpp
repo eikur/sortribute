@@ -288,7 +288,7 @@ void Entity::TimeOver()
 		held_entity->SetIdle();
 		held_entity = nullptr;
 	}
-	DecreaseHealth(max_health);
+	SetBeingKnocked(max_health);
 }
 
 

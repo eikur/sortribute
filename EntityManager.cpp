@@ -55,9 +55,11 @@ update_status EntityManager::Update()
 		time_left_msec -= App->timer->DeltaTime();
 
 
-		if (time_left_msec <= 0)
+		if (time_left_msec <= 0 && player != nullptr) 
 		{
-			player->TimeOver();
+			if (player->IsAlive())
+				player->TimeOver();
+
 	//		time_left_msec = 100000;
 		}
 
@@ -489,7 +491,7 @@ void EntityManager::CheatCodes()
 		}
 		return;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_DOWN && player != nullptr)
+	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_REPEAT && player != nullptr)
 	{
 		time_left_msec -= 2000;
 		return;
