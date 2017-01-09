@@ -27,7 +27,7 @@
 		],
 		"lookup_table": [
 			"0123456789",
-			"ARESUPT 0123456789",
+			"ARESUPT 0123456789-BO",
 			"ROUND SATPE"
 		],
 		"ppe": [8, 8, 12]
@@ -120,7 +120,8 @@
 		"health_item": "Assets/fx_health_item.wav",
 		"death_player": "Assets/fx_voice_axel_death.wav", 
 		"death_garcia": "Assets/fx_voice_garcia.wav",
-		"pause" : "Assets/fx_pause.wav"
+		"pause" : "Assets/fx_pause.wav",
+		"death_boss": "Assets/fx_voice_boss.wav"
 	},
 	"player": {
 		"graphics_file": "Assets/axel.png",

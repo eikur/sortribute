@@ -306,7 +306,7 @@ bool Boss3::LoadFromConfigFile(const char* file_path)
 	LoadSDLRectFromJSONObject(root_object, "boss.shadow", &shadow);
 
 	//----------------------- sounds ---------------------------
-	LoadSoundFXFromJSONObject(root_object, "fx.death_garcia", &fx_death);
+	LoadSoundFXFromJSONObject(root_object, "fx.death_boss", &fx_death);
 	LoadSoundFXFromJSONObject(root_object, "fx.attack_hit_enemy", &fx_attack_hit);
 	LoadSoundFXFromJSONObject(root_object, "fx.ground_hit", &fx_ground_hit);
 
