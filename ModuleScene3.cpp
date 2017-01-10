@@ -123,7 +123,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 		return;
 
 	Entity *tmp = nullptr;
-
+	
 	if (trigger == spawn1)
 	{
 		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
@@ -252,13 +252,38 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn9)
 	{
-
+		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp->SetPosition({ spawn9->rect.x + 180, 180 });
+		trigger->to_delete = true;
+		spawn9 = nullptr;
 	}
 	else if (trigger == spawn10)
 	{
-
+		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp->SetPosition({ spawn10->rect.x + 180, 210 });
+		trigger->to_delete = true;
+		spawn10 = nullptr;
 	}
-
+	else if (trigger == cam_lock4)
+	{
+		App->renderer->locked = true;
+		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp->SetPosition({ cam_lock4->rect.x - 180, 210 });
+		trigger->to_delete = true;
+		cam_lock4 = nullptr;
+	}
+	else if (trigger == battle_zone4)
+	{
+		if (cam_lock4 == nullptr && App->manager->GetEnemyCount() == 0)
+		{
+			App->audio->PlayMusic("Assets/music_boss.ogg");
+			tmp = App->manager->CreateEntity(Entity::Types::npc_boss);
+			tmp->SetPosition({ battle_zone4->rect.x + battle_zone4->rect.w + 300, 180 });
+			App->manager->boss = tmp;
+			trigger->to_delete = true;
+			battle_zone2 = nullptr;
+		}
+	}
 
 }
 

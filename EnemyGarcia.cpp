@@ -120,7 +120,7 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 			UpdateAIDestinationPoint(approach);
 			move_speed = SpeedTowardsPoint(AI_move_destination);
 			if (move_speed.IsZero())
-				if (attack_decision > 20 && InEnemyActionQueue() )
+				if (attack_decision > 40 && InEnemyActionQueue() )
 					UpdateAIState(frontal_attack);
 				else
 					UpdateAIState(retreat);
