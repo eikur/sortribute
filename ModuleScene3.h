@@ -54,11 +54,16 @@ private:
 	unsigned int fx_waves = 0;
 
 	// scene triggers
-	std::vector<Collider*> triggers;
 	Collider *spawn1 = nullptr;
 	Collider *spawn2 = nullptr;
 	Collider *spawn3 = nullptr;
 	Collider *spawn4 = nullptr;
+	Collider *spawn5 = nullptr;
+	Collider *spawn6 = nullptr;
+	Collider *spawn7 = nullptr;
+	Collider *spawn8 = nullptr;
+	Collider *spawn9 = nullptr;
+	Collider *spawn10 = nullptr;
 	Collider *cam_lock1 = nullptr;
 	Collider *cam_lock2 = nullptr;
 	Collider *cam_lock3 = nullptr;

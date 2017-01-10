@@ -156,13 +156,13 @@ bool ModuleRender::DrawQuad(const SDL_Rect& rect, Uint8 r, Uint8 g, Uint8 b, Uin
 
 void ModuleRender::GetPlayerPositionLimits( SDL_Rect &player_limits ) const
 {
-	player_limits.x = (int) -camera.x/m_screen_size + m_limit_margin;	// works but not ok
+	player_limits.x = (int) -camera.x/m_screen_size + m_limit_margin;	
 }
 
 void ModuleRender::MoveCamera(int x_pos, int x_speed) {
 	if (locked == false)
 	{
-		int target_xpos_camera = x_pos * m_screen_size;
+		int target_xpos_camera = (x_pos) * m_screen_size;	// TODO: study not to center the camera on the player
 		if ((-camera.x + camera.w / 2) < target_xpos_camera)
 			camera.x -= x_speed*m_screen_size;
 	}
