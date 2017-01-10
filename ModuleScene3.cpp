@@ -163,6 +163,8 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 			tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
 			tmp->SetPosition({battle_zone1->rect.x +battle_zone1->rect.w + 340, 210});
 			App->manager->RestoreTimeLeft();
+			App->audio->PlayFx(fx_waves);
+			// add go arrow
 			trigger->to_delete = true;
 			battle_zone1 = nullptr;
 		}
@@ -199,6 +201,8 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 			tmp->SetPosition({ battle_zone2->rect.x + battle_zone2->rect.w + 300, 210 });
 			App->manager->RestoreTimeLeft();
 			App->renderer->locked = false;
+			App->audio->PlayFx(fx_waves);
+			// add go arrow
 			trigger->to_delete = true;
 			cam_lock2 = nullptr;
 		}
@@ -246,6 +250,8 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 		{
 			App->renderer->locked = false;
 			App->manager->RestoreTimeLeft();
+			App->audio->PlayFx(fx_waves);
+			// add go arrow
 			trigger->to_delete = true;
 			battle_zone3 = nullptr;
 		}
@@ -276,7 +282,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	{
 		if (cam_lock4 == nullptr && App->manager->GetEnemyCount() == 0)
 		{
-			App->audio->PlayMusic("Assets/music_boss.ogg");
+			App->audio->PlayMusic(boss_music_path.c_str(),0.0F);
 			tmp = App->manager->CreateEntity(Entity::Types::npc_boss);
 			tmp->SetPosition({ battle_zone4->rect.x + battle_zone4->rect.w + 300, 180 });
 			App->manager->boss = tmp;
@@ -307,6 +313,9 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 	if (json_object_dothas_value_of_type(root_object, "scene3.music_file",JSONString))
 		music_path = json_object_dotget_string(root_object, "scene3.music_file");
 
+	if (json_object_dothas_value_of_type(root_object, "scene3.boss_music_file", JSONString))
+		boss_music_path = json_object_dotget_string(root_object, "scene3.boss_music_file");
+	
 	if (json_object_dothas_value_of_type(root_object, "scene3.fx_waves", JSONString))
 		fx_waves = App->audio->LoadFx(json_object_dotget_string(root_object, "scene3.fx_waves"));
 

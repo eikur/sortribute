@@ -35,6 +35,7 @@
 	"scene3": {
 		"graphics_file": "Assets/moonbeach.png",
 		"music_file": "Assets/music_stage3.ogg",
+		"boss_music_file": "Assets/music_boss.ogg",
 		"fx_waves": "Assets/fx_waves.ogg",
 		"background": {
 			"position":[-604,32],
@@ -230,7 +231,7 @@
 	"garcia": {
 		"graphics_file": "Assets/enemy_garcia.png",
 		"speed" : [3,1],
-		"max_health" : 32,
+		"max_health" : 40,
 		"lives": 1,
 		"score": 600,
 		"colliders": {

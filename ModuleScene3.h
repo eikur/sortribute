@@ -51,6 +51,7 @@ private:
 	iPoint wave_splash_pos = { 0, 0 };
 
 	std::string music_path = "";
+	std::string boss_music_path = "";
 	unsigned int fx_waves = 0;
 
 	// scene triggers
