@@ -226,7 +226,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			}
 			else if (second_col->type == colliderType::ENEMY_ATTACK)
 			{
-				if (second->is_attacking && first->is_hittable)
+				if (second->is_attacking && first->is_hittable && first->IsGrounded())
 				{
 					if (second->position.x <= first->position.x)
 						first->facing_right = false;
@@ -337,7 +337,6 @@ void EntityManager::PrintStatus()
 
 void EntityManager::PrintPlayerHealth()
 {
-	int max_pixels = 80;
 	int min_pixels = 2;
 	int sections_to_draw = player->health / min_pixels;
 	for (int i = 0; i < sections_to_draw; ++i)
@@ -348,7 +347,6 @@ void EntityManager::PrintPlayerHealth()
 
 void EntityManager::PrintBossHealth()
 {
-	int max_pixels = 80;
 	int min_pixels = 2;
 	int sections_to_draw;
 	SDL_Rect *h_section;

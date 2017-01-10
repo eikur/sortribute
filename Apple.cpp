@@ -23,7 +23,7 @@ bool Apple::Init()
 	return true;
 }
 
-bool Apple::Update(unsigned int msec_elapsed, const bool upd_logic)
+bool Apple::Update(unsigned int, const bool)
 {
 	if (IsAlive() == false)
 	{

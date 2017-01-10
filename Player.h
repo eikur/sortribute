@@ -24,7 +24,7 @@ private:
 	void UpdateThrowingFrontMotion();
 	void UpdateThrowingBackMotion();
 
-	void GetInput( bool upd_logic);
+	void GetInput();
 	void ResetInput();
 
 	bool LoadFromConfigFile(const char* file_path);

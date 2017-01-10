@@ -69,12 +69,12 @@ public:
 		return true; 
 	}
 
-	virtual bool LoadConfigFromFile(const char* file_path)
+	virtual bool LoadConfigFromFile(const char* )
 	{
 		return true;
 	}
 	// Callbacks ---
-	virtual void HandleCollision(Collider* a, Collider* b)
+	virtual void HandleCollision(Collider*, Collider*)
 	{}
 
 private:

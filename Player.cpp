@@ -59,7 +59,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		}
 		return true;
 	}
-	GetInput(upd_logic);
+	GetInput();
 	move_speed = { 0,0 };
 
 	// animation update
@@ -432,7 +432,7 @@ void Player::UpdateThrowingBackMotion()
 
 //--- Input related -------
 
-void Player::GetInput( bool upd_logic )
+void Player::GetInput()
 {
 	ResetInput();
 

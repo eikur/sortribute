@@ -229,7 +229,7 @@ iPoint EnemyGarcia::SpeedTowardsPoint( iPoint to_point) const
 
 }
 
-void EnemyGarcia::UpdateAIDestinationPoint( AIState state)
+void EnemyGarcia::UpdateAIDestinationPoint( AIState new_state)
 {
 	App->renderer->GetPlayerPositionLimits(position_limits);
 	int up = position_limits.y;
@@ -239,7 +239,7 @@ void EnemyGarcia::UpdateAIDestinationPoint( AIState state)
 	int left_of_target_mod = position.x < target->position.x ? -1 : 1;
 	int facing_right_mod = facing_right ? +1 : -1;
 
-	switch (state)
+	switch (new_state)
 	{
 	case approach:
 		AI_move_destination = { target->position.x + left_of_target_mod * 50, target->GetDepth() };
@@ -294,10 +294,12 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	throw_dmg = (int)json_object_dotget_number(root_object, "damages.throw");
 
 //----------------------- colliders ---------------------------
-	while (hit_collider == nullptr)
+	do {
 		hit_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.hit", colliderType::ENEMY, &hit_collider_offset);
-	while (attack_collider == nullptr)
+	} while (hit_collider == nullptr);
+	do {
 		attack_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.attack", colliderType::ENEMY_ATTACK, &attack_collider_offset);
+	} while (attack_collider == nullptr);
 
 	layer_depth = (int)json_object_dotget_number(root_object, "collision.layer_depth");
 

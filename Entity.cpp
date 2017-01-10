@@ -19,7 +19,7 @@ bool Entity::Init()
 
 // ----------------- Updates ------------------------
 
-bool Entity::Update(unsigned int msec_elapsed, const bool upd_logic)
+bool Entity::Update(unsigned int, const bool)
 {
 	return true;
 }
@@ -129,7 +129,7 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration
 			current_animation == &throwing_front ||
 			current_animation == &throwing_back ||
 			current_animation == &standing_up ||
-			current_animation == &jump ||
+		//	current_animation == &jump ||
 			current_animation == &jump_attack ||
 			current_animation == &holding_swap
 			)
@@ -306,7 +306,7 @@ void Entity::CleanUp()
 		App->textures->Unload(graphics);
 }
 
-void Entity::AddScore(int amount) 
+void Entity::AddScore(int) 
 {}
 
 void Entity::UpdateAIState(AIState new_state)
@@ -315,7 +315,7 @@ void Entity::UpdateAIState(AIState new_state)
 	state = new_state;
 }
 
-void Entity::UpdateAIDestinationPoint(AIState new_state)
+void Entity::UpdateAIDestinationPoint(AIState )
 {
 
 }
@@ -404,11 +404,8 @@ bool Entity::IsHoldingSomeone()
 	return held_entity != nullptr;
 }
 
-//----------------------------------------------------
-
-
 //------------------------- JSON LOAD ---------------------------
-bool Entity::LoadFromConfigFile(const char* file_path) { 
+bool Entity::LoadFromConfigFile(const char* ) { 
 	return true; 
 }
 

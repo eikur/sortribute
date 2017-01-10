@@ -214,15 +214,14 @@ iPoint Boss3::SpeedTowardsPoint(iPoint to_point) const
 
 }
 
-void Boss3::UpdateAIDestinationPoint(AIState state)
+void Boss3::UpdateAIDestinationPoint(AIState curr_state)
 {
 	App->renderer->GetPlayerPositionLimits(position_limits);
 	int left = position_limits.x;
 	int right = position_limits.x + position_limits.w;
 	int left_of_target_mod = position.x < target->position.x ? -1 : 1;
-	int facing_right_mod = facing_right ? +1 : -1;
 
-	switch (state)
+	switch (curr_state)
 	{
 	case approach:
 		AI_move_destination = { position.x, target->GetDepth() };

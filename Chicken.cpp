@@ -23,7 +23,7 @@ bool Chicken::Init()
 	return true;
 }
 
-bool Chicken::Update(unsigned int msec_elapsed, const bool upd_logic)
+bool Chicken::Update(unsigned int, const bool)
 {
 	if (IsAlive() == false)
 	{

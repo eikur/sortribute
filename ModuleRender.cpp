@@ -188,5 +188,4 @@ bool ModuleRender::LoadConfigFromFile(const char* file_path)
 		return false;
 	else
 		return true;
-	return true;
 }

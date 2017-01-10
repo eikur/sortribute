@@ -15,7 +15,7 @@ public:
 private:
 	void CleanUp();
 
-	void UpdateAIDestinationPoint(AIState new_state);
+	void UpdateAIDestinationPoint(AIState curr_state);
 	iPoint SpeedTowardsPoint(iPoint to_point) const;
 	bool InEnemyActionQueue() const;
 
