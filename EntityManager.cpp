@@ -159,11 +159,19 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 	return ret;
 }
 
-void EntityManager::KnockDownAllEnemies()  {
+void EntityManager::KnockDownAllEnemies(bool wipeout)  {
 	for (std::list<Entity*>::const_iterator it = entities.cbegin(); it != entities.cend();++it)
 	{
 		if ((*it)->m_type == Entity::Types::npc_garcia || (*it)->m_type == Entity::Types::npc_boss)
-			(*it)->SetBeingKnocked();
+		{
+			if ((*it)->IsAlive())
+			{
+				if (wipeout)
+					(*it)->SetBeingKnocked((*it)->max_health);
+				else
+					(*it)->SetBeingKnocked();
+			}
+		}
 	}
 	RestoreTimeLeft();
 }
@@ -515,7 +523,7 @@ void EntityManager::CheatCodes()
 		}
 		return;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_REPEAT && player != nullptr)
+	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_REPEAT && player != nullptr)
 	{
 		time_left_msec -= 2000;
 		return;

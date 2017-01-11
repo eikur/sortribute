@@ -27,6 +27,8 @@ private:
 	void GetInput();
 	void ResetInput();
 
+	void UseHelp();
+
 	bool LoadFromConfigFile(const char* file_path);
 	void CheatCodes();
 

@@ -231,7 +231,9 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 			}
 			else 		
 			{
-				if (input_attack_back)
+				if (input_help)
+					UseHelp();
+				else if (input_attack_back)
 					UpdateCurrentAnimation(&attack_back, attacks_duration, fx_attack_miss);
 				else if (input_jump)
 					UpdateCurrentAnimation(&jump_prep, jump_prep_duration, fx_jump);
@@ -470,6 +472,13 @@ void Player::ResetInput()
 	input_help = input_attack = input_jump = input_attack_back = input_hold_front_throw = false;
 }
 
+void Player::UseHelp()
+{
+	if (help <= 0)
+		return;
+	help -= 1;
+	App->manager->KnockDownAllEnemies(true);
+}
 //--------------------------- Miscelaneous ---------------------------------------------
 
 bool Player::LoadFromConfigFile(const char* file_path)

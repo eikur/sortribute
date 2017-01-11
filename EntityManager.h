@@ -25,7 +25,7 @@ public:
 	bool CleanUp();
 
 	Entity* CreateEntity(Entity::Types type);
-	void KnockDownAllEnemies();
+	void KnockDownAllEnemies(bool wipeout = false);
 	int GetEnemyCount();
 	void RestoreTimeLeft();
 
