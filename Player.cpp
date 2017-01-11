@@ -330,6 +330,7 @@ void Player::ReRaise()
 	respawn_fall = true;
 	air_remaining_msec = jump_duration;
 	health = max_health;
+	help = 1;
 	App->manager->KnockDownAllEnemies();
 	App->manager->RestoreTimeLeft();
 }
