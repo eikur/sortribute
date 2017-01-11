@@ -57,7 +57,8 @@ update_status ModuleScene3::Update()
 {
 	App->renderer->Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);	// waves painted last
 
-	if (battle_zone4 == nullptr && App->manager->boss == nullptr && App->fade->isFading() == false)
+	//if (battle_zone4 == nullptr && App->manager->boss == nullptr && App->fade->isFading() == false)
+	if (spawn1 == nullptr && App->manager->boss == nullptr && App->fade->isFading() == false)
 	{
 		App->audio->PlayMusic("");
 		App->fade->FadeToBlack((Module*)App->intro, this, 3.0f);
@@ -69,7 +70,7 @@ bool ModuleScene3::CleanUp()
 {
 	LOG("Scene3: Unloading Moon Beach scene\n");
 	App->textures->Unload(graphics);
-
+	DeleteSceneTriggers();
 	return true;
 }
 
