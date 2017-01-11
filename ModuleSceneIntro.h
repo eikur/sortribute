@@ -18,9 +18,11 @@ public:
 private:
 	bool LoadConfigFromFile(const char *file_path);
 
-public:
-	
+private:
 	SDL_Texture* background = nullptr;
+	std::string music_path = "";
+	uint blink_msg_msec = 0;
+	uint elapsed_msec = 0;
 };
 
 #endif // __MODULESCENEINTRO_H__

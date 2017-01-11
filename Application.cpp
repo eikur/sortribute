@@ -59,7 +59,7 @@ bool Application::Init()
 			ret = (*it)->Start();
 	}
 
-	fade->FadeToBlack(intro, nullptr, 3.0F);
+	fade->FadeToBlack(intro, nullptr);
 
 	return ret;
 }

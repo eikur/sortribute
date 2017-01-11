@@ -67,10 +67,12 @@ private:
 	Collider *spawn8 = nullptr;
 	Collider *spawn9 = nullptr;
 	Collider *spawn10 = nullptr;
+
 	Collider *cam_lock1 = nullptr;
 	Collider *cam_lock2 = nullptr;
 	Collider *cam_lock3 = nullptr;
 	Collider *cam_lock4 = nullptr;
+	
 	Collider *battle_zone1 = nullptr;
 	Collider *battle_zone2 = nullptr;
 	Collider *battle_zone3 = nullptr;

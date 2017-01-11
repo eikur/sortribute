@@ -33,7 +33,9 @@
 		"ppe": [8, 8, 12]
 	},
 	"intro":{
-		"graphics_file": "Assets/intro_screen.png"
+		"graphics_file": "Assets/intro_screen.png",
+		"music_file": "Assets/music_intro.ogg",
+		"blink_msg_msec": 1000
 	},
 	"scene3": {
 		"graphics_file": "Assets/moonbeach.png",
