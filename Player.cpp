@@ -309,6 +309,17 @@ void Player::ModifyLives(int mod_to_add)
 		App->audio->PlayFx(fx_extra_life);
 }
 
+void Player::IncreaseHelp(int amount)
+{
+	help += amount;
+	if (help > 9)
+	{
+		help = 9;
+		return;
+	}
+	App->audio->PlayFx(fx_extra_help);
+}
+
 void Player::ReRaise()
 {
 	position = { 20, 32};
@@ -320,6 +331,7 @@ void Player::ReRaise()
 	air_remaining_msec = jump_duration;
 	health = max_health;
 	App->manager->KnockDownAllEnemies();
+	App->manager->RestoreTimeLeft();
 }
 
 //-------------- Specific updates
@@ -477,6 +489,7 @@ void Player::UseHelp()
 	if (help <= 0)
 		return;
 	help -= 1;
+	App->audio->PlayFx(fx_use_help);
 	App->manager->KnockDownAllEnemies(true);
 }
 //--------------------------- Miscelaneous ---------------------------------------------
@@ -579,6 +592,8 @@ bool Player::LoadFromConfigFile(const char* file_path)
 	LoadSoundFXFromJSONObject(root_object, "fx.jump", &fx_jump);
 	LoadSoundFXFromJSONObject(root_object, "fx.jump_land", &fx_landing_jump);
 	LoadSoundFXFromJSONObject(root_object, "fx.death_player", &fx_death);
+	LoadSoundFXFromJSONObject(root_object, "fx.help_up", &fx_extra_help);
+	LoadSoundFXFromJSONObject(root_object, "fx.help_use", &fx_use_help);
 	
 	
 
@@ -593,8 +608,8 @@ void Player::CheatCodes() {
 		ModifyLives(+1);
 	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_REPEAT)
 		AddScore(1000);
-	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN && help < 9)
-		help += 1;
+	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+		IncreaseHelp(1);
 	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN)
 		SetBeingHit(attack1_dmg);
 	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)

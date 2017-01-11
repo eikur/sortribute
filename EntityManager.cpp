@@ -173,7 +173,6 @@ void EntityManager::KnockDownAllEnemies(bool wipeout)  {
 			}
 		}
 	}
-	RestoreTimeLeft();
 }
 
 int EntityManager::GetEnemyCount() {
@@ -523,7 +522,7 @@ void EntityManager::CheatCodes()
 		}
 		return;
 	}
-	if (App->input->GetKey(SDL_SCANCODE_T) == KEY_REPEAT && player != nullptr)
+	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_REPEAT && player != nullptr)
 	{
 		time_left_msec -= 2000;
 		return;

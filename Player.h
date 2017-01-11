@@ -13,6 +13,7 @@ public:
 	bool Update( unsigned int msec_elapsed, const bool upd_logic = false);
 
 	void AddScore(int addition);
+	void IncreaseHelp(int amount);
 
 private:
 	void ModifyLives(int mod_to_add);

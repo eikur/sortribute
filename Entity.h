@@ -65,6 +65,7 @@ public:
 	void IncreaseHealth(int amount);
 	virtual void DecreaseHealth(int amount);
 	virtual void AddScore(int amount);
+	virtual void IncreaseHelp(int amount);
 	void TimeOver();
 
 	bool AllowAnimationInterruption() const;
@@ -214,9 +215,7 @@ protected:
 	Animation standing_up;
 
 	Animation dying;
-
 	Animation running;
-
 	SDL_Rect shadow;
 
 // sounds
@@ -230,6 +229,8 @@ protected:
 	unsigned int fx_death = 0;
 	unsigned int fx_health_restore = 0;
 	unsigned int fx_extra_life = 0;
+	unsigned int fx_extra_help = 0;
+	unsigned int fx_use_help = 0;
 
 // Interactions and collisions
 	int layer_depth = 0;

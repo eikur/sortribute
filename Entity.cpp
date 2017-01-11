@@ -285,6 +285,8 @@ void Entity::DecreaseHealth(int amount) {
 		}
 	}
 }
+void Entity::AddScore(int)
+{}
 
 void Entity::TimeOver()
 {
@@ -296,7 +298,8 @@ void Entity::TimeOver()
 	SetBeingKnocked(max_health);
 }
 
-
+void Entity::IncreaseHelp(int)
+{}
 
 void Entity::RemoveColliders()
 {
@@ -319,8 +322,7 @@ void Entity::CleanUp()
 		App->textures->Unload(graphics);
 }
 
-void Entity::AddScore(int) 
-{}
+
 
 void Entity::UpdateAIState(AIState new_state)
 {

@@ -127,7 +127,9 @@
 		"death_player": "Assets/fx_voice_axel_death.wav", 
 		"death_garcia": "Assets/fx_voice_garcia.wav",
 		"pause" : "Assets/fx_pause.wav",
-		"death_boss": "Assets/fx_voice_boss.wav"
+		"death_boss": "Assets/fx_voice_boss.wav",
+		"help_up": "Assets/fx_score_up.wav",
+		"help_use": "Assets/fx_use_help.wav"
 	},
 	"player": {
 		"graphics_file": "Assets/axel.png",
