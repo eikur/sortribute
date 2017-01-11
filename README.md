@@ -4,14 +4,17 @@ This game tribute is a project developed for the UPC School's Design and Creatio
 
 It features one of my favourite levels of the original Streets of Rage, Moonbeach, and while it misses the enemy variety, it has the enemy and item placement spot on.
 
-Github: [https://github.com/eikur/sortribute]   
-Download link (release version): [https://github.com/eikur/sortribute/files/699931/Streets.Of.Rage.Tribute.release.zip]  
+Github: [https://github.com/eikur/sortribute](https://github.com/eikur/sortribute)   
+
+Download release version [here](https://github.com/eikur/sortribute/files/699931/Streets.Of.Rage.Tribute.release.zip)   
+
 License: GNU GPL version 2  
 Author: Jorge Soriano Pinedo // eikur  
 
 Gameplay video: 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/GutNYy9ybMo" frameborder="0" allowfullscreen></iframe>
-If the video doesn't work, try here: [https://youtu.be/GutNYy9ybMo]  
+If the video doesn't work, try [here](https://youtu.be/GutNYy9ybMo)   
+
 
 ## Executing the game
 Extract all the zip contents and simply double click in the 'SoR Tribute.exe' file. The rest is just playing!  
