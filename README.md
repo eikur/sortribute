@@ -1,14 +1,18 @@
 # Streets Of Rage Tribute Page
-
 ## About this game
+
 This game tribute is a project developed for the UPC School's Design and Creation of Videogames master 2016-2017.
 
 It features one of my favourite levels of the original Streets of Rage, Moonbeach, and while it misses the enemy variety, it has the enemy and item placement spot on.
 
-For an actual gameplay footage, visit youtube: https://youtu.be/GutNYy9ybMo
-Github: https://github.com/eikur/sortribute  
+Github: https://github.com/eikur/sortribute   
+Download link (release version): https://github.com/eikur/sortribute/files/699931/Streets.Of.Rage.Tribute.release.zip  
 License: GNU GPL version 2  
 Author: Jorge Soriano Pinedo // eikur  
+
+Gameplay video: 
+<iframe width="560" height="315" src="https://www.youtube.com/embed/GutNYy9ybMo" frameborder="0" allowfullscreen></iframe>
+If the video doesn't work, try here: https://youtu.be/GutNYy9ybMo  
 
 ## Executing the game
 Extract all the zip contents and simply double click in the 'SoR Tribute.exe' file. The rest is just playing!  
@@ -23,6 +27,7 @@ The game's objective is the same as during the old days: make your way through s
 
 The player actions have been maped following the original Genesis gamepad, which had the crosshair for movement, Start button for pause and 3 action buttons.  
 The mapping is the following:  
+
 - **Up** / **Down** / **Left** / **Right** : Move the character around
 - **ENTER**: Pause button  
 - **Z**: Special button. Consumes one special point. Unfortunatelly it has no visual animation and only a strong sound when activated. That, and the enemies become anihilated.  
@@ -30,6 +35,7 @@ The mapping is the following:
 - **C**: Jump button
 
 Special cases:
+
 - Walking to an enemy without being hit will result in a player hold, either frontal or backwards. To disengage and free the enemy, move in the opposite direction than the hold.  
 - **C (when holding an enemy)**: switches between front and back hold. This switch can only be performed once successfully, the second time the player will leave the hold after the position switch.  
 - **X (when back holding)**: German suplex for the lucky enemy you are holding  
