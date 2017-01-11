@@ -35,6 +35,7 @@
 	"intro":{
 		"graphics_file": "Assets/intro_screen.png",
 		"music_file": "Assets/music_intro.ogg",
+		"fx_start": "Assets/fx_start.wav",
 		"blink_msg_msec": 1000
 	},
 	"scene3": {

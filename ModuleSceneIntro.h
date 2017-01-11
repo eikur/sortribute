@@ -21,6 +21,8 @@ private:
 private:
 	SDL_Texture* background = nullptr;
 	std::string music_path = "";
+	unsigned int fx_start = 0;
+
 	uint blink_msg_msec = 0;
 	uint elapsed_msec = 0;
 };

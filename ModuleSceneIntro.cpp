@@ -56,7 +56,10 @@ update_status ModuleSceneIntro::Update()
 		elapsed_msec = 0;
 
 	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && App->fade->isFading() == false)
+	{
 		App->fade->FadeToBlack((Module*)App->scene3, this);
+		App->audio->PlayFx(fx_start);
+	}
 
 	return UPDATE_CONTINUE;
 }
@@ -78,6 +81,10 @@ bool ModuleSceneIntro::LoadConfigFromFile(const char* file_path)
 	if (json_object_dothas_value_of_type(root_object, "intro.music_file", JSONString))
 		music_path = json_object_dotget_string(root_object, "intro.music_file");
 	
+	 
+	if (json_object_dothas_value_of_type(root_object, "intro.fx_start", JSONString))
+		fx_start = App->audio->LoadFx(json_object_dotget_string(root_object, "intro.fx_start"));
+
 	blink_msg_msec = (int)json_object_dotget_number(root_object, "intro.blink_msg_msec");
 
 	json_value_free(root_value);
