@@ -81,7 +81,6 @@ bool ModuleSceneIntro::LoadConfigFromFile(const char* file_path)
 	if (json_object_dothas_value_of_type(root_object, "intro.music_file", JSONString))
 		music_path = json_object_dotget_string(root_object, "intro.music_file");
 	
-	 
 	if (json_object_dothas_value_of_type(root_object, "intro.fx_start", JSONString))
 		fx_start = App->audio->LoadFx(json_object_dotget_string(root_object, "intro.fx_start"));
 

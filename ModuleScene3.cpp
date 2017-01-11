@@ -187,7 +187,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 			if (tmp != nullptr)
 				tmp->SetPosition({battle_zone1->rect.x +battle_zone1->rect.w + 340, 210});
 			App->manager->RestoreTimeLeft();
-			// add go arrow
+			App->manager->ShowGoArrow();
 			battle_zone1 = nullptr;
 			trigger->to_delete = true;
 		}
@@ -230,7 +230,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 			if (tmp != nullptr)
 				tmp->SetPosition({ battle_zone2->rect.x + battle_zone2->rect.w + 300, 210 });
 			App->manager->RestoreTimeLeft();
-			// add go arrow
+			App->manager->ShowGoArrow();
 			battle_zone2 = nullptr;
 			trigger->to_delete = true;
 		}
@@ -287,7 +287,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 			App->renderer->locked = false;
 			App->audio->PlayFx(fx_waves);
 			App->manager->RestoreTimeLeft();
-			// add go arrow
+			App->manager->ShowGoArrow();
 			battle_zone3 = nullptr;
 			trigger->to_delete = true;
 		}

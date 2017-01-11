@@ -307,13 +307,11 @@ void Entity::RemoveColliders()
 	{
 		hit_collider->to_delete = true;
 		hit_collider = nullptr;
-		LOG("H removed");
 	}
 	if (attack_collider != nullptr)
 	{
 		attack_collider->to_delete = true;
 		attack_collider = nullptr;
-		LOG("A removed");
 	}
 }
 void Entity::CleanUp()

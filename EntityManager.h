@@ -28,6 +28,7 @@ public:
 	void KnockDownAllEnemies(bool wipeout = false);
 	int GetEnemyCount();
 	void RestoreTimeLeft();
+	void ShowGoArrow();
 
 private:
 	void HandleCollision(Collider* a, Collider* b);
@@ -35,6 +36,7 @@ private:
 	void PrintStatus();
 	void PrintPlayerHealth();
 	void PrintBossHealth();
+	void PrintGoArrow();
 
 	bool LoadConfigFromFile(const char* file_path);
 	void CheatCodes();
@@ -54,6 +56,10 @@ private:
 	bool upd_logic = false;
 	unsigned int fx_pause = 0;
 
+	int remaining_msec_go_arrow = 0;
+	int blink_msec_go_arrow = 800;
+	unsigned int fx_go_arrow = 0;
+
 	//hud
 	SDL_Texture *hud_graphics = nullptr;
 	SDL_Rect hud_section = { 0,0,0,0 };
@@ -63,6 +69,8 @@ private:
 	iPoint hud_time_pos = { 0,0 };
 	iPoint hud_help_pos = { 0,0 };
 	iPoint hud_lives_pos = { 0,0 };
+	SDL_Rect hud_go_arrow_section = { 0,0,0,0 };
+	iPoint hud_go_arrow_pos = { 0,0 };
 	
 	SDL_Rect hud_boss_section = { 0,0,0,0 };
 	SDL_Rect hud_high_health_section = { 0,0,0,0 };

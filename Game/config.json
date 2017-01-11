@@ -66,7 +66,6 @@
 			"section":[[0,352,3844,40],[0,392,3844,40],[0,432,3844,40],[0,472,3844,40],[0,512,3844,40]],
 			"speed": 0.04
 		}
-		
 	},
 	"hud":
 	{		
@@ -83,7 +82,11 @@
 		"boss_msg_pos": [136,24],
 		"boss_health_pos": [8,26],
 		"medium_health_section":[92,32,2,6],
-		"high_health_section":[90,32,2,6]
+		"high_health_section":[90,32,2,6],
+		"go_arrow_blink_msec": 400,
+		"go_arrow_section": [284,44,36,21],
+		"go_arrow_pos": [260,48],
+		"fx_go_arrow": "Assets/fx_go_arrow.wav"
 	},
 	"durations": {
 		"attacks": 256,

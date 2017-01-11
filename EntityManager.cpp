@@ -58,7 +58,8 @@ update_status EntityManager::Update()
 	{
 		elapsed_msec += App->timer->DeltaTime();
 		time_left_msec -= App->timer->DeltaTime();
-
+		if (remaining_msec_go_arrow > 0)
+			remaining_msec_go_arrow -= App->timer->DeltaTime();
 
 		if (time_left_msec <= 0 && player != nullptr) 
 		{
@@ -184,6 +185,11 @@ int EntityManager::GetEnemyCount() {
 void EntityManager::RestoreTimeLeft()
 {
 	time_left_msec = 81999;
+}
+
+void EntityManager::ShowGoArrow()
+{
+	remaining_msec_go_arrow = 7 * blink_msec_go_arrow;
 }
 
 void EntityManager::HandleCollision(Collider* a, Collider* b)
@@ -318,9 +324,6 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 				LOG("Bad defined collisions, check collision matrix");
 			}
 			break;
-		default: 
-			LOG("Bad defined collision, check collision matrix");
-			break;
 	}
 }
 
@@ -338,6 +341,7 @@ void EntityManager::PrintStatus()
 		App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(player->help, 1));
 		App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(player->lives, 1));
 		PrintPlayerHealth();
+		PrintGoArrow();
 	}
 	else {
 		App->fonts->Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, "00");
@@ -390,6 +394,25 @@ void EntityManager::PrintBossHealth()
 		App->renderer->Blit(hud_graphics, hud_health_boss_pos.x + i*hud_health_section.w, hud_health_boss_pos.y, h_section, 0.0F);
 }
 
+void EntityManager::PrintGoArrow()
+{
+	static int audio_in_turn;
+	if (remaining_msec_go_arrow <= 0)
+		return;
+
+	int current_turn = remaining_msec_go_arrow / blink_msec_go_arrow;
+	bool show = current_turn % 2 == 0 ? true : false;
+	
+	if (show)
+	{
+		App->renderer->Blit(hud_graphics, hud_go_arrow_pos.x, hud_go_arrow_pos.y, &hud_go_arrow_section, 0.0F);
+		if (audio_in_turn != current_turn)
+		{
+			App->audio->PlayFx(fx_go_arrow);
+			audio_in_turn = current_turn;
+		}
+	}
+}
 
 bool EntityManager::LoadConfigFromFile(const char* file_path)
 {
@@ -478,6 +501,20 @@ bool EntityManager::LoadConfigFromFile(const char* file_path)
 
 	if (json_object_dothas_value_of_type(root_object, "fx.pause", JSONString))
 		fx_pause = App->audio->LoadFx(json_object_dotget_string(root_object, "fx.pause"));
+
+	j_array = json_object_dotget_array(root_object, "hud.go_arrow_pos");
+	hud_go_arrow_pos.x = (int)json_array_get_number(j_array, 0);
+	hud_go_arrow_pos.y = (int)json_array_get_number(j_array, 1);
+	json_array_clear(j_array);
+
+	j_array = json_object_dotget_array(root_object, "hud.go_arrow_section");
+	hud_go_arrow_section = { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
+	json_array_clear(j_array);
+
+	blink_msec_go_arrow = (int)json_object_dotget_number(root_object, "hud.go_arrow_blink_msec");
+
+	if (json_object_dothas_value_of_type(root_object, "hud.fx_go_arrow", JSONString))
+		fx_go_arrow = App->audio->LoadFx(json_object_dotget_string(root_object, "hud.fx_go_arrow"));
 
 	json_value_free(root_value);
 
