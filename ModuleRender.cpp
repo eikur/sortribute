@@ -162,7 +162,7 @@ void ModuleRender::GetPlayerPositionLimits( SDL_Rect &player_limits ) const
 void ModuleRender::MoveCamera(int x_pos, int x_speed) {
 	if (locked == false)
 	{
-		int target_xpos_camera = (x_pos) * m_screen_size;	// TODO: study not to center the camera on the player
+		int target_xpos_camera = (x_pos) * m_screen_size;	
 		if ((-camera.x + camera.w / 2) < target_xpos_camera)
 			camera.x -= x_speed*m_screen_size;
 	}

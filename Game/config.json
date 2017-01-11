@@ -32,6 +32,9 @@
 		],
 		"ppe": [8, 8, 12]
 	},
+	"intro":{
+		"graphics_file": "Assets/intro_screen.png"
+	},
 	"scene3": {
 		"graphics_file": "Assets/moonbeach.png",
 		"music_file": "Assets/music_stage3.ogg",
@@ -132,7 +135,7 @@
 		"score": 0,
 		"help": 1,
 		"colliders": {
-			"attack": [10,-52,39,32],
+			"attack": [12,-52,37,32],
 			"hit": [-12,-52,24,52]
 		},
 		"sprite_offset": [-35,-80],
@@ -235,7 +238,7 @@
 		"lives": 1,
 		"score": 600,
 		"colliders": {
-			"attack": [10,-52,38,32],
+			"attack": [12,-52,36,32],
 			"hit": [-12,-52,24,52]
 		},
 		"sprite_offset": [-35,-80],
@@ -302,7 +305,7 @@
 		"lives": 1,
 		"score": 5000,
 		"colliders": {
-			"attack": [10,-52,40,32],
+			"attack": [12,-52,38,32],
 			"hit": [-12,-52,24,52]
 		},
 		"sprite_offset": [-40,-100],

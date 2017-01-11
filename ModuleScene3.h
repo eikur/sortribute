@@ -16,7 +16,6 @@ public:
 	ModuleScene3(bool active = true);
 	~ModuleScene3();
 
-	bool Init();
 	bool Start();
 	update_status PreUpdate();
 	update_status Update();
@@ -26,6 +25,7 @@ private:
 	bool LoadConfigFromFile(const char* file_path);
 	void HandleCollision(Collider* a, Collider* b);
 	void CreateSceneTriggers();
+	void DeleteSceneTriggers();
 	void TriggerCollisionManagement(Collider *trigger);
 	void PlaceSceneItems();
 
@@ -55,6 +55,8 @@ private:
 	unsigned int fx_waves = 0;
 
 	// scene triggers
+	std::vector<Collider*> triggers;
+
 	Collider *spawn1 = nullptr;
 	Collider *spawn2 = nullptr;
 	Collider *spawn3 = nullptr;

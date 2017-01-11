@@ -7,6 +7,7 @@
 #include "ModuleWindow.h"
 #include "EntityManager.h"
 #include "ModuleCollision.h"
+#include "ModuleFadeToBlack.h"
 
 #include "ModuleScene3.h"
 
@@ -17,30 +18,27 @@ ModuleScene3::ModuleScene3(bool active) : Module(active)
 ModuleScene3::~ModuleScene3()
 {}
 
-
-bool ModuleScene3::Init()
+bool ModuleScene3::Start()
 {
-	LOG("Scene3: Init from config file\n");
+	LOG("Scene3: Starting MoonBeach\n");
 
 	if (LoadConfigFromFile(CONFIG_FILE) == false)
 	{
 		LOG("Scene3: Unable to load config from file\n");
 		return false;
 	}
+
 	CreateSceneTriggers();
 	PlaceSceneItems();
-
-	return true;
-}
-
-bool ModuleScene3::Start()
-{
-	LOG("Scene3: Starting MoonBeach\n");
+	
 	App->audio->PlayMusic(music_path.c_str(), 1.0F);	
 	App->audio->PlayFx(fx_waves);
+	
 	App->manager->Enable();
 	App->manager->player = App->manager->CreateEntity(Entity::Types::player);
 	
+	App->renderer->locked = false;
+
 	return true;
 }
 
@@ -58,7 +56,12 @@ update_status ModuleScene3::PreUpdate()
 update_status ModuleScene3::Update()
 {
 	App->renderer->Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);	// waves painted last
-	
+
+	if (battle_zone4 == nullptr && App->manager->boss == nullptr && App->fade->isFading() == false)
+	{
+		App->audio->PlayMusic("");
+		App->fade->FadeToBlack((Module*)App->intro, this, 3.0f);
+	}
 	return UPDATE_CONTINUE;
 }
 
@@ -80,29 +83,42 @@ void ModuleScene3::HandleCollision(Collider* a, Collider* b)
 
 void ModuleScene3::CreateSceneTriggers()
 {
-	spawn1 = App->collision->AddCollider({ 300,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr);
-	spawn2 = App->collision->AddCollider({ 450,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr);
-	spawn3 = App->collision->AddCollider({ 520,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr);
-	spawn4 = App->collision->AddCollider({ 960,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr);
-	spawn5 = App->collision->AddCollider({ 1100,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr);
-	spawn6 = App->collision->AddCollider({ 1570,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr);
-	spawn7 = App->collision->AddCollider({ 1926,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr);
-	spawn8 = App->collision->AddCollider({ 2082,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr);
-	spawn9 = App->collision->AddCollider({ 2608,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr);
-	spawn10 = App->collision->AddCollider({ 2706,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr);
+	triggers.push_back(spawn1 = App->collision->AddCollider({ 300,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn2 = App->collision->AddCollider({ 450,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn3 = App->collision->AddCollider({ 520,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn4 = App->collision->AddCollider({ 960,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn5 = App->collision->AddCollider({ 1100,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn6 = App->collision->AddCollider({ 1570,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn7 = App->collision->AddCollider({ 1926,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn8 = App->collision->AddCollider({ 2082,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn9 = App->collision->AddCollider({ 2608,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn10 = App->collision->AddCollider({ 2706,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
 
-	cam_lock1 = App->collision->AddCollider({ 590,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr);
-	battle_zone1 = App->collision->AddCollider({ 450,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr);
+	triggers.push_back(cam_lock1 = App->collision->AddCollider({ 590,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(battle_zone1 = App->collision->AddCollider({ 450,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr));
 	
-	cam_lock2 = App->collision->AddCollider({ 1360,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr);
-	battle_zone2 = App->collision->AddCollider({ 1220,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr);
+	triggers.push_back(cam_lock2 = App->collision->AddCollider({ 1360,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(battle_zone2 = App->collision->AddCollider({ 1220,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr));
 
-	cam_lock3 = App->collision->AddCollider({ 2130,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr);
-	battle_zone3 = App->collision->AddCollider({ 1990,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr);
+	triggers.push_back(cam_lock3 = App->collision->AddCollider({ 2130,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(battle_zone3 = App->collision->AddCollider({ 1990,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr));
 
-	cam_lock4 = App->collision->AddCollider({ 2900,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr);
-	battle_zone4 = App->collision->AddCollider({ 2760,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr);
+	triggers.push_back(cam_lock4 = App->collision->AddCollider({ 2900,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(battle_zone4 = App->collision->AddCollider({ 2760,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr));
 }
+
+void ModuleScene3::DeleteSceneTriggers()
+{
+	for (std::vector<Collider*>::iterator it = triggers.begin(); it != triggers.end(); ++it)
+	{
+		if ((*it) != nullptr) {
+			(*it)->to_delete = true;
+			*it = nullptr;
+		}
+	}
+	triggers.clear();
+}
+
 
 void ModuleScene3::PlaceSceneItems()
 {

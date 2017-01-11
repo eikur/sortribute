@@ -20,6 +20,7 @@ bool EnemyGarcia::Init()
 		LOG("Error loading player config from file");
 		return false;
 	}
+	state = none;
 	UpdateCurrentAnimation(&idle);
 	facing_right = false;
 	return true;
@@ -294,12 +295,16 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 	throw_dmg = (int)json_object_dotget_number(root_object, "damages.throw");
 
 //----------------------- colliders ---------------------------
-	do {
-		hit_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.hit", colliderType::ENEMY, &hit_collider_offset);
-	} while (hit_collider == nullptr);
-	do {
-		attack_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.attack", colliderType::ENEMY_ATTACK, &attack_collider_offset);
-	} while (attack_collider == nullptr);
+	hit_collider = nullptr; attack_collider = nullptr;
+	hit_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.hit", colliderType::ENEMY, &hit_collider_offset);
+	attack_collider = LoadColliderFromJSONObject(root_object, "garcia.colliders.attack", colliderType::ENEMY_ATTACK, &attack_collider_offset);
+	if (hit_collider == nullptr || attack_collider == nullptr)
+	{
+		LOG("no collider");
+		json_value_free(root_value);
+		App->textures->Unload(graphics);
+		return false;
+	}
 
 	layer_depth = (int)json_object_dotget_number(root_object, "collision.layer_depth");
 

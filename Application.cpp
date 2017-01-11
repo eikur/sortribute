@@ -8,6 +8,7 @@
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
 #include "ModuleFonts.h"
+#include "ModuleSceneIntro.h"
 #include "ModuleScene3.h"
 #include "EntityManager.h"
 #include "ModuleTimer.h"
@@ -30,6 +31,7 @@ Application::Application()
 	//Specific game modules
 	modules.push_back(manager = new EntityManager(false));
 	modules.push_back(scene3 = new ModuleScene3(false));
+	modules.push_back(intro = new ModuleSceneIntro(false));
 	modules.push_back(fade = new ModuleFadeToBlack());
 
 	// Modules to draw on top of game logic	
@@ -57,8 +59,7 @@ bool Application::Init()
 			ret = (*it)->Start();
 	}
 
-	// Start the first scene --
-	fade->FadeToBlack(scene3, nullptr, 5.0F);
+	fade->FadeToBlack(intro, nullptr, 3.0F);
 
 	return ret;
 }

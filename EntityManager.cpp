@@ -36,6 +36,11 @@ bool EntityManager::Init()
 		return true;
 }
 
+bool EntityManager::Start()
+{
+	return true;
+}
+
 update_status EntityManager::Update() 
 {
 	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
@@ -59,6 +64,7 @@ update_status EntityManager::Update()
 		{
 			if (player->IsAlive())
 				player->TimeOver();
+			time_left_msec = 0;
 		}
 
 		if (elapsed_msec >= upd_logic_msec)
@@ -94,10 +100,16 @@ update_status EntityManager::Update()
 		}
 	}
 
-	if (player == nullptr)
-		App->timer->TimerStop();
-
 	PrintStatus();
+
+	if (player == nullptr)
+	{
+		//CleanUp();
+		App->audio->PlayMusic("");
+		if (App->fade->isFading() == false)
+			App->fade->FadeToBlack((Module*)App->intro, (Module*)App->scene3, 2.0f);
+	}
+	
 	CheatCodes();
 
 	return UPDATE_CONTINUE;
@@ -108,7 +120,9 @@ bool EntityManager::CleanUp()
 	LOG("EntityManager: Removing entities from application\n");
 
 	for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
-		delete *it;
+	{
+		(*it)->CleanUp(); (*it)->RemoveColliders();	delete *it;
+	}
 	entities.clear();
 	enemy_queue.clear();
 

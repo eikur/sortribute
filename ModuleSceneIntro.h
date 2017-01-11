@@ -15,10 +15,12 @@ public:
 	update_status Update();
 	bool CleanUp();
 
+private:
+	bool LoadConfigFromFile(const char *file_path);
+
 public:
 	
 	SDL_Texture* background = nullptr;
-	uint fx = 0;
 };
 
 #endif // __MODULESCENEINTRO_H__

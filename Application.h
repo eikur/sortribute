@@ -15,6 +15,7 @@ class ModuleCollision;
 class ModuleParticles;
 class ModuleFonts;
 class ModuleTimer;
+class ModuleSceneIntro;
 class ModuleScene3;
 class EntityManager;
 
@@ -42,6 +43,7 @@ public:
 	ModuleTimer* timer = nullptr;
 
 	// Game modules ---
+	ModuleSceneIntro* intro = nullptr;
 	ModuleScene3* scene3 = nullptr;
 	EntityManager* manager = nullptr;
 

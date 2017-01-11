@@ -81,11 +81,10 @@ public:
 	void SetBeingKnocked(int damage = 0);
 		
 	virtual void UpdateAIState(AIState new_state);
-
-protected:
 	void RemoveColliders();
 	virtual void CleanUp();
 
+protected:
 	virtual void UpdateAIDestinationPoint(AIState new_state);
 	
 	virtual bool LoadFromConfigFile(const char* file_path);
