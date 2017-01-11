@@ -1,37 +1,67 @@
-## Welcome to GitHub Pages
+# Streets Of Rage Tribute Page
 
-You can use the [editor on GitHub](https://github.com/eikur/sortribute/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
+## About this game
+This game tribute is a project developed for the UPC School's Design and Creation of Videogames master 2016-2017.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+It features one of my favourite levels of the original Streets of Rage, Moonbeach, and while it misses the enemy variety, it has the enemy and item placement spot on.
 
-### Markdown
+For an actual gameplay footage, visit youtube: https://youtu.be/GutNYy9ybMo
+Github: https://github.com/eikur/sortribute  
+License: GNU GPL version 2  
+Author: Jorge Soriano Pinedo // eikur  
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Executing the game
+Extract all the zip contents and simply double click in the 'SoR Tribute.exe' file. The rest is just playing!  
+_Known issues_: The release has been compiled in Visual Studio 2015 under Windows 10, and it does not work in computers with Windows 7 without Visual Studio packages installed.
 
-```markdown
-Syntax highlighted code block
+## Game Goal
+The game's objective is the same as during the old days: make your way through swarms of enemies defeating them. If you can make it you win, and if you can't (and lose all of your lives) it's game over.
 
-# Header 1
-## Header 2
-### Header 3
+## Controls
 
-- Bulleted
-- List
+### Player Controls
 
-1. Numbered
-2. List
+The player actions have been maped following the original Genesis gamepad, which had the crosshair for movement, Start button for pause and 3 action buttons.  
+The mapping is the following:  
+- **Up** / **Down** / **Left** / **Right** : Move the character around
+- **ENTER**: Pause button  
+- **Z**: Special button. Consumes one special point. Unfortunatelly it has no visual animation and only a strong sound when activated. That, and the enemies become anihilated.  
+- **X**: Attack button. If performed consecutively when hitting an enemy will create a combo that ends with a high kick.
+- **C**: Jump button
 
-**Bold** and _Italic_ and `Code` text
+Special cases:
+- Walking to an enemy without being hit will result in a player hold, either frontal or backwards. To disengage and free the enemy, move in the opposite direction than the hold.  
+- **C (when holding an enemy)**: switches between front and back hold. This switch can only be performed once successfully, the second time the player will leave the hold after the position switch.  
+- **X (when back holding)**: German suplex for the lucky enemy you are holding  
+- **X (when front holding)**: Hold hit, which can be combined to perform a hold combo (knee hit + knee hit + headbutt)  
+- **X + opposite direction than the hold (when front holding)**: Throw an enemy over your head. You can knock down the enemies that come your way if it impacts them.  
+- **X + C (at the same time)**: Back attack. Unfortunately, it only has been animated and has no real effect on enemies in this tribute.
 
-[Link](url) and ![Image](src)
-```
+### Debug Controls
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+The debug features used during development have been kept to play with them in case you feel like it:  
 
-### Jekyll Themes
+- **_F1_** : Debug Colliders  
+It will show the colliders set in the scene, player, enemies and items. Pressing it again will hide them.  
+- **_1_, _2_, _3_ and _4_**: Change gameplay variables  
+Add more lives, score and special attacks respectively by pressing the corresponding key. Be careful, though, because key 4 subtracts time to your gameplay timer!  
+- **Q, W**: Test player reactions  
+Use them to hit and knock the player respectively.  
+- **E and R**: Spawn enemies  
+Use E to spawn cannon fodder enemies and use R to spawn bosses(!!)
+- **A and S**: Spawn health items  
+Use A to spawn an apple (25% health recovery) or S for a chicken (100% recovery)  
+- **O, P and L**: Camera behaviour  
+Use O to move the camera left, use P to move it right and use L to shift between locked and unlocked status. Be extra careful with these debug options, **a lot** of systems depend on the camera position and locking for their proper functioning.
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/eikur/sortribute/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+## After playing the game
+You can play multiple times in a row, without the program exiting or crashing on you.  
 
-### Support or Contact
 
-Having trouble with Pages? Check out our [documentation](https://help.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+## Acknowledgements
+This projects needed a good JSON parser, and my election was the work of Krzysztof Gabis, parson. It worked like a charm, almost plug and play, and this release would not have been possible without it. You can find it here https://github.com/kgabis/parson  
+Many thanks to the Streets of Rage online fanbase, for all the visual and audio assets I could find in almost no time.  
+Last but not least, thanks to my teachers for the support, my girlfriend for the countless hours she has been patient, and the countless testers that offered their services just to help. I owe you all a beer.  
+
+I hope you enjoyed playing this game as much as I enjoyed creating it.  
+Jordi
