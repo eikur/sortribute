@@ -18,7 +18,6 @@ struct Collider
 	SDL_Rect rect = { 0,0,0,0 };
 	bool to_delete = false;
 	colliderType type;
-
 	Entity* parent = nullptr;
 
 	Collider() {}

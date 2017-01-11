@@ -31,18 +31,23 @@ void Entity::UpdatePosition(const iPoint new_speed)
 
 	position += new_speed;
 
-	if (facing_right)
+	if (attack_collider != nullptr)
 	{
-		attack_collider->rect.x = position.x + attack_collider_offset.x;
-		hit_collider->rect.x = position.x + hit_collider_offset.x;
+		if (facing_right)
+			attack_collider->rect.x = position.x + attack_collider_offset.x;
+		else
+			attack_collider->rect.x = position.x + -(attack_collider_offset.x + attack_collider->rect.w);
+		attack_collider->rect.y = position.y + attack_collider_offset.y;
 	}
-	else
+	if (hit_collider != nullptr)
 	{
-		attack_collider->rect.x = position.x + -(attack_collider_offset.x + attack_collider->rect.w);
-		hit_collider->rect.x = position.x - (hit_collider_offset.x + hit_collider->rect.w);
+		if (facing_right)
+			hit_collider->rect.x = position.x + hit_collider_offset.x;
+		else
+			hit_collider->rect.x = position.x - (hit_collider_offset.x + hit_collider->rect.w);
+		hit_collider->rect.y = position.y + hit_collider_offset.y;
 	}
-	attack_collider->rect.y = position.y + attack_collider_offset.y;
-	hit_collider->rect.y = position.y + hit_collider_offset.y;
+
 	if (grounded)
 		ground_y = position.y;
 	
@@ -296,9 +301,17 @@ void Entity::TimeOver()
 void Entity::RemoveColliders()
 {
 	if (hit_collider != nullptr)
+	{
 		hit_collider->to_delete = true;
+		hit_collider = nullptr;
+		LOG("H removed");
+	}
 	if (attack_collider != nullptr)
+	{
 		attack_collider->to_delete = true;
+		attack_collider = nullptr;
+		LOG("A removed");
+	}
 }
 void Entity::CleanUp()
 {
@@ -459,7 +472,7 @@ Collider* Entity::LoadColliderFromJSONObject(JSON_Object* j_object, const char *
 	*offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
 	ret = App->collision->AddCollider(
 	{ offset->x + position.x, offset->y + position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3) },
-		type, this);
+		type, (Entity*) this);
 	json_array_clear(j_array);
 	return ret;
 }

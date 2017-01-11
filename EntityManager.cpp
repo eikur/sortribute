@@ -214,7 +214,8 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			}
 			else if (second_col->type == colliderType::ENEMY)
 			{
-				if (first->IsGrounded() && second->IsGrounded() && !second->is_being_thrown_back && !first->IsHoldingSomeone() && first->AllowAnimationInterruption() &&
+				if (first->IsGrounded() && !first->IsHoldingSomeone() && first->AllowAnimationInterruption() &&
+					second->IsGrounded() && !second->is_being_thrown_back && second->IsAlive() &&
 					((first->facing_right == true && first_col->rect.x <= second_col->rect.x) ||
 					(first->facing_right == false && second_col->rect.x <= first_col->rect.x)))
 				{
@@ -240,7 +241,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			}
 			else if (second_col->type == colliderType::ENEMY_ATTACK)
 			{
-				if (second->is_attacking && first->is_hittable && first->IsGrounded())
+				if (second->is_attacking && first->is_hittable && first->IsGrounded() && first->IsAlive())
 				{
 					if (second->position.x <= first->position.x)
 						first->facing_right = false;
@@ -265,7 +266,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 		case colliderType::PLAYER_ATTACK:
 			if (second_col->type == colliderType::ENEMY)
 			{
-				if (first->is_attacking  && second->is_hittable )	
+				if (first->is_attacking  && second->is_hittable && second->IsAlive() )	
 				{
 					second->is_hittable = false;
 					App->audio->PlayFx(first->fx_attack_hit);
@@ -302,7 +303,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 		case colliderType::ENEMY:
 			if (second_col->type == colliderType::ENEMY) 
 			{
-				if (first->is_being_thrown_front && second->is_hittable)
+				if (first->is_being_thrown_front && second->is_hittable && second->IsAlive() )
 					second->SetBeingKnocked(first->throw_dmg);
 				else if (second->is_being_thrown_front && first->is_hittable)
 					first->SetBeingKnocked(second->throw_dmg);
