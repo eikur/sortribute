@@ -32,11 +32,11 @@ Application::Application()
 	modules.push_back(manager = new EntityManager(false));
 	modules.push_back(scene3 = new ModuleScene3(false));
 	modules.push_back(intro = new ModuleSceneIntro(false));
-	modules.push_back(fade = new ModuleFadeToBlack());
 
 	// Modules to draw on top of game logic	
 	modules.push_back(collision = new ModuleCollision(manager,scene3));
 	modules.push_back(particles = new ModuleParticles());
+	modules.push_back(fade = new ModuleFadeToBlack());
 
 }
 

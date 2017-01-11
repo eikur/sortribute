@@ -55,11 +55,12 @@ update_status ModuleScene3::PreUpdate()
 }
 update_status ModuleScene3::Update()
 {
-	App->renderer->Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);	// waves painted last
+	App->renderer->Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);
+
+	// s
 
 	if (battle_zone4 == nullptr && App->manager->boss == nullptr && App->fade->isFading() == false)
 	{
-		App->audio->PlayMusic("");
 		App->fade->FadeToBlack((Module*)App->intro, this, 3.0f);
 	}
 	return UPDATE_CONTINUE;

@@ -128,7 +128,7 @@
 		"death_garcia": "Assets/fx_voice_garcia.wav",
 		"pause" : "Assets/fx_pause.wav",
 		"death_boss": "Assets/fx_voice_boss.wav",
-		"help_up": "Assets/fx_score_up.wav",
+		"help_up": "Assets/fx_help_up.wav",
 		"help_use": "Assets/fx_use_help.wav"
 	},
 	"player": {

@@ -57,8 +57,8 @@ public:
 
 	int  GetDepth() const;
 	void SetDepth( int new_depth);
+	
 	bool IsGrounded() const;
-
 	bool IsAlive() const;
 	bool IsHoldingSomeone();
 
@@ -96,14 +96,15 @@ protected:
 	Collider* LoadColliderFromJSONObject(JSON_Object* j_object, const char *dotget_path, colliderType type, iPoint *offset);
 
 public: 
+	Types m_type = Types::unknown;
 	iPoint position = {0, 0};
+
 	int health = 0;
 	int max_health = 0;
 	int lives = 1;
 	int score = 0;
 	int help = 0;
 
-// health & damage variables
 	int attack1_dmg = 0;
 	int attack2_dmg = 0;
 	int attack3_dmg = 0;
@@ -122,27 +123,22 @@ public:
 
 	unsigned int fx_attack_hit = 0;
 
-// combo control
 	int current_combo_hits = 0;
 	int combo_remaining_msec = 0;
 	int combo_window_msec = 0;
-
 	int current_combo_hold_hits = 0;
 	int combo_hold_remaining_msec = 0;
 	int combo_hold_window_msec = 0;
 
-	Types m_type = Types::unknown;
 
 protected:
-//move variables
 	int	ground_y = 0;
 	iPoint speed = {0, 0};
 	iPoint move_speed = {0, 0};
+	SDL_Rect position_limits = { 28, 162, 264, 55 };	// initial margins
+	
 	bool grounded = true;
 	bool jumping = false;
-	SDL_Rect position_limits = { 28, 162, 264, 55 };	// initial margins
-
-// jumping control
 	int air_remaining_msec = 0;
 	int jump_prep_duration = 0;
 	int jump_duration = 0;
@@ -177,7 +173,7 @@ protected:
 
 
 // Graphics and animations
-	SDL_Texture *graphics;
+	SDL_Texture *graphics = nullptr;
 	Animation * current_animation = nullptr;
 	iPoint sprite_offset = {0, 0};
 	iPoint sprite_offset_flip = {0, 0};
@@ -216,7 +212,7 @@ protected:
 
 	Animation dying;
 	Animation running;
-	SDL_Rect shadow;
+	SDL_Rect shadow = { 0,0 };
 
 // sounds
 	unsigned int fx_voice = 0;

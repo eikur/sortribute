@@ -47,9 +47,6 @@ bool ModuleSceneIntro::CleanUp()
 // Update: draw background
 update_status ModuleSceneIntro::Update()
 {
-	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && App->fade->isFading() == false)
-		App->fade->FadeToBlack((Module*)App->scene3, this);
-
 	App->renderer->Blit(background, 0, 0,0,false);
 
 	elapsed_msec += App->timer->DeltaTime();
@@ -57,6 +54,9 @@ update_status ModuleSceneIntro::Update()
 		App->fonts->Print(110, 150, ModuleFonts::Fonts::hud_small, "PRESS ENTER");
 	else if (elapsed_msec > 2* blink_msg_msec)
 		elapsed_msec = 0;
+
+	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && App->fade->isFading() == false)
+		App->fade->FadeToBlack((Module*)App->scene3, this);
 
 	return UPDATE_CONTINUE;
 }

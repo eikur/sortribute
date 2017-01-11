@@ -104,8 +104,6 @@ update_status EntityManager::Update()
 
 	if (player == nullptr)
 	{
-		//CleanUp();
-		App->audio->PlayMusic("");
 		if (App->fade->isFading() == false)
 			App->fade->FadeToBlack((Module*)App->intro, (Module*)App->scene3, 2.0f);
 	}
@@ -296,7 +294,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 
 						first->combo_remaining_msec = first->combo_window_msec;
 					}
-					else {	// jump attack
+					else {
 						second->SetBeingKnocked(first->attack3_dmg);
 					}
 				}
@@ -310,9 +308,9 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 		case colliderType::ENEMY:
 			if (second_col->type == colliderType::ENEMY) 
 			{
-				if (first->is_being_thrown_front && second->is_hittable && second->IsAlive() )
+				if (first->is_being_thrown_front && first->IsGrounded() == false && second->is_hittable && second->IsAlive() )
 					second->SetBeingKnocked(first->throw_dmg);
-				else if (second->is_being_thrown_front && first->is_hittable)
+				else if (second->is_being_thrown_front && second->IsGrounded() == false && first->is_hittable && first->IsAlive())
 					first->SetBeingKnocked(second->throw_dmg);
 			}
 			else
