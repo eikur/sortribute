@@ -8,6 +8,8 @@ Github: [https://github.com/eikur/sortribute](https://github.com/eikur/sortribut
 
 Download release version [here](https://github.com/eikur/sortribute/files/699931/Streets.Of.Rage.Tribute.release.zip)   
 
+Download source code [here](https://github.com/eikur/sortribute/archive/1.0.zip)   
+
 License: GNU GPL version 2  
 Author: Jorge Soriano Pinedo // eikur  
 
@@ -67,7 +69,7 @@ You can play multiple times in a row, without the program exiting or crashing on
 
 
 ## Acknowledgements
-This projects needed a good JSON parser, and my election was the work of Krzysztof Gabis, parson. It worked like a charm, almost plug and play, and this release would not have been possible without it. You can find it here https://github.com/kgabis/parson  
+This projects needed a good JSON parser, and my election was the work of Krzysztof Gabis, parson. It worked like a charm, almost plug and play, and this release would not have been possible without it. You can find it [here](https://github.com/kgabis/parson)  
 Many thanks to the Streets of Rage online fanbase, for all the visual and audio assets I could find in almost no time.  
 Last but not least, thanks to my teachers for the support, my girlfriend for the countless hours she has been patient, and the countless testers that offered their services just to help. I owe you all a beer.  
 
