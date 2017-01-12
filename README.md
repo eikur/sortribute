@@ -1,12 +1,12 @@
 # Streets Of Rage Tribute Page
 
-This game tribute is a project developed for the UPC School's Design and Creation of Videogames master 2016-2017.
+This game tribute is a project developed for the UPC School's Design and Creation of Videogames master 2016-2017. It has been developed with C++ and SDL under Visual Studio 2015.
 
 It features one of my favourite levels of the original Streets of Rage, Moonbeach, and while it misses the enemy variety, it has the enemy and item placement spot on.
 
 Github: [https://github.com/eikur/sortribute](https://github.com/eikur/sortribute)   
 
-Download release version [here](https://github.com/eikur/sortribute/files/699931/Streets.Of.Rage.Tribute.release.zip)   
+Download release version [here](https://github.com/eikur/sortribute/files/702882/Streets.Of.Rage.Tribute.release.zip)   
 
 Download source code [here](https://github.com/eikur/sortribute/archive/1.0.zip)   
 
@@ -49,7 +49,8 @@ Special cases:
 
 ### Debug Controls
 
-The debug features used during development have been kept to play with them in case you feel like it:  
+**Formal Warning!** The debug features used during development are kept in the release. However, as their name says, they are used during development, and you should not use them if you don't know what you are doing. If you do you, may disrupt the internal logic of the game and / or ruin your own experience.  
+**You have been warned.**
 
 - **_F1_** : Debug Colliders  
 It will show the colliders set in the scene, player, enemies and items. Pressing it again will hide them.  
