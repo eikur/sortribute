@@ -1,16 +1,13 @@
 #ifndef __TIMER_H__
 #define __TIMER_H__
 
-#include "Module.h"
+#include "3rdparty\SDL\include\SDL_timer.h"
 
-class ModuleTimer : public Module{
+class Timer{
 
 public:
-	ModuleTimer();
-	~ModuleTimer();
-
-	bool Start();
-	update_status Update();
+	Timer();
+	~Timer();
 
 	void TimerStart();
 	void TimerStop();
@@ -18,6 +15,7 @@ public:
 	void TimerResume();
 
 	Uint32 ElapsedTime();
+	void UpdateDeltaTime();
 	Uint32 DeltaTime();
 
 private:

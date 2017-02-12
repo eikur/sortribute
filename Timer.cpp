@@ -1,27 +1,12 @@
-#include "Globals.h"
-#include "ModuleTimer.h"
+#include "Timer.h"
 
 
-ModuleTimer::ModuleTimer() : Module(true), m_ticks_start(0), m_ticks_pause(0), m_started(false), m_paused(false)
+Timer::Timer() : m_ticks_start(0), m_ticks_pause(0), m_started(false), m_paused(false)
 {}
 
-ModuleTimer::~ModuleTimer() {}
+Timer::~Timer() {}
 
-bool ModuleTimer::Start()
-{
-	TimerStart();
-	return true;
-}
-
-update_status ModuleTimer::Update()
-{
-	m_delta_time = ElapsedTime() - m_ticks_last_update;
-	m_ticks_last_update = ElapsedTime();
-	return UPDATE_CONTINUE;
-}
-
-
-void ModuleTimer::TimerStart() {
+void Timer::TimerStart() {
 	m_started = true;
 	m_paused = false;
 
@@ -29,7 +14,7 @@ void ModuleTimer::TimerStart() {
 	m_ticks_pause = 0;
 }
 
-void ModuleTimer::TimerStop() {
+void Timer::TimerStop() {
 	m_started = false;
 	m_paused = false;
 
@@ -37,7 +22,7 @@ void ModuleTimer::TimerStop() {
 	m_ticks_pause = 0;
 }
 
-void ModuleTimer::TimerPause() {
+void Timer::TimerPause() {
 	if (m_started && !m_paused)
 	{
 		m_paused = true;
@@ -47,7 +32,7 @@ void ModuleTimer::TimerPause() {
 	}
 }
 
-void ModuleTimer::TimerResume() {
+void Timer::TimerResume() {
 	if (m_started && m_paused)
 	{
 		m_paused = false;
@@ -56,7 +41,7 @@ void ModuleTimer::TimerResume() {
 	}
 }
 
-Uint32 ModuleTimer::ElapsedTime()
+Uint32 Timer::ElapsedTime()
 {
 	Uint32 elapsed_time = 0;
 
@@ -70,7 +55,16 @@ Uint32 ModuleTimer::ElapsedTime()
 	return elapsed_time;
 }
 
-Uint32 ModuleTimer::DeltaTime()
+
+void Timer::UpdateDeltaTime()
+{
+	m_delta_time = ElapsedTime() - m_ticks_last_update;
+	m_ticks_last_update = ElapsedTime();
+
+}
+
+
+Uint32 Timer::DeltaTime()
 {
 	return m_delta_time;
 }

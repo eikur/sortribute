@@ -73,9 +73,6 @@
     <ClInclude Include="Player.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleTimer.h">
-      <Filter>Core Modules</Filter>
-    </ClInclude>
     <ClInclude Include="EnemyGarcia.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
@@ -92,6 +89,9 @@
       <Filter>Game Modules</Filter>
     </ClInclude>
     <ClInclude Include="3rdparty\parson\parson.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
       <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
@@ -144,9 +144,6 @@
     <ClCompile Include="Entity.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleTimer.cpp">
-      <Filter>Core Modules</Filter>
-    </ClCompile>
     <ClCompile Include="EnemyGarcia.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
@@ -163,6 +160,9 @@
       <Filter>Game Modules</Filter>
     </ClCompile>
     <ClCompile Include="3rdparty\parson\parson.c">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>

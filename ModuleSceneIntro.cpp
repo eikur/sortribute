@@ -6,7 +6,9 @@
 #include "ModuleRender.h"
 #include "ModuleFadeToBlack.h"
 #include "ModuleFonts.h"
-#include "ModuleTimer.h"
+
+#include "Timer.h"
+
 #include "EntityManager.h"
 
 #include "ModuleSceneIntro.h"

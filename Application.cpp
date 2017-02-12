@@ -11,7 +11,7 @@
 #include "ModuleSceneIntro.h"
 #include "ModuleScene3.h"
 #include "EntityManager.h"
-#include "ModuleTimer.h"
+#include "Timer.h"
 
 using namespace std;
 
@@ -26,7 +26,6 @@ Application::Application()
 	modules.push_back(audio = new ModuleAudio());
 
 	modules.push_back(fonts = new ModuleFonts());
-	modules.push_back(timer = new ModuleTimer());
 
 	//Specific game modules
 	modules.push_back(manager = new EntityManager(false));
@@ -38,6 +37,8 @@ Application::Application()
 	modules.push_back(particles = new ModuleParticles());
 	modules.push_back(fade = new ModuleFadeToBlack());
 
+	timer = new Timer();
+	timer->TimerStart();
 }
 
 Application::~Application()
@@ -68,6 +69,8 @@ update_status Application::Update()
 {
 	update_status ret = UPDATE_CONTINUE;
 
+	timer->UpdateDeltaTime();
+
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->PreUpdate();
@@ -90,6 +93,8 @@ bool Application::CleanUp()
 	for(list<Module*>::reverse_iterator it = modules.rbegin(); it != modules.rend() && ret; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->CleanUp();
+
+	RELEASE(timer);
 
 	return ret;
 }

@@ -2,12 +2,13 @@
 #include "Application.h"
 #include "ModuleRender.h"
 #include "ModuleTextures.h"
-#include "ModuleTimer.h"
 #include "ModuleFonts.h"
 #include "ModuleInput.h"
 #include "ModuleAudio.h"
 #include "ModuleCollision.h"
 #include "ModuleFadeToBlack.h"
+
+#include "Timer.h"
 
 #include "Player.h"
 #include "EnemyGarcia.h"

@@ -14,10 +14,10 @@ class ModuleFadeToBlack;
 class ModuleCollision;
 class ModuleParticles;
 class ModuleFonts;
-class ModuleTimer;
 class ModuleSceneIntro;
 class ModuleScene3;
 class EntityManager;
+class Timer;
 
 class Application
 {
@@ -40,13 +40,14 @@ public:
 	ModuleCollision* collision = nullptr;
 	ModuleParticles* particles = nullptr;
 	ModuleFonts* fonts = nullptr;
-	ModuleTimer* timer = nullptr;
 
 	// Game modules ---
 	ModuleSceneIntro* intro = nullptr;
 	ModuleScene3* scene3 = nullptr;
 	EntityManager* manager = nullptr;
 
+	// Utils
+	Timer* timer = nullptr;
 
 private:
 
