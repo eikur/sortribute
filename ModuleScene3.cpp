@@ -8,6 +8,7 @@
 #include "EntityManager.h"
 #include "ModuleCollision.h"
 #include "ModuleFadeToBlack.h"
+#include "ModuleUI.h"
 
 #include "ModuleScene3.h"
 
@@ -36,6 +37,8 @@ bool ModuleScene3::Start()
 	
 	App->manager->Enable();
 	App->manager->player = App->manager->CreateEntity(Entity::Types::player);
+
+	App->ui->Enable();
 	
 	App->renderer->locked = false;
 
@@ -56,8 +59,6 @@ update_status ModuleScene3::PreUpdate()
 update_status ModuleScene3::Update()
 {
 	App->renderer->Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);
-
-	// s
 
 	if (battle_zone4 == nullptr && App->manager->boss == nullptr && App->fade->isFading() == false)
 	{
@@ -187,7 +188,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 			if (tmp != nullptr)
 				tmp->SetPosition({battle_zone1->rect.x +battle_zone1->rect.w + 340, 210});
 			App->manager->RestoreTimeLeft();
-			App->manager->ShowGoArrow();
+			App->ui->ShowGoArrow();
 			battle_zone1 = nullptr;
 			trigger->to_delete = true;
 		}
@@ -230,7 +231,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 			if (tmp != nullptr)
 				tmp->SetPosition({ battle_zone2->rect.x + battle_zone2->rect.w + 300, 210 });
 			App->manager->RestoreTimeLeft();
-			App->manager->ShowGoArrow();
+			App->ui->ShowGoArrow();
 			battle_zone2 = nullptr;
 			trigger->to_delete = true;
 		}
@@ -287,7 +288,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 			App->renderer->locked = false;
 			App->audio->PlayFx(fx_waves);
 			App->manager->RestoreTimeLeft();
-			App->manager->ShowGoArrow();
+			App->ui->ShowGoArrow();
 			battle_zone3 = nullptr;
 			trigger->to_delete = true;
 		}

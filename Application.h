@@ -14,6 +14,7 @@ class ModuleFadeToBlack;
 class ModuleCollision;
 class ModuleParticles;
 class ModuleFonts;
+class ModuleUI;
 class ModuleSceneIntro;
 class ModuleScene3;
 class EntityManager;
@@ -40,6 +41,7 @@ public:
 	ModuleCollision* collision = nullptr;
 	ModuleParticles* particles = nullptr;
 	ModuleFonts* fonts = nullptr;
+	ModuleUI* ui = nullptr;
 
 	// Game modules ---
 	ModuleSceneIntro* intro = nullptr;

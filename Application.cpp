@@ -8,9 +8,11 @@
 #include "ModuleCollision.h"
 #include "ModuleParticles.h"
 #include "ModuleFonts.h"
+#include "ModuleUI.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleScene3.h"
 #include "EntityManager.h"
+
 #include "Timer.h"
 
 using namespace std;
@@ -24,8 +26,9 @@ Application::Application()
 	modules.push_back(renderer = new ModuleRender());
 	modules.push_back(textures = new ModuleTextures());
 	modules.push_back(audio = new ModuleAudio());
-
+	
 	modules.push_back(fonts = new ModuleFonts());
+	modules.push_back(ui = new ModuleUI(false));
 
 	//Specific game modules
 	modules.push_back(manager = new EntityManager(false));

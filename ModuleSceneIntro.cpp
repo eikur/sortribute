@@ -6,6 +6,7 @@
 #include "ModuleRender.h"
 #include "ModuleFadeToBlack.h"
 #include "ModuleFonts.h"
+#include "ModuleUI.h"
 
 #include "Timer.h"
 
@@ -26,6 +27,8 @@ bool ModuleSceneIntro::Start()
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 	if (App->manager->IsEnabled())
 		App->manager->Disable();
+	if (App->ui->IsEnabled())
+		App->ui->Disable();
 	if (LoadConfigFromFile(CONFIG_FILE) == false)
 	{
 		LOG("Intro: crash during file load");
