@@ -17,7 +17,7 @@ public:
 
 private:
 	void ModifyLives(int mod_to_add);
-	void ReRaise();
+	void ReSpawn();
 
 	void UpdatePosition(const iPoint new_speed);
 	int  UpdateJumpVerticalSpeed();

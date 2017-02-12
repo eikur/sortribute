@@ -19,7 +19,7 @@ bool Player::Init()
 		LOG("Error loading player config from file");
 		return false;
 	}
-	ReRaise();
+	ReSpawn();
 	return true;
 }
 
@@ -49,7 +49,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 		{
 			ModifyLives(-1);
 			if (lives > 0)
-				ReRaise();
+				ReSpawn();
 			else
 			{
 				RemoveColliders();
@@ -320,7 +320,7 @@ void Player::IncreaseHelp(int amount)
 	App->audio->PlayFx(fx_extra_help);
 }
 
-void Player::ReRaise()
+void Player::ReSpawn()
 {
 	position = { 20, 32};
 	position.x += position_limits.x;
