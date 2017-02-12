@@ -2,7 +2,8 @@
 #define __MODULE_H__
 
 #include <string>
-#include "parson.h"
+#include "3rdparty/parson/parson.h"
+#include "3rdparty/SDL/include/SDL.h"
 
 class Application;
 class Entity;

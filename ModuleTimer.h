@@ -1,7 +1,6 @@
 #ifndef __TIMER_H__
 #define __TIMER_H__
 
-#include "SDL/include/SDL.h"
 #include "Module.h"
 
 class ModuleTimer : public Module{

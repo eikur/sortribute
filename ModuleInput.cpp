@@ -1,7 +1,6 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleInput.h"
-#include "SDL/include/SDL.h"
 
 #define MAX_KEYS 300
 

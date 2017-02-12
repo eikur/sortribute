@@ -2,7 +2,7 @@
 #define __ENTITY_H__
 
 #include <math.h>
-#include "parson.h"
+#include "3rdparty/parson/parson.h"
 #include "Point.h"
 #include "Globals.h"
 #include "Animation.h"
@@ -10,7 +10,7 @@
 struct Collider;
 enum colliderType;
 struct SDL_Texture;
-struct SDL_Rect;
+struct SDL_Rect;	
 
 class Entity 
 {

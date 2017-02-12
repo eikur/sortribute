@@ -69,6 +69,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="3rdparty\parson\parson.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Boss3.h" />
@@ -91,12 +92,12 @@
     <ClInclude Include="ModuleSceneIntro.h" />
     <ClInclude Include="ModuleTextures.h" />
     <ClInclude Include="ModuleWindow.h" />
-    <ClInclude Include="parson.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="ModuleTimer.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="3rdparty\parson\parson.c" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Boss3.cpp" />
     <ClCompile Include="Chicken.cpp" />
@@ -117,7 +118,6 @@
     <ClCompile Include="ModuleSceneIntro.cpp" />
     <ClCompile Include="ModuleTextures.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />
-    <ClCompile Include="parson.c" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ModuleTimer.cpp" />
   </ItemGroup>

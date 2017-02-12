@@ -4,7 +4,6 @@
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
 #include "EntityManager.h"
-#include "SDL/include/SDL.h"
 
 ModuleRender::ModuleRender()
 {
