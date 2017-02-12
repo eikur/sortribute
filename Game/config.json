@@ -22,12 +22,12 @@
 		"file": "Assets/hud.png",
 		"rects": [
 			[0, 32, 80, 16],
-			[104, 39, 144, 8],
+			[96, 32, 224, 8],
 			[0, 50, 132, 14]
 		],
 		"lookup_table": [
 			"0123456789",
-			"ARESUPT 0123456789-BON",
+			"FARESUPT 0123456789-BONCLYWX",
 			"ROUND SATPE"
 		],
 		"ppe": [8, 8, 12]

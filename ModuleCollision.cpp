@@ -4,6 +4,7 @@
 #include "ModuleInput.h"
 #include "ModuleRender.h"
 #include "ModuleCollision.h"
+#include "ModuleUI.h"
 
 using namespace std;
 
@@ -53,12 +54,17 @@ update_status ModuleCollision::Update()
 		}
 	}
 
-	if(App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
-		debug = !debug;
+	if (App->ui->pause == false)
+	{
+		if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+			debug = !debug;
 
-	if(debug == true)
-		DebugDraw();
-
+		if (debug == true)
+		{
+			DebugDraw();
+			App->ui->ShowCollidersDebugMode();
+		}
+	}
 	return UPDATE_CONTINUE;
 }
 

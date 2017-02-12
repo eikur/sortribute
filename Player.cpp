@@ -5,6 +5,7 @@
 #include "ModuleInput.h"
 #include "ModuleAudio.h"
 #include "ModuleCollision.h"
+#include "ModuleUI.h"
 #include "EntityManager.h"
 
 #include "Player.h"
@@ -605,14 +606,20 @@ bool Player::LoadFromConfigFile(const char* file_path)
 }
 
 void Player::CheatCodes() {
-	if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
-		ModifyLives(+1);
-	if (App->input->GetKey(SDL_SCANCODE_2) == KEY_REPEAT)
-		AddScore(1000);
-	if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
-		IncreaseHelp(1);
-	if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN)
-		SetBeingHit(attack1_dmg);
-	if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
-		SetBeingKnocked(attack3_dmg);
+	if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+		debug = !debug;
+	if (debug == true)
+	{
+		App->ui->ShowPlayerDebugMode();
+		if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+			ModifyLives(+1);
+		if (App->input->GetKey(SDL_SCANCODE_2) == KEY_REPEAT)
+			AddScore(1000);
+		if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+			IncreaseHelp(1);
+		if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN)
+			SetBeingHit(attack1_dmg);
+		if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+			SetBeingKnocked(attack3_dmg);
+	}
 }

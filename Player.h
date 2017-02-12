@@ -49,7 +49,8 @@ private:
 	int max_hold_swaps = 2;
 	int current_hold_swaps = 0;
 
-
+	//debug
+	bool debug = false;
 };
 
 #endif // __PLAYER_H__

@@ -17,6 +17,9 @@ public:
 	bool CleanUp();
 
 	void ShowGoArrow();
+	void ShowCollidersDebugMode();
+	void ShowEntityManagerDebugMode();
+	void ShowPlayerDebugMode();
 
 private:
 	void PrintStatus();
@@ -55,6 +58,10 @@ private:
 	int remaining_msec_go_arrow = 0;
 	int blink_msec_go_arrow = 800;
 	unsigned int fx_go_arrow = 0;
+
+	// debug
+	bool show_debug_help = false;
+	bool debug = false;
 
 };
 

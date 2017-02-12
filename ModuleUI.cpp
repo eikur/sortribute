@@ -45,6 +45,9 @@ update_status ModuleUI::Update()
 	{
 		if (remaining_msec_go_arrow > 0)
 			remaining_msec_go_arrow -= App->timer->DeltaTime();
+
+		if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
+			debug = !debug;
 	}
 
 	PrintStatus();
@@ -62,7 +65,7 @@ void ModuleUI::PrintStatus()
 	App->renderer->Blit(hud_graphics, 0, 0, &hud_section, 0.0F);
 	if (pause)
 	{
-		App->fonts->Print(102, 96, ModuleFonts::Fonts::scene_overlap, "P A U S E");
+		App->fonts->Print(102, 96, ModuleFonts::Fonts::scene_overlap, "PAUSE");
 	}
 	if (App->manager->player != nullptr) {
 		App->fonts->Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(App->manager->time_left_msec / 2000, 2));
@@ -84,6 +87,20 @@ void ModuleUI::PrintStatus()
 		App->renderer->Blit(hud_graphics, hud_boss_pos.x, hud_boss_pos.y, &hud_boss_section, 0.0F);
 		App->fonts->Print(hud_boss_msg_pos.x, hud_boss_msg_pos.y, ModuleFonts::Fonts::hud_small, "-BOSS-");
 		PrintBossHealth();
+	}
+	// debug options
+	App->fonts->Print(184, 6, ModuleFonts::Fonts::hud_small, "F1-COLS");
+	App->fonts->Print(184, 16, ModuleFonts::Fonts::hud_small, "F2-SPWN");
+	App->fonts->Print(256, 6, ModuleFonts::Fonts::hud_small, "F3-PLYR");
+	App->fonts->Print(256, 16, ModuleFonts::Fonts::hud_small, "F4-POS");
+
+	//debug show
+	if (debug)
+	{
+		App->fonts->Print(112, 40, ModuleFonts::Fonts::hud_small, "X-");
+		App->fonts->Print(128, 40, ModuleFonts::Fonts::hud_small, App->fonts->GetPrintableValue(App->manager->player->position.x, 4));
+		App->fonts->Print(168, 40, ModuleFonts::Fonts::hud_small, "Y-");
+		App->fonts->Print(184, 40, ModuleFonts::Fonts::hud_small, App->fonts->GetPrintableValue(App->manager->player->position.y, 4));
 	}
 
 }
@@ -148,6 +165,32 @@ void ModuleUI::ShowGoArrow()
 {
 	remaining_msec_go_arrow = 7 * blink_msec_go_arrow;
 }
+
+void ModuleUI::ShowCollidersDebugMode()
+{
+	if (pause == false)
+	{
+		App->fonts->Print(8, 40, ModuleFonts::Fonts::hud_small, "COLS ON");
+	}
+}
+
+void ModuleUI::ShowEntityManagerDebugMode()
+{
+	if (pause == false)
+	{
+		App->fonts->Print(8, 48, ModuleFonts::Fonts::hud_small, "SPWN ON");
+	}
+}
+
+void ModuleUI::ShowPlayerDebugMode()
+{
+	if (pause == false)
+	{
+		App->fonts->Print(8, 56, ModuleFonts::Fonts::hud_small, "PLYR ON");
+	}
+}
+
+
 
 bool ModuleUI::LoadConfigFromFile(const char *file_path)
 {

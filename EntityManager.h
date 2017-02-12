@@ -50,6 +50,10 @@ private:
 
 	//collision check
 	int layer_depth = 0;
+	
+	// Debug mode
+	bool debug = false;
+
 };
 
 #endif // __ENTITYMANAGER_H__

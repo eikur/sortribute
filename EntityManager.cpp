@@ -329,44 +329,54 @@ bool EntityManager::LoadConfigFromFile(const char* file_path)
 
 void EntityManager::CheatCodes()
 {
-	if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN && player != nullptr)
+	if (App->ui->pause == false)
 	{
-		Entity *a = (Entity*) CreateEntity(Entity::Types::npc_garcia);
-		if (a != nullptr){
-			a->SetPosition({ player->position.x + 147, player->GetDepth() });
+		if (App->input->GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
+			debug = !debug;
 
-		}
-	}
-	if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN && player != nullptr)
-	{
-		Entity *a = (Entity*)CreateEntity(Entity::Types::npc_boss);
-		if (a != nullptr) {
-			a->SetPosition({ player->position.x + 147, player->GetDepth() });
-			boss = a;
-		}
-	}
-	if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN && player != nullptr)
-	{
-		Entity *a = (Entity*)CreateEntity(Entity::Types::item_apple);
-		if (a != nullptr) {
-			a->SetPosition({ player->position.x + 48, player->GetDepth() });
+		if (debug)
+		{
+			App->ui->ShowEntityManagerDebugMode();
+			if (App->input->GetKey(SDL_SCANCODE_E) == KEY_DOWN && player != nullptr)
+			{
+				Entity *a = (Entity*)CreateEntity(Entity::Types::npc_garcia);
+				if (a != nullptr) {
+					a->SetPosition({ player->position.x + 147, player->GetDepth() });
 
-		}
-		return;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN && player != nullptr)
-	{
-		Entity *a = (Entity*)CreateEntity(Entity::Types::item_chicken);
-		if (a != nullptr) {
-			a->SetPosition({ player->position.x + 48, player->GetDepth() });
+				}
+			}
+			if (App->input->GetKey(SDL_SCANCODE_R) == KEY_DOWN && player != nullptr)
+			{
+				Entity *a = (Entity*)CreateEntity(Entity::Types::npc_boss);
+				if (a != nullptr) {
+					a->SetPosition({ player->position.x + 147, player->GetDepth() });
+					boss = a;
+				}
+			}
+			if (App->input->GetKey(SDL_SCANCODE_A) == KEY_DOWN && player != nullptr)
+			{
+				Entity *a = (Entity*)CreateEntity(Entity::Types::item_apple);
+				if (a != nullptr) {
+					a->SetPosition({ player->position.x + 48, player->GetDepth() });
 
+				}
+				return;
+			}
+			if (App->input->GetKey(SDL_SCANCODE_S) == KEY_DOWN && player != nullptr)
+			{
+				Entity *a = (Entity*)CreateEntity(Entity::Types::item_chicken);
+				if (a != nullptr) {
+					a->SetPosition({ player->position.x + 48, player->GetDepth() });
+
+				}
+				return;
+			}
+			if (App->input->GetKey(SDL_SCANCODE_4) == KEY_REPEAT && player != nullptr)
+			{
+				time_left_msec -= 2000;
+				return;
+			}
 		}
-		return;
-	}
-	if (App->input->GetKey(SDL_SCANCODE_4) == KEY_REPEAT && player != nullptr)
-	{
-		time_left_msec -= 2000;
-		return;
 	}
 }
 
