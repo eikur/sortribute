@@ -55,7 +55,7 @@ update_status ModuleUI::Update()
 	return UPDATE_CONTINUE;
 }
 bool ModuleUI::CleanUp() {
-	App->textures->Unload(hud_graphics);
+	
 	return true;
 }
 
@@ -65,7 +65,11 @@ void ModuleUI::PrintStatus()
 	App->renderer->Blit(hud_graphics, 0, 0, &hud_section, 0.0F);
 	if (pause)
 	{
-		App->fonts->Print(102, 96, ModuleFonts::Fonts::scene_overlap, "PAUSE");
+		App->fonts->Print(112, 96, ModuleFonts::Fonts::scene_overlap, "P");
+		App->fonts->Print(132, 96, ModuleFonts::Fonts::scene_overlap, "A");
+		App->fonts->Print(152, 96, ModuleFonts::Fonts::scene_overlap, "U");
+		App->fonts->Print(172, 96, ModuleFonts::Fonts::scene_overlap, "S");
+		App->fonts->Print(192, 96, ModuleFonts::Fonts::scene_overlap, "E");
 	}
 	if (App->manager->player != nullptr) {
 		App->fonts->Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(App->manager->time_left_msec / 2000, 2));
