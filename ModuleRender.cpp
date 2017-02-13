@@ -59,6 +59,7 @@ update_status ModuleRender::PreUpdate()
 update_status ModuleRender::Update()
 {
 	//move camera
+	/*
 	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
 	{
 		locked = !locked;
@@ -69,7 +70,7 @@ update_status ModuleRender::Update()
 
 	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_REPEAT)
 		App->renderer->camera.x -= m_speed;
-
+		*/
 	return UPDATE_CONTINUE;
 }
 
