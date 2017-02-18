@@ -14,6 +14,7 @@ public:
 
 	void AddScore(int addition);
 	void IncreaseHelp(int amount);
+	void CheatCodes();
 
 private:
 	void ModifyLives(int mod_to_add);
@@ -31,7 +32,6 @@ private:
 	void UseHelp();
 
 	bool LoadFromConfigFile(const char* file_path);
-	void CheatCodes();
 
 private: 
 	bool respawn_fall = true;

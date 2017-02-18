@@ -320,7 +320,8 @@ void Entity::CleanUp()
 		App->textures->Unload(graphics);
 }
 
-
+void Entity::CheatCodes()
+{}
 
 void Entity::UpdateAIState(AIState new_state)
 {

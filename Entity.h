@@ -85,6 +85,8 @@ public:
 	void RemoveColliders();
 	virtual void CleanUp();
 
+	virtual void CheatCodes();
+
 protected:
 	virtual void UpdateAIDestinationPoint(AIState new_state);
 	
