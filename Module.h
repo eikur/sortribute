@@ -78,7 +78,7 @@ public:
 	virtual void HandleCollision(Collider*, Collider*)
 	{}
 
-private:
+protected:
 	bool active = true;
 };
 

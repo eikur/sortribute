@@ -172,7 +172,7 @@ void ModuleUI::ShowGoArrow()
 
 void ModuleUI::ShowCollidersDebugMode()
 {
-	if (pause == false)
+	if (active == true)
 	{
 		App->fonts->Print(8, 40, ModuleFonts::Fonts::hud_small, "COLS ON");
 	}
@@ -180,7 +180,7 @@ void ModuleUI::ShowCollidersDebugMode()
 
 void ModuleUI::ShowEntityManagerDebugMode()
 {
-	if (pause == false)
+	if (active == true)
 	{
 		App->fonts->Print(8, 48, ModuleFonts::Fonts::hud_small, "SPWN ON");
 	}
@@ -188,7 +188,7 @@ void ModuleUI::ShowEntityManagerDebugMode()
 
 void ModuleUI::ShowPlayerDebugMode()
 {
-	if (pause == false)
+	if (active == true)
 	{
 		App->fonts->Print(8, 56, ModuleFonts::Fonts::hud_small, "PLYR ON");
 	}
