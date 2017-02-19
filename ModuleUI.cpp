@@ -93,10 +93,11 @@ void ModuleUI::PrintStatus()
 		PrintBossHealth();
 	}
 	// debug options
-	App->fonts->Print(184, 6, ModuleFonts::Fonts::hud_small, "F1-COLS");
-	App->fonts->Print(184, 16, ModuleFonts::Fonts::hud_small, "F2-SPWN");
-	App->fonts->Print(256, 6, ModuleFonts::Fonts::hud_small, "F3-PLYR");
-	App->fonts->Print(256, 16, ModuleFonts::Fonts::hud_small, "F4-POS");
+	App->fonts->Print(220, 2, ModuleFonts::Fonts::hud_small, "- TOOLS -");
+	App->fonts->Print(196, 11, ModuleFonts::Fonts::hud_small, "F1-COLS");
+	App->fonts->Print(196, 20, ModuleFonts::Fonts::hud_small, "F2-SPWN");
+	App->fonts->Print(260, 11, ModuleFonts::Fonts::hud_small, "F3-PLYR");
+	App->fonts->Print(260, 20, ModuleFonts::Fonts::hud_small, "F4-POS");
 
 	//debug show
 	if (debug)
