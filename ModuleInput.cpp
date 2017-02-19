@@ -21,24 +21,45 @@ ModuleInput::~ModuleInput()
 bool ModuleInput::Init()
 {
 	LOG("Init SDL input event system");
-	bool ret = true;
 	SDL_Init(0);
-
-	if(SDL_InitSubSystem(SDL_INIT_EVENTS) < 0)
+	if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) < 0)
 	{
-		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
-		ret = false;
+		LOG("SDL_JOYSTICK could not be initialized! SDL_Error: %s\n", SDL_GetError());
+		return false;
 	}
 	else
 	{
-		if (LoadConfigFromFile(CONFIG_FILE) == false)
+		if (SDL_NumJoysticks() < 0)
 		{
-			LOG("Input: Unable to load from config file\n");
-			ret = false;
+			LOG("Input: No gamepad detected");
 		}
+		else
+		{
+			LOG("Input: Gamepad detected");
+			SDL_JoystickEventState(SDL_ENABLE);
+			gamepad = SDL_JoystickOpen(0);
+			if (gamepad != nullptr)
+			{
+				num_gamepad_buttons = SDL_JoystickNumButtons(gamepad);
+				gamepad_buttons = new KeyState[num_gamepad_buttons];
+				memset(gamepad_buttons, KEY_IDLE, sizeof(KeyState) * num_gamepad_buttons);
+			}
+		}
+
+	}
+	if(SDL_InitSubSystem(SDL_INIT_EVENTS ) < 0)
+	{
+		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
+		return false;
+	}
+	if (LoadConfigFromFile(CONFIG_FILE) == false)
+	{
+		LOG("Input: Unable to load from config file\n");
+		return false;
 	}
 
-	return ret;
+
+	return true;
 }
 
 // Called before the first frame
@@ -52,36 +73,48 @@ update_status ModuleInput::PreUpdate()
 {
 	static SDL_Event event;
 
-	mouse_motion = {0, 0};
+	mouse_motion = { 0, 0 };
 	memset(windowEvents, false, WE_COUNT * sizeof(bool));
-	
+
 	const Uint8* keys = SDL_GetKeyboardState(NULL);
 
-	for(int i = 0; i < MAX_KEYS; ++i)
+	for (int i = 0; i < MAX_KEYS; ++i)
 	{
-		if(keys[i] == 1)
+		if (keys[i] == 1)
 		{
-			if(keyboard[i] == KEY_IDLE)
+			if (keyboard[i] == KEY_IDLE)
 				keyboard[i] = KEY_DOWN;
 			else
 				keyboard[i] = KEY_REPEAT;
 		}
 		else
 		{
-			if(keyboard[i] == KEY_REPEAT || keyboard[i] == KEY_DOWN)
+			if (keyboard[i] == KEY_REPEAT || keyboard[i] == KEY_DOWN)
 				keyboard[i] = KEY_UP;
 			else
 				keyboard[i] = KEY_IDLE;
 		}
 	}
 
-	for(int i = 0; i < NUM_MOUSE_BUTTONS; ++i)
+	for (int i = 0; i < NUM_MOUSE_BUTTONS; ++i)
 	{
-		if(mouse_buttons[i] == KEY_DOWN)
+		if (mouse_buttons[i] == KEY_DOWN)
 			mouse_buttons[i] = KEY_REPEAT;
 
-		if(mouse_buttons[i] == KEY_UP)
+		if (mouse_buttons[i] == KEY_UP)
 			mouse_buttons[i] = KEY_IDLE;
+	}
+	if (gamepad != nullptr)
+	{
+		for (int i = 0; i < num_gamepad_buttons; i++)
+		{
+			if (gamepad_buttons[i] == KEY_DOWN)
+				gamepad_buttons[i] = KEY_REPEAT;
+
+			if (gamepad_buttons[i] == KEY_UP)
+				gamepad_buttons[i] = KEY_IDLE;
+
+		}
 	}
 
 	while(SDL_PollEvent(&event) != 0)
@@ -126,6 +159,12 @@ update_status ModuleInput::PreUpdate()
 				mouse.x = event.motion.x / m_screen_size;			
 				mouse.y = event.motion.y / m_screen_size;			
 			break;
+			case SDL_JOYBUTTONDOWN:
+				gamepad_buttons[event.jbutton.button] = KEY_DOWN;
+			break;
+			case SDL_JOYBUTTONUP:
+				gamepad_buttons[event.jbutton.button] = KEY_UP;
+			break;
 		}
 	}
 
@@ -139,7 +178,9 @@ update_status ModuleInput::PreUpdate()
 bool ModuleInput::CleanUp()
 {
 	LOG("Quitting SDL event subsystem");
-	SDL_QuitSubSystem(SDL_INIT_EVENTS);
+	//SDL_JoystickClose(gamepad);
+	SDL_QuitSubSystem(SDL_INIT_EVENTS | SDL_INIT_JOYSTICK);
+	
 	return true;
 }
 

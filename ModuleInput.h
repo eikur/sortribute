@@ -24,6 +24,24 @@ enum KeyState
 	KEY_UP
 };
 
+enum GamepadButton
+{
+	UP = 0,
+	DOWN = 1,
+	LEFT = 2,
+	RIGHT = 3,
+	START = 4,
+	SELECT = 5,
+	L3 = 6,
+	R3 = 7,
+	LB = 8,
+	RB = 9,
+	A = 10,
+	B = 11,
+	X = 12,
+	Y
+};
+
 class ModuleInput : public Module
 {
 
@@ -57,6 +75,18 @@ public:
 		return mouse_buttons[id - 1];
 	}
 
+	bool UsingGamepad() const {
+		return gamepad != nullptr;
+	}
+
+	KeyState GetGamepadButton(int id) const
+	{
+		if (gamepad == nullptr)
+			return KEY_IDLE;
+		else
+			return gamepad_buttons[id];
+	}
+
 	// Check for window events last frame
 	bool GetWindowEvent(EventWindow code) const;
 
@@ -73,6 +103,10 @@ private:
 	KeyState	mouse_buttons[NUM_MOUSE_BUTTONS];
 	iPoint mouse_motion;
 	iPoint mouse;
+
+	SDL_Joystick *gamepad = nullptr;
+	KeyState*	gamepad_buttons;
+	int num_gamepad_buttons;
 
 	int m_screen_size = 0;
 

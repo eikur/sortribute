@@ -56,11 +56,16 @@ update_status ModuleSceneIntro::Update()
 
 	elapsed_msec += App->timer->DeltaTime();
 	if (elapsed_msec <= blink_msg_msec)
-		App->fonts->Print(110, 150, ModuleFonts::Fonts::hud_small, "PRESS ENTER");
+	{
+		if (App->input->UsingGamepad() == true)
+			App->fonts->Print(110, 150, ModuleFonts::Fonts::hud_small, "PRESS START");
+		else
+			App->fonts->Print(110, 150, ModuleFonts::Fonts::hud_small, "PRESS ENTER");
+	}
 	else if (elapsed_msec > 2* blink_msg_msec)
 		elapsed_msec = 0;
 
-	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN && App->fade->isFading() == false)
+	if ((App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN || App->input->GetGamepadButton(GamepadButton::START)) && App->fade->isFading() == false)
 	{
 		App->fade->FadeToBlack((Module*)App->scene3, this);
 		App->audio->PlayFx(fx_start);

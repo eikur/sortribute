@@ -31,7 +31,7 @@ bool ModuleUI::Init()
 
 update_status ModuleUI::Update()
 {
-	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN)
+	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN || App->input->GetGamepadButton(GamepadButton::START) == KEY_DOWN )
 	{
 		pause = !pause;
 		if (pause)

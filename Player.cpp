@@ -452,31 +452,63 @@ void Player::GetInput()
 {
 	ResetInput();
 
-	if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
-		input_vertical = -1;
+	if (App->input->UsingGamepad() == true)
+	{
+		if (App->input->GetGamepadButton(GamepadButton::UP) == KEY_REPEAT)
+			input_vertical = -1;
+		else
+			if (App->input->GetGamepadButton(GamepadButton::DOWN) == KEY_REPEAT)
+				input_vertical = 1;
+
+		if (App->input->GetGamepadButton(GamepadButton::LEFT) == KEY_REPEAT)
+			input_horizontal = -1;
+		else
+			if (App->input->GetGamepadButton(GamepadButton::RIGHT) == KEY_REPEAT)
+				input_horizontal = 1;
+
+		input_help = App->input->GetGamepadButton(GamepadButton::Y) == KEY_DOWN;
+		input_jump = App->input->GetGamepadButton(GamepadButton::A) == KEY_DOWN;
+
+
+		input_hold_front_throw =
+			(App->input->GetGamepadButton(GamepadButton::X) == KEY_DOWN || App->input->GetGamepadButton(GamepadButton::X) == KEY_REPEAT) &&
+			((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0));
+
+		input_attack_back =
+			(App->input->GetGamepadButton(GamepadButton::X) == KEY_DOWN && App->input->GetGamepadButton(GamepadButton::A) == KEY_REPEAT) ||
+			(App->input->GetGamepadButton(GamepadButton::X) == KEY_REPEAT && App->input->GetGamepadButton(GamepadButton::A) == KEY_DOWN);
+
+		input_attack = App->input->GetGamepadButton(GamepadButton:: X) == KEY_DOWN && input_hold_front_throw == false && ( jumping == true || jumping == false && input_attack_back == false);
+		
+	}
 	else
-		if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT)
-			input_vertical = 1;
+	{
+		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+			input_vertical = -1;
+		else
+			if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT || App->input->GetGamepadButton(GamepadButton::DOWN) == KEY_REPEAT)
+				input_vertical = 1;
 
-	if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT)
-		input_horizontal = -1;
-	else
-		if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT)
-			input_horizontal = 1;
-	
-	input_help = App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN;
-	input_jump = App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN;
-	
+		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || App->input->GetGamepadButton(GamepadButton::LEFT) == KEY_REPEAT)
+			input_horizontal = -1;
+		else
+			if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || App->input->GetGamepadButton(GamepadButton::RIGHT) == KEY_REPEAT)
+				input_horizontal = 1;
 
-	input_hold_front_throw = 
-		(App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT) && 
-		((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0));
+		input_help = App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN;
+		input_jump = App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN;
 
-	input_attack_back = 
-		(App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN && App->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT) || 
-		(App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN);
 
-	input_attack = App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN && input_hold_front_throw == false && input_attack_back == false;
+		input_hold_front_throw =
+			(App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT) &&
+			((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0));
+
+		input_attack_back =
+			(App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN && App->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT) ||
+			(App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN);
+
+		input_attack = App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN && input_hold_front_throw == false && (jumping == true || jumping == false && input_attack_back == false);
+	}
 	
 }
 
