@@ -7,10 +7,10 @@
 #include "ModuleFadeToBlack.h"
 #include "ModuleFonts.h"
 #include "ModuleUI.h"
-
-#include "Timer.h"
-
 #include "EntityManager.h"
+
+#include "ConfigurationLoader.h"
+#include "Timer.h"
 
 #include "ModuleSceneIntro.h"
 
@@ -82,6 +82,7 @@ update_status ModuleSceneIntro::Update()
 
 bool ModuleSceneIntro::LoadConfigFromFile(const char* file_path)
 {
+	/*
 	JSON_Value *root_value;
 	JSON_Object *root_object;
 
@@ -90,22 +91,41 @@ bool ModuleSceneIntro::LoadConfigFromFile(const char* file_path)
 		return false;
 	else
 		root_object = json_object(root_value);
-
+		
 	if (json_object_dothas_value_of_type(root_object, "intro.graphics_file", JSONString))
-		background = App->textures->Load(json_object_dotget_string(root_object, "intro.graphics_file"));
+	background = App->textures->Load(json_object_dotget_string(root_object, "intro.graphics_file"));
 
 	if (json_object_dothas_value_of_type(root_object, "intro.music_file", JSONString))
-		music_path = json_object_dotget_string(root_object, "intro.music_file");
-	
+	music_path = json_object_dotget_string(root_object, "intro.music_file");
+
 	if (json_object_dothas_value_of_type(root_object, "intro.fx_start", JSONString))
-		fx_start = App->audio->LoadFx(json_object_dotget_string(root_object, "intro.fx_start"));
+	fx_start = App->audio->LoadFx(json_object_dotget_string(root_object, "intro.fx_start"));
 
 	blink_msg_msec = (int)json_object_dotget_number(root_object, "intro.blink_msg_msec");
 
 	json_value_free(root_value);
 
 	if (background == nullptr || music_path == "" )
+	return false;
+	else
+	return true;
+		*/
+	JSON_Object *root_object = App->config->GetJSONObject("intro");
+	
+	if (json_object_has_value_of_type(root_object, "graphics_file", JSONString))
+		background = App->textures->Load(json_object_get_string(root_object, "graphics_file"));
+
+	
+	if (json_object_has_value_of_type(root_object, "music_file", JSONString))
+		music_path = json_object_get_string(root_object, "music_file");
+
+	if (json_object_has_value_of_type(root_object, "fx_start", JSONString))
+		fx_start = App->audio->LoadFx(json_object_get_string(root_object, "fx_start"));
+
+	blink_msg_msec = (int)json_object_get_number(root_object, "blink_msg_msec");
+
+	if (background == nullptr || music_path == "")
 		return false;
-	else 
+	else
 		return true;
 }

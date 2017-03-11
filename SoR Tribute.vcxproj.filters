@@ -97,6 +97,9 @@
     <ClInclude Include="ModuleUI.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
+    <ClInclude Include="ConfigurationLoader.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -170,6 +173,9 @@
     </ClCompile>
     <ClCompile Include="ModuleUI.cpp">
       <Filter>Core Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigurationLoader.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

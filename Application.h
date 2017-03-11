@@ -19,6 +19,7 @@ class ModuleSceneIntro;
 class ModuleScene3;
 class EntityManager;
 class Timer;
+class ConfigurationLoader;
 
 class Application
 {
@@ -49,6 +50,7 @@ public:
 	EntityManager* manager = nullptr;
 
 	// Utils
+	ConfigurationLoader *config = nullptr;
 	Timer* timer = nullptr;
 
 private:

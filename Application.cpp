@@ -13,12 +13,16 @@
 #include "ModuleScene3.h"
 #include "EntityManager.h"
 
+#include "ConfigurationLoader.h"
+
 #include "Timer.h"
 
 using namespace std;
 
 Application::Application()
 {
+	config = new ConfigurationLoader(CONFIG_FILE);
+
 	// Order matters: they will init/start/pre/update/post in this order
 	modules.push_back(input = new ModuleInput());
 	modules.push_back(window = new ModuleWindow());
