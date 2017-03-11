@@ -53,7 +53,10 @@ bool ModuleTextures::CleanUp()
 SDL_Texture* const ModuleTextures::Load(const char* path)
 {
 	SDL_Texture* texture = nullptr;
-	SDL_Surface* surface = IMG_Load(path);
+	SDL_Surface* surface = nullptr; 
+
+	if (path != nullptr)
+		surface = IMG_Load(path);
 
 	if(surface == nullptr)
 	{

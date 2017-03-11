@@ -52,6 +52,7 @@ Application::~Application()
 {
 	for(list<Module*>::iterator it = modules.begin(); it != modules.end(); ++it)
 		RELEASE(*it);
+
 }
 
 bool Application::Init()
@@ -101,6 +102,7 @@ bool Application::CleanUp()
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->CleanUp();
 
+	RELEASE(config);
 	RELEASE(timer);
 
 	return ret;

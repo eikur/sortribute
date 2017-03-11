@@ -20,6 +20,16 @@ ModuleSceneIntro::ModuleSceneIntro(bool active) : Module(active)
 ModuleSceneIntro::~ModuleSceneIntro()
 {}
 
+bool ModuleSceneIntro::Init()
+{
+	if (LoadConfigFromFile() == false)
+	{
+		LOG("Intro: crash during file load");
+		return false;
+	}
+	return true; 
+
+}
 // Load assets
 bool ModuleSceneIntro::Start()
 {
@@ -29,11 +39,6 @@ bool ModuleSceneIntro::Start()
 		App->manager->Disable();
 	if (App->ui->IsEnabled())
 		App->ui->Disable();
-	if (LoadConfigFromFile(CONFIG_FILE) == false)
-	{
-		LOG("Intro: crash during file load");
-		return false;
-	}
 	App->audio->PlayMusic(music_path.c_str());
 	elapsed_msec = 0;
 	return true;
@@ -80,52 +85,21 @@ update_status ModuleSceneIntro::Update()
 	return UPDATE_CONTINUE;
 }
 
-bool ModuleSceneIntro::LoadConfigFromFile(const char* file_path)
+bool ModuleSceneIntro::LoadConfigFromFile()
 {
-	/*
-	JSON_Value *root_value;
-	JSON_Object *root_object;
+	JSON_Object *json_intro = App->config->GetJSONObject("intro");
 
-	root_value = json_parse_file(file_path);
-	if (root_value == nullptr)
-		return false;
-	else
-		root_object = json_object(root_value);
-		
-	if (json_object_dothas_value_of_type(root_object, "intro.graphics_file", JSONString))
-	background = App->textures->Load(json_object_dotget_string(root_object, "intro.graphics_file"));
+	background = App->textures->Load(App->config->GetStringFromJSONObject(json_intro, "graphics_file"));
+	if (background == nullptr) { return false; }
 
-	if (json_object_dothas_value_of_type(root_object, "intro.music_file", JSONString))
-	music_path = json_object_dotget_string(root_object, "intro.music_file");
+	music_path = App->config->GetStringFromJSONObject(json_intro, "music_file");
+	if (music_path == "") { return false; }
 
-	if (json_object_dothas_value_of_type(root_object, "intro.fx_start", JSONString))
-	fx_start = App->audio->LoadFx(json_object_dotget_string(root_object, "intro.fx_start"));
+	fx_start = App->audio->LoadFx(App->config->GetStringFromJSONObject(json_intro, "fx_start"));
+	if (fx_start == -1) { return false; }
 
-	blink_msg_msec = (int)json_object_dotget_number(root_object, "intro.blink_msg_msec");
+	blink_msg_msec = App->config->GetIntFromJSONObject(json_intro, "blink_msg_msec");
+	if (blink_msg_msec == 0) { return false; }
 
-	json_value_free(root_value);
-
-	if (background == nullptr || music_path == "" )
-	return false;
-	else
 	return true;
-		*/
-	JSON_Object *root_object = App->config->GetJSONObject("intro");
-	
-	if (json_object_has_value_of_type(root_object, "graphics_file", JSONString))
-		background = App->textures->Load(json_object_get_string(root_object, "graphics_file"));
-
-	
-	if (json_object_has_value_of_type(root_object, "music_file", JSONString))
-		music_path = json_object_get_string(root_object, "music_file");
-
-	if (json_object_has_value_of_type(root_object, "fx_start", JSONString))
-		fx_start = App->audio->LoadFx(json_object_get_string(root_object, "fx_start"));
-
-	blink_msg_msec = (int)json_object_get_number(root_object, "blink_msg_msec");
-
-	if (background == nullptr || music_path == "")
-		return false;
-	else
-		return true;
 }

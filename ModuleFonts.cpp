@@ -161,5 +161,5 @@ Font::Font(const Font& f)
 
 Font::~Font()
 {
-	delete rect;
+	RELEASE(rect);
 }

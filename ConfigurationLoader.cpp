@@ -15,8 +15,7 @@ ConfigurationLoader::ConfigurationLoader(const char* config_file_path)
 
 ConfigurationLoader::~ConfigurationLoader()
 {
-	if (root_value != nullptr)
-		json_value_free(root_value);
+	json_value_free(root_value);
 }
 
 JSON_Object* ConfigurationLoader::GetJSONObject( const char* section_name )
@@ -57,4 +56,22 @@ bool ConfigurationLoader::LoadAnimationFromJSONObject(JSON_Object *j_object, con
 	
 	json_array_clear(j_array);
 	return true; 
+}
+
+const char* ConfigurationLoader::GetStringFromJSONObject(JSON_Object *j_object, const char *string_name) const
+{
+	if (json_object_has_value_of_type(j_object, string_name, JSONString))
+		return json_object_get_string(j_object, string_name );
+	else
+		return ""; 
+}
+
+int ConfigurationLoader::GetIntFromJSONObject(JSON_Object *j_object, const char* int_name) const
+{
+	return (int)json_object_get_number(j_object, int_name);
+}
+
+float ConfigurationLoader::GetFloatFromJSONObject(JSON_Object *j_object, const char* float_name) const
+{
+	return (float)json_object_get_number(j_object, float_name);
 }

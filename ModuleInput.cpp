@@ -15,6 +15,7 @@ ModuleInput::ModuleInput() : Module(), mouse({0, 0}), mouse_motion({0,0})
 ModuleInput::~ModuleInput()
 {
 	RELEASE_ARRAY(keyboard);
+	RELEASE_ARRAY(gamepad_buttons);
 }
 
 // Called before render is available

@@ -11,12 +11,13 @@ public:
 	ModuleSceneIntro(bool active = true);
 	~ModuleSceneIntro();
 
+	bool Init(); 
 	bool Start();
 	update_status Update();
 	bool CleanUp();
 
 private:
-	bool LoadConfigFromFile(const char *file_path);
+	bool LoadConfigFromFile();
 
 private:
 	SDL_Texture* background = nullptr;

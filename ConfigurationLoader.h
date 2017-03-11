@@ -17,7 +17,11 @@ public:
 
 	JSON_Object* GetJSONObject( const char* section_name = "");
 
+
 	bool LoadAnimationFromJSONObject(JSON_Object *j_object, const char *animation_name, Animation* animation) const;
+	const char* GetStringFromJSONObject(JSON_Object *j_object, const char *string_name) const; 
+	int GetIntFromJSONObject(JSON_Object *j_object, const char* int_name) const;
+	float GetFloatFromJSONObject(JSON_Object *j_object, const char* float_name) const; 
 
 private:
 	JSON_Value *root_value = nullptr;
