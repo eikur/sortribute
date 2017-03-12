@@ -22,18 +22,18 @@ ModuleSceneIntro::~ModuleSceneIntro()
 
 bool ModuleSceneIntro::Init()
 {
-	if (LoadConfigFromFile() == false)
-	{
-		LOG("Intro: crash during file load");
-		return false;
-	}
 	return true; 
-
 }
 // Load assets
 bool ModuleSceneIntro::Start()
 {
 	LOG("Loading intro screen");
+	if (LoadConfigFromFile() == false)
+	{
+		LOG("Intro: failed to initialise");
+		return false;
+	}
+
 	App->renderer->camera.x = App->renderer->camera.y = 0;
 	if (App->manager->IsEnabled())
 		App->manager->Disable();
@@ -47,7 +47,7 @@ bool ModuleSceneIntro::Start()
 // UnLoad assets
 bool ModuleSceneIntro::CleanUp()
 {
-	LOG("Unloading space scene");
+	LOG("Unloading intro scene");
 
 	App->textures->Unload(background);
 	
@@ -81,13 +81,13 @@ update_status ModuleSceneIntro::Update()
 		App->audio->PlayFx(fx_start);
 	}
 
-
 	return UPDATE_CONTINUE;
 }
 
 bool ModuleSceneIntro::LoadConfigFromFile()
 {
 	JSON_Object *json_intro = App->config->GetJSONObject("intro");
+	if (json_intro == nullptr) { return false;  }
 
 	background = App->textures->Load(App->config->GetStringFromJSONObject(json_intro, "graphics_file"));
 	if (background == nullptr) { return false; }

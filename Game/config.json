@@ -85,8 +85,7 @@
 		"high_health_section":[90,32,2,6],
 		"go_arrow_blink_msec": 400,
 		"go_arrow_section": [284,44,36,21],
-		"go_arrow_pos": [260,48],
-		"fx_go_arrow": "Assets/fx_go_arrow.wav"
+		"go_arrow_pos": [260,48]
 	},
 	"durations": {
 		"attacks": 256,
@@ -126,6 +125,7 @@
 		"attack_hit_hard": "Assets/fx_attack_hit_hard.wav",
 		"attack_hit_enemy": "Assets/fx_attack_hit_enemy.wav",
 		"ground_hit": "Assets/fx_ground_hit.wav",
+		"go_arrow": "Assets/fx_go_arrow.wav",
 		"life_up": "Assets/fx_life_up.wav",
 		"health_item": "Assets/fx_health_item.wav",
 		"death_player": "Assets/fx_voice_axel_death.wav", 

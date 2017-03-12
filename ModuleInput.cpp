@@ -1,5 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
+#include "ConfigurationLoader.h"
+
 #include "ModuleInput.h"
 
 #define MAX_KEYS 300
@@ -53,7 +55,7 @@ bool ModuleInput::Init()
 		LOG("SDL_EVENTS could not initialize! SDL_Error: %s\n", SDL_GetError());
 		return false;
 	}
-	if (LoadConfigFromFile(CONFIG_FILE) == false)
+	if (LoadConfigFromFile() == false)
 	{
 		LOG("Input: Unable to load from config file\n");
 		return false;
@@ -201,20 +203,13 @@ const iPoint& ModuleInput::GetMouseMotion() const
 	return mouse_motion;
 }
 
-bool ModuleInput::LoadConfigFromFile(const char* file_path)
+bool ModuleInput::LoadConfigFromFile()
 {
-	JSON_Value *root_value = json_parse_file(file_path);
-	if (root_value == nullptr)
-		return false;
+	JSON_Object *window_object = App->config->GetJSONObject("window");
+	if (window_object == nullptr) { return false; }
 
-	m_screen_size = (int)json_object_dotget_number(json_object(root_value), "window.screen_size");
+	m_screen_size = App->config->GetIntFromJSONObject(window_object, "screen_size");
+	if (m_screen_size == 0) { return false;  }
 
-	json_value_free(root_value);
-
-	if (m_screen_size == 0)
-		return false;
-	else
-		return true;
-
-
+	return true;
 }

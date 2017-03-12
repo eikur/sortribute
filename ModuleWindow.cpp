@@ -1,5 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
+#include "ConfigurationLoader.h"
+
 #include "ModuleWindow.h"
 
 ModuleWindow::ModuleWindow()
@@ -23,7 +25,7 @@ bool ModuleWindow::Init()
 		LOG("SDL_VIDEO could not initialize! SDL_Error: %s\n", SDL_GetError());
 		ret = false;
 	}
-	else if (LoadConfigFromFile(CONFIG_FILE) == false)
+	else if (LoadConfigFromFile() == false)
 	{
 		LOG("Window: Unable to load configuration from file\n");
 		ret = false;
@@ -74,24 +76,22 @@ bool ModuleWindow::CleanUp()
 }
 
 // Read parameters from config file
-bool ModuleWindow::LoadConfigFromFile(const char* file_path)
+bool ModuleWindow::LoadConfigFromFile()
 {
-	JSON_Value *root_value = json_parse_file(file_path);
-	if (root_value == nullptr)
-		return false;
+	JSON_Object *window_object = App->config->GetJSONObject("window"); 
+	if (window_object == nullptr) { return false;  }
 
-	m_screen_width = (int) json_object_dotget_number(json_object(root_value), "window.screen_width");
-	m_screen_height = (int)json_object_dotget_number(json_object(root_value), "window.screen_height");
-	m_screen_size = (int)json_object_dotget_number(json_object(root_value), "window.screen_size");
-	m_fullscreen = (json_object_dotget_boolean(json_object(root_value), "window.fullscreen") != 0) ? true : false;
-	m_vsync = (json_object_dotget_boolean(json_object(root_value), "window.vsync") != 0) ? true : false;
-	if (json_object_dothas_value_of_type(json_object(root_value), "window.title", JSONString))
-		m_title = json_object_dotget_string(json_object(root_value), "window.title");
+	m_screen_width = App->config->GetIntFromJSONObject(window_object, "screen_width"); 
+	if (m_screen_width == 0) { return false;  }
+	m_screen_height = App->config->GetIntFromJSONObject(window_object, "screen_height");
+	if (m_screen_height == 0) { return false; }
+	m_screen_size = App->config->GetIntFromJSONObject(window_object, "screen_size");
+	if (m_screen_size == 0) { return false;  }
 	
-	json_value_free(root_value);
-	
-	if (m_screen_width == 0 || m_screen_height == 0 || m_screen_size == 0 || m_title == "")
-		return false;
-	else 
-		return true;
+	m_fullscreen = App->config->GetBoolFromJSONObject(window_object, "fullscreen"); 
+	m_vsync = App->config->GetBoolFromJSONObject(window_object, "vsync");
+
+	m_title = App->config->GetStringFromJSONObject(window_object, "title"); 
+
+	return true;
 }

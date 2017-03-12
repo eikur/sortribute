@@ -4,6 +4,7 @@
 #include "ModuleWindow.h"
 #include "ModuleInput.h"
 #include "EntityManager.h"
+#include "ConfigurationLoader.h"
 
 ModuleRender::ModuleRender()
 {
@@ -19,7 +20,7 @@ bool ModuleRender::Init()
 	LOG("Creating Renderer context");
 	bool ret = true;
 
-	if (LoadConfigFromFile(CONFIG_FILE) == false)
+	if (LoadConfigFromFile() == false)
 	{ 
 		LOG("Renderer: Unable to load configuration from file\n");
 		ret = false;
@@ -168,24 +169,26 @@ void ModuleRender::MoveCamera(int x_pos, int x_speed) {
 	}
 }
 
-bool ModuleRender::LoadConfigFromFile(const char* file_path)
+bool ModuleRender::LoadConfigFromFile()
 {
-	JSON_Value *root_value = json_parse_file(file_path);
-	if (root_value == nullptr)
-		return false;
-
-	m_screen_width = (int)json_object_dotget_number(json_object(root_value), "window.screen_width");
-	m_screen_height = (int)json_object_dotget_number(json_object(root_value), "window.screen_height");
-	m_screen_size = (int)json_object_dotget_number(json_object(root_value), "window.screen_size");
-	m_vsync = (json_object_dotget_boolean(json_object(root_value), "window.vsync") != 0) ? true : false;
-
-	m_limit_margin = (int)json_object_dotget_number(json_object(root_value), "renderer.camera.x_limit_margin");
-	m_speed = (int)json_object_dotget_number(json_object(root_value), "renderer.camera.speed");
+	JSON_Object *render_object = nullptr; 
 	
-	json_value_free(root_value);
+	render_object = App->config->GetJSONObject("window");
+	if (render_object == nullptr) { return false; }
+	m_screen_width = App->config->GetIntFromJSONObject(render_object, "screen_width"); 
+	if (m_screen_width == 0) { return false; }
+	m_screen_height = App->config->GetIntFromJSONObject(render_object, "screen_height");
+	if (m_screen_height == 0) { return false; }
+	m_screen_size = App->config->GetIntFromJSONObject(render_object, "screen_size");
+	if (m_screen_size == 0) { return false; }
+	m_vsync = App->config->GetBoolFromJSONObject(render_object, "vsync"); 
+
+	render_object = App->config->GetJSONObject("renderer.camera"); 
+	if (render_object == nullptr) { return false; }
+	m_limit_margin = App->config->GetIntFromJSONObject(render_object, "x_limit_margin"); 
+	if (m_limit_margin < 0) { return false;  }
+	m_speed = App->config->GetIntFromJSONObject(render_object, "speed");
+	if (m_speed == 0) { return false; }
 	
-	if (m_screen_width == 0 || m_screen_height == 0 || m_screen_size == 0)
-		return false;
-	else
-		return true;
+	return true;
 }

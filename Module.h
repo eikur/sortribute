@@ -70,10 +70,11 @@ public:
 		return true; 
 	}
 
-	virtual bool LoadConfigFromFile(const char* )
+/*	virtual bool LoadConfigFromFile(const char* )
 	{
 		return true;
 	}
+	*/
 	// Callbacks ---
 	virtual void HandleCollision(Collider*, Collider*)
 	{}

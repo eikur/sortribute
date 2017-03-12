@@ -7,6 +7,7 @@
 #include "ModuleAudio.h"
 #include "EntityManager.h"
 
+#include "ConfigurationLoader.h"
 #include "Timer.h"
 
 #include "ModuleUI.h"
@@ -20,7 +21,7 @@ ModuleUI::~ModuleUI()
 
 bool ModuleUI::Init()
 {
-	if (LoadConfigFromFile(CONFIG_FILE) == false)
+	if (LoadConfigFromFile() == false)
 	{
 		LOG("UI: failed to initialise\n");
 		return false;
@@ -197,105 +198,40 @@ void ModuleUI::ShowPlayerDebugMode()
 
 
 
-bool ModuleUI::LoadConfigFromFile(const char *file_path)
+bool ModuleUI::LoadConfigFromFile()
 {
-	JSON_Value *root_value;
-	JSON_Object *root_object;
-	JSON_Array *j_array;
+	JSON_Object *ui_object = App->config->GetJSONObject("hud"); 
+	if (ui_object == nullptr) { return false;  }
+	
+	hud_graphics = App->textures->Load(App->config->GetStringFromJSONObject(ui_object, "graphics_file"));
+	if (hud_graphics == nullptr) { return false; }
 
-	root_value = json_parse_file(file_path);
-	if (root_value == nullptr)
-		return false;
-	else
-		root_object = json_object(root_value);
+	if (App->config->LoadSDLRectFromJSONObject(ui_object, "section", &hud_section) == false) { return false; }
+	if (App->config->LoadSDLRectFromJSONObject(ui_object, "health_section", &hud_health_section) == false) { return false; }
+	if (App->config->LoadSDLRectFromJSONObject(ui_object, "boss_section", &hud_boss_section) == false) { return false; }
+	if (App->config->LoadSDLRectFromJSONObject(ui_object, "high_health_section", &hud_high_health_section) == false) { return false; }
+	if (App->config->LoadSDLRectFromJSONObject(ui_object, "medium_health_section", &hud_medium_health_section) == false) { return false; }
+	if (App->config->LoadSDLRectFromJSONObject(ui_object, "go_arrow_section", &hud_go_arrow_section) == false) { return false; }
 
-	// hud load
-	if (json_object_dothas_value_of_type(root_object, "hud.graphics_file", JSONString))
-		hud_graphics = App->textures->Load(json_object_dotget_string(root_object, "hud.graphics_file"));
-	if (hud_graphics == nullptr)
-	{
-		json_value_free(root_value);
-		return false;
-	}
+	if (App->config->LoadiPointFromJSONObject(ui_object, "time_pos", &hud_time_pos) == false) { return false;  }
+	if (App->config->LoadiPointFromJSONObject(ui_object, "score_pos", &hud_score_pos) == false) { return false; }
+	if (App->config->LoadiPointFromJSONObject(ui_object, "lives_pos", &hud_lives_pos) == false) { return false; }
+	if (App->config->LoadiPointFromJSONObject(ui_object, "help_pos", &hud_help_pos) == false) { return false; }
+	if (App->config->LoadiPointFromJSONObject(ui_object, "health_pos", &hud_health_pos) == false) { return false; }
+	if (App->config->LoadiPointFromJSONObject(ui_object, "boss_pos", &hud_boss_pos) == false) { return false; }
+	if (App->config->LoadiPointFromJSONObject(ui_object, "boss_health_pos", &hud_health_boss_pos) == false) { return false; }
+	if (App->config->LoadiPointFromJSONObject(ui_object, "boss_msg_pos", &hud_boss_msg_pos) == false) { return false; }
+	if (App->config->LoadiPointFromJSONObject(ui_object, "go_arrow_pos", &hud_go_arrow_pos) == false) { return false; }
 
-	j_array = json_object_dotget_array(root_object, "hud.section");
-	hud_section = { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "hud.time_pos");
-	hud_time_pos.x = (int)json_array_get_number(j_array, 0);
-	hud_time_pos.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "hud.score_pos");
-	hud_score_pos.x = (int)json_array_get_number(j_array, 0);
-	hud_score_pos.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "hud.lives_pos");
-	hud_lives_pos.x = (int)json_array_get_number(j_array, 0);
-	hud_lives_pos.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "hud.help_pos");
-	hud_help_pos.x = (int)json_array_get_number(j_array, 0);
-	hud_help_pos.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "hud.health_pos");
-	hud_health_pos.x = (int)json_array_get_number(j_array, 0);
-	hud_health_pos.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "hud.health_section");
-	hud_health_section = { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "hud.boss_section");
-	hud_boss_section = { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "hud.high_health_section");
-	hud_high_health_section = { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "hud.medium_health_section");
-	hud_medium_health_section = { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "hud.boss_pos");
-	hud_boss_pos.x = (int)json_array_get_number(j_array, 0);
-	hud_boss_pos.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "hud.boss_health_pos");
-	hud_health_boss_pos.x = (int)json_array_get_number(j_array, 0);
-	hud_health_boss_pos.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "hud.boss_msg_pos");
-	hud_boss_msg_pos.x = (int)json_array_get_number(j_array, 0);
-	hud_boss_msg_pos.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-
-	if (json_object_dothas_value_of_type(root_object, "fx.pause", JSONString))
-		fx_pause = App->audio->LoadFx(json_object_dotget_string(root_object, "fx.pause"));
-
-	j_array = json_object_dotget_array(root_object, "hud.go_arrow_pos");
-	hud_go_arrow_pos.x = (int)json_array_get_number(j_array, 0);
-	hud_go_arrow_pos.y = (int)json_array_get_number(j_array, 1);
-	json_array_clear(j_array);
-
-	j_array = json_object_dotget_array(root_object, "hud.go_arrow_section");
-	hud_go_arrow_section = { (int)json_array_get_number(j_array,0),(int)json_array_get_number(j_array,1),(int)json_array_get_number(j_array,2),(int)json_array_get_number(j_array,3) };
-	json_array_clear(j_array);
-
-	blink_msec_go_arrow = (int)json_object_dotget_number(root_object, "hud.go_arrow_blink_msec");
-
-	if (json_object_dothas_value_of_type(root_object, "hud.fx_go_arrow", JSONString))
-		fx_go_arrow = App->audio->LoadFx(json_object_dotget_string(root_object, "hud.fx_go_arrow"));
-
-	json_value_free(root_value);
+	blink_msec_go_arrow = App->config->GetIntFromJSONObject(ui_object, "go_arrow_blink_msec"); 
+	if (blink_msec_go_arrow == 0) { return false;  }
+	
+	ui_object = App->config->GetJSONObject("fx"); 
+	if (ui_object == nullptr) { return false; }
+	fx_pause = App->audio->LoadFx(App->config->GetStringFromJSONObject(ui_object, "pause"));
+	if (fx_pause == -1) { return false; }
+	fx_go_arrow = App->audio->LoadFx(App->config->GetStringFromJSONObject(ui_object, "go_arrow"));
+	if (fx_go_arrow == -1) { return false; }
 
 	return true;
 }

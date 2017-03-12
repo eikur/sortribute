@@ -16,7 +16,7 @@ public:
 	bool Init();
 	bool CleanUp();
 
-	bool LoadConfigFromFile(const char* file_path);
+	bool LoadConfigFromFile();
 
 public:
 	SDL_Window* m_window = nullptr;

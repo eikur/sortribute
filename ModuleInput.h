@@ -95,7 +95,7 @@ public:
 	const iPoint& GetMousePosition() const;
 
 	// Load configuration from file
-	bool LoadConfigFromFile(const char* file_path);
+	bool LoadConfigFromFile();
 
 private:
 	bool		windowEvents[WE_COUNT];

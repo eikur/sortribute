@@ -27,7 +27,7 @@ private:
 	void PrintBossHealth();
 	void PrintGoArrow();
 
-	bool LoadConfigFromFile(const char *file_path);
+	bool LoadConfigFromFile();
 
 public:
 	bool pause = false;

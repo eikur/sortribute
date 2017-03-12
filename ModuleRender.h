@@ -27,7 +27,7 @@ public:
 	void GetPlayerPositionLimits( SDL_Rect &player_limits) const;
 	void MoveCamera(int x_pos, int x_speed);
 private:
-	bool LoadConfigFromFile(const char* file_path);
+	bool LoadConfigFromFile();
 
 
 public:
