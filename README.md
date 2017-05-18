@@ -6,7 +6,7 @@ It features one of my favourite levels of the original Streets of Rage, Moonbeac
 
 Github: [https://github.com/eikur/sortribute](https://github.com/eikur/sortribute)   
 
-Download latest release [here](https://github.com/eikur/sortribute/files/1010897/StreetsOfRageTributeRelease.zip)   
+Download latest release [here](https://github.com/eikur/sortribute/files/702882/Streets.Of.Rage.Tribute.release.zip)   
 
 Download source code [here](https://github.com/eikur/sortribute/archive/1.1.zip)   
 
