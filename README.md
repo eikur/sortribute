@@ -6,9 +6,9 @@ It features one of my favourite levels of the original Streets of Rage, Moonbeac
 
 Github: [https://github.com/eikur/sortribute](https://github.com/eikur/sortribute)   
 
-Download release version [here](https://github.com/eikur/sortribute/files/702882/Streets.Of.Rage.Tribute.release.zip)   
+Download latest release [here](https://github.com/eikur/sortribute/files/1010897/StreetsOfRageTributeRelease.zip)   
 
-Download source code [here](https://github.com/eikur/sortribute/archive/1.0.zip)   
+Download source code [here](https://github.com/eikur/sortribute/archive/1.1.zip)   
 
 License: GNU GPL version 2  
 Author: Jorge Soriano Pinedo // eikur  
@@ -47,32 +47,44 @@ Special cases:
 - **X + opposite direction than the hold (when front holding)**: Throw an enemy over your head. You can knock down the enemies that come your way if it impacts them.  
 - **X + C (at the same time)**: Back attack. Unfortunately, it only has been animated and has no real effect on enemies in this tribute.
 
+### Special addition! 
+If you have a Xbox 360 controller connected to your PC, the game will recognize it on startup and will let you play with it. This will disable the keyboard controls.
+
 ### Debug Controls
+The debug features used during development are kept in the release, and while they are not necessary to complete the game,  they are pretty fun to play with. Just a word of advice: Using the debug mode can break and ruin the experience for you, so please don't do so at least in your first playthrough.  
+You have been warned :)
 
-**Formal Warning!** The debug features used during development are kept in the release. However, as their name says, they are used during development, and you should not use them if you don't know what you are doing. If you do you, may disrupt the internal logic of the game and / or ruin your own experience.  
-**You have been warned.**
-
-- **_F1_** : Debug Colliders  
+#### **_F1: Debug Colliders (COLS)_**  
 It will show the colliders set in the scene, player, enemies and items. Pressing it again will hide them.  
-- **_1_, _2_, _3_ and _4_**: Change gameplay variables  
-Add more lives, score and special attacks respectively by pressing the corresponding key. Be careful, though, because key 4 subtracts time to your gameplay timer!  
-- **Q, W**: Test player reactions  
-Use them to hit and knock the player respectively.  
-- **E and R**: Spawn enemies  
-Use E to spawn cannon fodder enemies and use R to spawn bosses(!!)
-- **A and S**: Spawn health items  
-Use A to spawn an apple (25% health recovery) or S for a chicken (100% recovery)  
-- **O, P and L**: Camera behaviour  
-Use O to move the camera left, use P to move it right and use L to shift between locked and unlocked status. Be extra careful with these debug options, **a lot** of systems depend on the camera position and locking for their proper functioning.
 
-## After playing the game
-You can play multiple times in a row, without the program exiting or crashing on you.  
+#### **_F2: Activate the Spawn functionality (SPWN)_**  
+You can either spawn enemies or items to test them  
+
+- _E_ and _R_: Spawn enemies  
+Use E to spawn cannon fodder enemies and use R to spawn bosses(!!)  
+
+- A and S: Spawn health items  
+Use A to spawn an apple (25% health recovery) or S for a chicken (100% recovery)  
+
+#### **_F3: Activate the Player buffs (PLYR)_**  
+You can apply buffs / damage to  your character  
+
+- _1_, _2_, _3_ and _4_: Change gameplay variables  
+Add more lives, score and special attacks respectively by pressing the corresponding key. Be careful, though, because key 4 subtracts time to your gameplay timer!  
+
+- _Q_, _W_: Test player reactions  
+Use them to hit and knock the player respectively.  
+
+#### **_F4: Activate the player coordinates (POS)_**  
+You can see the player coordinates while you play. It has no effect on the gameplay, but then again, it was super useful to debug it during development.
 
 
 ## Acknowledgements
 This projects needed a good JSON parser, and my election was the work of Krzysztof Gabis, parson. It worked like a charm, almost plug and play, and this release would not have been possible without it. You can find it [here](https://github.com/kgabis/parson)  
 Many thanks to the Streets of Rage online fanbase, for all the visual and audio assets I could find in almost no time.  
 Last but not least, thanks to my teachers for the support, my girlfriend for the countless hours she has been patient, and the countless testers that offered their services just to help. I owe you all a beer.  
+
+Edited: Many thanks again to everybody listed here. The feedback I got helped me craft a more robust and overall better 2nd release fixing some hot points. :) 
 
 I hope you enjoyed playing this game as much as I enjoyed creating it.  
 Jordi
