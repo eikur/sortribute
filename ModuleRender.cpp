@@ -49,15 +49,15 @@ bool ModuleRender::Init()
 	return ret;
 }
 
-update_status ModuleRender::PreUpdate()
+UpdateStatus ModuleRender::PreUpdate()
 {
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, SDL_ALPHA_OPAQUE);
 	SDL_RenderClear(renderer);
-	return UPDATE_CONTINUE;
+	return UpdateStatus::Continue;
 }
 
 // Called every draw update
-update_status ModuleRender::Update()
+UpdateStatus ModuleRender::Update()
 {
 	//move camera
 	/*
@@ -72,14 +72,14 @@ update_status ModuleRender::Update()
 	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_REPEAT)
 		App->renderer->camera.x -= m_speed;
 		*/
-	return UPDATE_CONTINUE;
+	return UpdateStatus::Continue;
 }
 
 
-update_status ModuleRender::PostUpdate()
+UpdateStatus ModuleRender::PostUpdate()
 {
 	SDL_RenderPresent(renderer);
-	return UPDATE_CONTINUE;
+	return UpdateStatus::Continue;
 }
 
 // Called before quitting

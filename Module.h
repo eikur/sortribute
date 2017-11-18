@@ -50,19 +50,19 @@ public:
 		return true;
 	}
 
-	virtual update_status PreUpdate()
+	virtual UpdateStatus PreUpdate()
 	{
-		return UPDATE_CONTINUE;
+		return UpdateStatus::Continue;
 	}
 
-	virtual update_status Update()
+	virtual UpdateStatus Update()
 	{
-		return UPDATE_CONTINUE;
+		return UpdateStatus::Continue;
 	}
 
-	virtual update_status PostUpdate()
+	virtual UpdateStatus PostUpdate()
 	{
-		return UPDATE_CONTINUE;
+		return UpdateStatus::Continue;
 	}
 
 	virtual bool CleanUp() 
@@ -70,12 +70,6 @@ public:
 		return true; 
 	}
 
-/*	virtual bool LoadConfigFromFile(const char* )
-	{
-		return true;
-	}
-	*/
-	// Callbacks ---
 	virtual void HandleCollision(Collider*, Collider*)
 	{}
 

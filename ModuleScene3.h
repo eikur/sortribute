@@ -17,8 +17,8 @@ public:
 	~ModuleScene3();
 
 	bool Start();
-	update_status PreUpdate();
-	update_status Update();
+	UpdateStatus PreUpdate();
+	UpdateStatus Update();
 	bool CleanUp();
 
 private:

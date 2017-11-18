@@ -17,7 +17,7 @@ ModuleCollision::ModuleCollision(Module* entities_report_to, Module* scene_cols_
 ModuleCollision::~ModuleCollision()
 {}
 
-update_status ModuleCollision::PreUpdate()
+UpdateStatus ModuleCollision::PreUpdate()
 {
 	// Remove all colliders scheduled for deletion
 	for (list<Collider*>::iterator it = colliders.begin(); it != colliders.end();)
@@ -31,10 +31,10 @@ update_status ModuleCollision::PreUpdate()
 			++it;
 	}
 
-	return UPDATE_CONTINUE;
+	return UpdateStatus::Continue;
 }
 
-update_status ModuleCollision::Update()
+UpdateStatus ModuleCollision::Update()
 {
 	for (list<Collider*>::const_iterator it = colliders.cbegin(); it != colliders.cend();++it )
 	{
@@ -64,7 +64,7 @@ update_status ModuleCollision::Update()
 		DebugDraw();
 		App->ui->ShowCollidersDebugMode();
 	}
-	return UPDATE_CONTINUE;
+	return UpdateStatus::Continue;
 }
 
 void ModuleCollision::DebugDraw()

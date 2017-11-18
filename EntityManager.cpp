@@ -43,7 +43,7 @@ bool EntityManager::Start()
 	return true;
 }
 
-update_status EntityManager::Update() 
+UpdateStatus EntityManager::Update()
 {
 	if (App->ui->pause == false)
 	{
@@ -96,7 +96,7 @@ update_status EntityManager::Update()
 	
 	CheatCodes();
 
-	return UPDATE_CONTINUE;
+	return UpdateStatus::Continue;
 }
 
 bool EntityManager::CleanUp()

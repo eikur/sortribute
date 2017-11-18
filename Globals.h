@@ -11,11 +11,11 @@ void log(const char file[], int line, const char* format, ...);
 #define MIN( a, b ) ( ((a) < (b)) ? (a) : (b) )
 #define MAX( a, b ) ( ((a) > (b)) ? (a) : (b) )
 
-enum update_status
+enum class UpdateStatus
 {
-	UPDATE_CONTINUE = 1,
-	UPDATE_STOP,
-	UPDATE_ERROR
+	Continue = 1,
+	Stop,
+	Error
 };
 
 // Useful typedefs ---------

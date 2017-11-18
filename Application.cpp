@@ -73,21 +73,21 @@ bool Application::Init()
 	return ret;
 }
 
-update_status Application::Update()
+UpdateStatus Application::Update()
 {
-	update_status ret = UPDATE_CONTINUE;
+	UpdateStatus ret = UpdateStatus::Continue;
 
 	timer->UpdateDeltaTime();
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
+	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UpdateStatus::Continue; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->PreUpdate();
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
+	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UpdateStatus::Continue; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->Update();
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UPDATE_CONTINUE; ++it)
+	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UpdateStatus::Continue; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->PostUpdate();
 

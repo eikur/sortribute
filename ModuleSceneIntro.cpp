@@ -55,7 +55,7 @@ bool ModuleSceneIntro::CleanUp()
 }
 
 // Update: draw background
-update_status ModuleSceneIntro::Update()
+UpdateStatus ModuleSceneIntro::Update()
 {
 	bool gamepad_attached = App->input->UsingGamepad();
 	App->renderer->Blit(background, 0, 0, 0, false);
@@ -81,7 +81,7 @@ update_status ModuleSceneIntro::Update()
 		App->audio->PlayFx(fx_start);
 	}
 
-	return UPDATE_CONTINUE;
+	return UpdateStatus::Continue;
 }
 
 bool ModuleSceneIntro::LoadConfigFromFile()

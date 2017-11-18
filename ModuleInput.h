@@ -59,7 +59,7 @@ public:
 	bool Start();
 
 	// Called each loop iteration
-	update_status PreUpdate();
+	UpdateStatus PreUpdate();
 
 	// Called before quitting
 	bool CleanUp();

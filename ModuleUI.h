@@ -13,7 +13,7 @@ public:
 	~ModuleUI();
 
 	bool Init();
-	update_status Update();
+	UpdateStatus Update();
 	bool CleanUp();
 
 	void ShowGoArrow();

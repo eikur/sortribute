@@ -39,7 +39,7 @@ public:
 	~ModuleParticles();
 
 	bool Start();
-	update_status Update();
+	UpdateStatus Update();
 	bool CleanUp();
 
 	void AddParticle(const Particle& particle, int x, int y); // feel free to expand this call

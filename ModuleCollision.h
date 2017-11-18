@@ -41,8 +41,8 @@ public:
 	ModuleCollision(Module* entities_report_to = nullptr, Module* scene_cols_report_to = nullptr);
 	~ModuleCollision();
 
-	update_status PreUpdate();
-	update_status Update();
+	UpdateStatus PreUpdate();
+	UpdateStatus Update();
 
 	bool CleanUp();
 

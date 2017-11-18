@@ -19,7 +19,7 @@ bool ModuleFadeToBlack::Start()
 }
 
 // Update: draw background
-update_status ModuleFadeToBlack::Update()
+UpdateStatus ModuleFadeToBlack::Update()
 {
 	if(start_time > 0)
 	{
@@ -60,7 +60,7 @@ update_status ModuleFadeToBlack::Update()
 		}
 	}
 
-	return UPDATE_CONTINUE;
+	return UpdateStatus::Continue;
 }
 
 // Fade to black. At mid point deactivate one module, then activate the other

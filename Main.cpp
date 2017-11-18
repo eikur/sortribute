@@ -6,13 +6,13 @@
 #pragma comment( lib, "3rdParty/SDL/libx86/SDL2.lib" )
 #pragma comment( lib, "3rdParty/SDL/libx86/SDL2main.lib" )
 
-enum main_states
+enum class MainState
 {
-	MAIN_CREATION,
-	MAIN_START,
-	MAIN_UPDATE,
-	MAIN_FINISH,
-	MAIN_EXIT
+	Creation,
+	Start,
+	Update ,
+	Finish,
+	Exit
 };
 
 Application* App = nullptr;
@@ -22,51 +22,51 @@ int main(int argc, char ** argv)
 	ReportMemoryLeaks();
 
 	int main_return = EXIT_FAILURE;
-	main_states state = MAIN_CREATION;
+	MainState state = MainState::Creation;
 
-	while (state != MAIN_EXIT)
+	while (state != MainState::Exit)
 	{
 		switch (state)
 		{
-		case MAIN_CREATION:
+		case MainState::Creation:
 
 			LOG("Application Creation --------------");
 			App = new Application();
-			state = MAIN_START;
+			state = MainState::Start;
 			break;
 
-		case MAIN_START:
+		case MainState::Start:
 
 			LOG("Application Init --------------");
 			if (App->Init() == false)
 			{
 				LOG("Application Init exits with error -----");
-				state = MAIN_EXIT;
+				state = MainState::Start;
 			}
 			else
 			{
-				state = MAIN_UPDATE;
+				state = MainState::Update;
 				LOG("Application Update --------------");
 			}
 
 			break;
 
-		case MAIN_UPDATE:
+		case MainState::Update:
 		{
-			int update_return = App->Update();
+			UpdateStatus updateReturn = App->Update();
 
-			if (update_return == UPDATE_ERROR)
+			if (updateReturn == UpdateStatus::Error)
 			{
 				LOG("Application Update exits with error -----");
-				state = MAIN_EXIT;
+				state = MainState::Exit;
 			}
 
-			if (update_return == UPDATE_STOP)
-				state = MAIN_FINISH;
+			if (updateReturn == UpdateStatus::Stop)
+				state = MainState::Finish;
 		}
 			break;
 
-		case MAIN_FINISH:
+		case MainState::Finish:
 
 			LOG("Application CleanUp --------------");
 			if (App->CleanUp() == false)
@@ -76,7 +76,7 @@ int main(int argc, char ** argv)
 			else
 				main_return = EXIT_SUCCESS;
 
-			state = MAIN_EXIT;
+			state = MainState::Exit;
 
 			break;
 

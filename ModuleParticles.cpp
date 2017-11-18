@@ -38,7 +38,7 @@ bool ModuleParticles::CleanUp()
 }
 
 // Update: draw particles 
-update_status ModuleParticles::Update()
+UpdateStatus ModuleParticles::Update()
 {
 	for (list<Particle*>::iterator it = active.begin(); it != active.end();)
 	{
@@ -56,9 +56,7 @@ update_status ModuleParticles::Update()
 		}
 	}
 
-	
-
-	return UPDATE_CONTINUE;
+	return UpdateStatus::Continue;
 }
 
 void ModuleParticles::AddParticle(const Particle& particle, int x, int y)

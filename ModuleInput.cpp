@@ -73,7 +73,7 @@ bool ModuleInput::Start()
 }
 
 // Called each loop iteration
-update_status ModuleInput::PreUpdate()
+UpdateStatus ModuleInput::PreUpdate()
 {
 	static SDL_Event event;
 
@@ -172,10 +172,12 @@ update_status ModuleInput::PreUpdate()
 		}
 	}
 
-	if(GetWindowEvent(EventWindow::WE_QUIT) == true || GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
-		return UPDATE_STOP;
+	if (GetWindowEvent(EventWindow::WE_QUIT) == true || GetKey(SDL_SCANCODE_ESCAPE) == KEY_DOWN)
+	{
+		return UpdateStatus::Stop;
+	}
 
-	return UPDATE_CONTINUE;
+	return UpdateStatus::Continue;
 }
 
 // Called before quitting

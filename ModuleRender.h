@@ -15,9 +15,9 @@ public:
 	~ModuleRender();
 
 	bool Init();
-	update_status PreUpdate();
-	update_status Update();
-	update_status PostUpdate();
+	UpdateStatus PreUpdate();
+	UpdateStatus Update();
+	UpdateStatus PostUpdate();
 	bool CleanUp();
 
 	bool Blit(SDL_Texture* texture, int x, int y, const SDL_Rect* section, float speed = 1.0f, bool flip = false);

@@ -47,16 +47,16 @@ bool ModuleScene3::Start()
 
 
 
-update_status ModuleScene3::PreUpdate()
+UpdateStatus ModuleScene3::PreUpdate()
 {
 	//Draw everything except wave_splash
 	App->renderer->Blit(graphics, background_pos.x, background_pos.y, &background_section, (float)(background_section.w - App->window->m_screen_width) / (float)(foreground_section.w - App->window->m_screen_width));
 	App->renderer->Blit(graphics, middleground_pos.x, middleground_pos.y, &middleground_section, (float)(middleground_section.w - App->window->m_screen_width) / (float)(foreground_section.w - App->window->m_screen_width));
 	App->renderer->Blit(graphics, foreground_pos.x, foreground_pos.y, &foreground_section, 1.0F);
 	App->renderer->Blit(graphics, wave_sand_pos.x, wave_sand_pos.y, &(wave_sand.GetCurrentFrame()), 1.0F);			
-	return UPDATE_CONTINUE;
+	return UpdateStatus::Continue;
 }
-update_status ModuleScene3::Update()
+UpdateStatus ModuleScene3::Update()
 {
 	App->renderer->Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);
 
@@ -64,7 +64,7 @@ update_status ModuleScene3::Update()
 	{
 		App->fade->FadeToBlack((Module*)App->intro, this, 3.0f);
 	}
-	return UPDATE_CONTINUE;
+	return UpdateStatus::Continue;
 }
 
 bool ModuleScene3::CleanUp()

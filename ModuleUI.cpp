@@ -30,7 +30,7 @@ bool ModuleUI::Init()
 		return true;
 }
 
-update_status ModuleUI::Update()
+UpdateStatus ModuleUI::Update()
 {
 	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN || App->input->GetGamepadButton(GamepadButton::START) == KEY_DOWN )
 	{
@@ -53,7 +53,7 @@ update_status ModuleUI::Update()
 
 	PrintStatus();
 
-	return UPDATE_CONTINUE;
+	return UpdateStatus::Continue;
 }
 bool ModuleUI::CleanUp() {
 	
