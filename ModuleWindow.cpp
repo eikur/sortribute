@@ -78,20 +78,20 @@ bool ModuleWindow::CleanUp()
 // Read parameters from config file
 bool ModuleWindow::LoadConfigFromFile()
 {
-	JSON_Object *window_object = App->config->GetJSONObject("window"); 
+	JSON_Object *window_object = App->getConfig().GetJSONObject("window"); 
 	if (window_object == nullptr) { return false;  }
 
-	m_screen_width = App->config->GetIntFromJSONObject(window_object, "screen_width"); 
+	m_screen_width = App->getConfig().GetIntFromJSONObject(window_object, "screen_width"); 
 	if (m_screen_width == 0) { return false;  }
-	m_screen_height = App->config->GetIntFromJSONObject(window_object, "screen_height");
+	m_screen_height = App->getConfig().GetIntFromJSONObject(window_object, "screen_height");
 	if (m_screen_height == 0) { return false; }
-	m_screen_size = App->config->GetIntFromJSONObject(window_object, "screen_size");
+	m_screen_size = App->getConfig().GetIntFromJSONObject(window_object, "screen_size");
 	if (m_screen_size == 0) { return false;  }
 	
-	m_fullscreen = App->config->GetBoolFromJSONObject(window_object, "fullscreen"); 
-	m_vsync = App->config->GetBoolFromJSONObject(window_object, "vsync");
+	m_fullscreen = App->getConfig().GetBoolFromJSONObject(window_object, "fullscreen"); 
+	m_vsync = App->getConfig().GetBoolFromJSONObject(window_object, "vsync");
 
-	m_title = App->config->GetStringFromJSONObject(window_object, "title"); 
+	m_title = App->getConfig().GetStringFromJSONObject(window_object, "title"); 
 
 	return true;
 }

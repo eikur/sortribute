@@ -47,8 +47,8 @@ UpdateStatus EntityManager::Update()
 {
 	if (App->getUI().pause == false)
 	{
-		elapsed_msec += App->timer->DeltaTime();
-		time_left_msec -= App->timer->DeltaTime();
+		elapsed_msec += App->getTimer().DeltaTime();
+		time_left_msec -= App->getTimer().DeltaTime();
 
 		if (time_left_msec <= 0 && player != nullptr)
 		{

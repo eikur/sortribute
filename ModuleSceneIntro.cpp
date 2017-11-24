@@ -60,7 +60,7 @@ UpdateStatus ModuleSceneIntro::Update()
 	bool gamepad_attached = App->getInput().UsingGamepad();
 	App->getRenderer().Blit(background, 0, 0, 0, false);
 
-	elapsed_msec += App->timer->DeltaTime();
+	elapsed_msec += App->getTimer().DeltaTime();
 
 	if (elapsed_msec <= blink_msg_msec)
 	{
@@ -86,19 +86,19 @@ UpdateStatus ModuleSceneIntro::Update()
 
 bool ModuleSceneIntro::LoadConfigFromFile()
 {
-	JSON_Object *json_intro = App->config->GetJSONObject("intro");
+	JSON_Object *json_intro = App->getConfig().GetJSONObject("intro");
 	if (json_intro == nullptr) { return false;  }
 
-	background = App->getTextures().Load(App->config->GetStringFromJSONObject(json_intro, "graphics_file"));
+	background = App->getTextures().Load(App->getConfig().GetStringFromJSONObject(json_intro, "graphics_file"));
 	if (background == nullptr) { return false; }
 
-	music_path = App->config->GetStringFromJSONObject(json_intro, "music_file");
+	music_path = App->getConfig().GetStringFromJSONObject(json_intro, "music_file");
 	if (music_path == "") { return false; }
 
-	fx_start = App->getAudio().LoadFx(App->config->GetStringFromJSONObject(json_intro, "fx_start"));
+	fx_start = App->getAudio().LoadFx(App->getConfig().GetStringFromJSONObject(json_intro, "fx_start"));
 	if (fx_start == -1) { return false; }
 
-	blink_msg_msec = App->config->GetIntFromJSONObject(json_intro, "blink_msg_msec");
+	blink_msg_msec = App->getConfig().GetIntFromJSONObject(json_intro, "blink_msg_msec");
 	if (blink_msg_msec == 0) { return false; }
 
 	return true;

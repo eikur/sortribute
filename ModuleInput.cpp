@@ -208,10 +208,10 @@ const iPoint& ModuleInput::GetMouseMotion() const
 
 bool ModuleInput::LoadConfigFromFile()
 {
-	JSON_Object *window_object = App->config->GetJSONObject("window");
+	JSON_Object *window_object = App->getConfig().GetJSONObject("window");
 	if (window_object == nullptr) { return false; }
 
-	m_screen_size = App->config->GetIntFromJSONObject(window_object, "screen_size");
+	m_screen_size = App->getConfig().GetIntFromJSONObject(window_object, "screen_size");
 	if (m_screen_size == 0) { return false;  }
 
 	return true;

@@ -31,7 +31,6 @@ class ConfigurationLoader;
 				return *_NAME_.get();	\
 			}
 				
-
 class Application
 {
 public:
@@ -43,12 +42,9 @@ public:
 	UpdateStatus Update();
 	bool CleanUp();
 
-public:
-	// Utils
-	ConfigurationLoader *config = nullptr;
-	Timer* timer = nullptr;
-
 private:
+	std::vector<Module*> _modules;
+
 	MEMBER_DECL(ModuleRender, _renderer, getRenderer)
 	MEMBER_DECL(ModuleWindow, _window, getWindow)
 	MEMBER_DECL(ModuleTextures, _textures, getTextures)
@@ -56,16 +52,16 @@ private:
 	MEMBER_DECL(ModuleAudio, _audio, getAudio)
 	MEMBER_DECL(ModuleFonts, _fonts, getFonts)
 	MEMBER_DECL(ModuleUI, _ui, getUI)
-
 	MEMBER_DECL(ModuleFadeToBlack, _fade, getFade)
 	MEMBER_DECL(ModuleSceneIntro, _intro, getIntro)
 	MEMBER_DECL(ModuleScene3, _scene3, getScene3)
 	MEMBER_DECL(EntityManager, _entityManager, getEntityManager)
-
 	MEMBER_DECL(ModuleCollision, _collision, getCollision)
 	MEMBER_DECL(ModuleParticles, _particles, getParticles)
 
-	std::vector<Module*> _modules;
+	MEMBER_DECL(ConfigurationLoader, _config, getConfig)
+	MEMBER_DECL(Timer, _timer, getTimer)
+
 };
 
 extern Application* App;

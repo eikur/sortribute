@@ -173,21 +173,21 @@ bool ModuleRender::LoadConfigFromFile()
 {
 	JSON_Object *render_object = nullptr; 
 	
-	render_object = App->config->GetJSONObject("window");
+	render_object = App->getConfig().GetJSONObject("window");
 	if (render_object == nullptr) { return false; }
-	m_screen_width = App->config->GetIntFromJSONObject(render_object, "screen_width"); 
+	m_screen_width = App->getConfig().GetIntFromJSONObject(render_object, "screen_width"); 
 	if (m_screen_width == 0) { return false; }
-	m_screen_height = App->config->GetIntFromJSONObject(render_object, "screen_height");
+	m_screen_height = App->getConfig().GetIntFromJSONObject(render_object, "screen_height");
 	if (m_screen_height == 0) { return false; }
-	m_screen_size = App->config->GetIntFromJSONObject(render_object, "screen_size");
+	m_screen_size = App->getConfig().GetIntFromJSONObject(render_object, "screen_size");
 	if (m_screen_size == 0) { return false; }
-	m_vsync = App->config->GetBoolFromJSONObject(render_object, "vsync"); 
+	m_vsync = App->getConfig().GetBoolFromJSONObject(render_object, "vsync"); 
 
-	render_object = App->config->GetJSONObject("renderer.camera"); 
+	render_object = App->getConfig().GetJSONObject("renderer.camera"); 
 	if (render_object == nullptr) { return false; }
-	m_limit_margin = App->config->GetIntFromJSONObject(render_object, "x_limit_margin"); 
+	m_limit_margin = App->getConfig().GetIntFromJSONObject(render_object, "x_limit_margin"); 
 	if (m_limit_margin < 0) { return false;  }
-	m_speed = App->config->GetIntFromJSONObject(render_object, "speed");
+	m_speed = App->getConfig().GetIntFromJSONObject(render_object, "speed");
 	if (m_speed == 0) { return false; }
 	
 	return true;

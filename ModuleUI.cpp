@@ -36,16 +36,16 @@ UpdateStatus ModuleUI::Update()
 	{
 		pause = !pause;
 		if (pause)
-			App->timer->TimerPause();
+			App->getTimer().TimerPause();
 		else
-			App->timer->TimerResume();
+			App->getTimer().TimerResume();
 		if (App->getEntityManager().player != nullptr)
 			App->getAudio().PlayFx(fx_pause);
 	}
 	if (pause == false)
 	{
 		if (remaining_msec_go_arrow > 0)
-			remaining_msec_go_arrow -= App->timer->DeltaTime();
+			remaining_msec_go_arrow -= App->getTimer().DeltaTime();
 
 		if (App->getInput().GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
 			debug = !debug;
@@ -200,37 +200,37 @@ void ModuleUI::ShowPlayerDebugMode()
 
 bool ModuleUI::LoadConfigFromFile()
 {
-	JSON_Object *ui_object = App->config->GetJSONObject("hud"); 
+	JSON_Object *ui_object = App->getConfig().GetJSONObject("hud"); 
 	if (ui_object == nullptr) { return false;  }
 	
-	hud_graphics = App->getTextures().Load(App->config->GetStringFromJSONObject(ui_object, "graphics_file"));
+	hud_graphics = App->getTextures().Load(App->getConfig().GetStringFromJSONObject(ui_object, "graphics_file"));
 	if (hud_graphics == nullptr) { return false; }
 
-	if (App->config->LoadSDLRectFromJSONObject(ui_object, "section", &hud_section) == false) { return false; }
-	if (App->config->LoadSDLRectFromJSONObject(ui_object, "health_section", &hud_health_section) == false) { return false; }
-	if (App->config->LoadSDLRectFromJSONObject(ui_object, "boss_section", &hud_boss_section) == false) { return false; }
-	if (App->config->LoadSDLRectFromJSONObject(ui_object, "high_health_section", &hud_high_health_section) == false) { return false; }
-	if (App->config->LoadSDLRectFromJSONObject(ui_object, "medium_health_section", &hud_medium_health_section) == false) { return false; }
-	if (App->config->LoadSDLRectFromJSONObject(ui_object, "go_arrow_section", &hud_go_arrow_section) == false) { return false; }
+	if (App->getConfig().LoadSDLRectFromJSONObject(ui_object, "section", &hud_section) == false) { return false; }
+	if (App->getConfig().LoadSDLRectFromJSONObject(ui_object, "health_section", &hud_health_section) == false) { return false; }
+	if (App->getConfig().LoadSDLRectFromJSONObject(ui_object, "boss_section", &hud_boss_section) == false) { return false; }
+	if (App->getConfig().LoadSDLRectFromJSONObject(ui_object, "high_health_section", &hud_high_health_section) == false) { return false; }
+	if (App->getConfig().LoadSDLRectFromJSONObject(ui_object, "medium_health_section", &hud_medium_health_section) == false) { return false; }
+	if (App->getConfig().LoadSDLRectFromJSONObject(ui_object, "go_arrow_section", &hud_go_arrow_section) == false) { return false; }
 
-	if (App->config->LoadiPointFromJSONObject(ui_object, "time_pos", &hud_time_pos) == false) { return false;  }
-	if (App->config->LoadiPointFromJSONObject(ui_object, "score_pos", &hud_score_pos) == false) { return false; }
-	if (App->config->LoadiPointFromJSONObject(ui_object, "lives_pos", &hud_lives_pos) == false) { return false; }
-	if (App->config->LoadiPointFromJSONObject(ui_object, "help_pos", &hud_help_pos) == false) { return false; }
-	if (App->config->LoadiPointFromJSONObject(ui_object, "health_pos", &hud_health_pos) == false) { return false; }
-	if (App->config->LoadiPointFromJSONObject(ui_object, "boss_pos", &hud_boss_pos) == false) { return false; }
-	if (App->config->LoadiPointFromJSONObject(ui_object, "boss_health_pos", &hud_health_boss_pos) == false) { return false; }
-	if (App->config->LoadiPointFromJSONObject(ui_object, "boss_msg_pos", &hud_boss_msg_pos) == false) { return false; }
-	if (App->config->LoadiPointFromJSONObject(ui_object, "go_arrow_pos", &hud_go_arrow_pos) == false) { return false; }
+	if (App->getConfig().LoadiPointFromJSONObject(ui_object, "time_pos", &hud_time_pos) == false) { return false;  }
+	if (App->getConfig().LoadiPointFromJSONObject(ui_object, "score_pos", &hud_score_pos) == false) { return false; }
+	if (App->getConfig().LoadiPointFromJSONObject(ui_object, "lives_pos", &hud_lives_pos) == false) { return false; }
+	if (App->getConfig().LoadiPointFromJSONObject(ui_object, "help_pos", &hud_help_pos) == false) { return false; }
+	if (App->getConfig().LoadiPointFromJSONObject(ui_object, "health_pos", &hud_health_pos) == false) { return false; }
+	if (App->getConfig().LoadiPointFromJSONObject(ui_object, "boss_pos", &hud_boss_pos) == false) { return false; }
+	if (App->getConfig().LoadiPointFromJSONObject(ui_object, "boss_health_pos", &hud_health_boss_pos) == false) { return false; }
+	if (App->getConfig().LoadiPointFromJSONObject(ui_object, "boss_msg_pos", &hud_boss_msg_pos) == false) { return false; }
+	if (App->getConfig().LoadiPointFromJSONObject(ui_object, "go_arrow_pos", &hud_go_arrow_pos) == false) { return false; }
 
-	blink_msec_go_arrow = App->config->GetIntFromJSONObject(ui_object, "go_arrow_blink_msec"); 
+	blink_msec_go_arrow = App->getConfig().GetIntFromJSONObject(ui_object, "go_arrow_blink_msec"); 
 	if (blink_msec_go_arrow == 0) { return false;  }
 	
-	ui_object = App->config->GetJSONObject("fx"); 
+	ui_object = App->getConfig().GetJSONObject("fx"); 
 	if (ui_object == nullptr) { return false; }
-	fx_pause = App->getAudio().LoadFx(App->config->GetStringFromJSONObject(ui_object, "pause"));
+	fx_pause = App->getAudio().LoadFx(App->getConfig().GetStringFromJSONObject(ui_object, "pause"));
 	if (fx_pause == -1) { return false; }
-	fx_go_arrow = App->getAudio().LoadFx(App->config->GetStringFromJSONObject(ui_object, "go_arrow"));
+	fx_go_arrow = App->getAudio().LoadFx(App->getConfig().GetStringFromJSONObject(ui_object, "go_arrow"));
 	if (fx_go_arrow == -1) { return false; }
 
 	return true;

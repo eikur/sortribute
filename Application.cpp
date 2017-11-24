@@ -19,7 +19,9 @@
 
 Application::Application()
 {
-	config = new ConfigurationLoader(CONFIG_FILE);
+	_config = std::make_unique<ConfigurationLoader>(CONFIG_FILE);
+	_timer = std::make_unique<Timer>();
+	_timer->TimerStart();
 
 	// Base App modules
 	_window = std::make_unique<ModuleWindow>();
@@ -40,16 +42,10 @@ Application::Application()
 
 	// Order matters: they will init/start/pre/update/post in this order
 	_modules = { _window.get(), _renderer.get(), _input.get(), _textures.get(), _audio.get(), _fonts.get(), _ui.get(), _entityManager.get(), _scene3.get(), _intro.get(), _collision.get(), _particles.get(), _fade.get() };
-
-	timer = new Timer();
-	timer->TimerStart();
 }
 
 Application::~Application()
 {
-	RELEASE(config);
-	RELEASE(timer);
-
 	_fade.reset();
 	_particles.reset();
 	_collision.reset();
@@ -63,6 +59,9 @@ Application::~Application()
 	_input.reset();
 	_renderer.reset();
 	_window.reset();
+
+	_timer.reset();
+	_config.reset();
 }
 
 bool Application::Init()
@@ -87,7 +86,7 @@ UpdateStatus Application::Update()
 {
 	UpdateStatus ret = UpdateStatus::Continue;
 
-	timer->UpdateDeltaTime();
+	_timer->UpdateDeltaTime();
 
 	for(auto& it = _modules.begin(); it != _modules.end() && ret == UpdateStatus::Continue; ++it)
 		if((*it)->IsEnabled() == true) 
