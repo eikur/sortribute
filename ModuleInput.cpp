@@ -33,7 +33,7 @@ bool ModuleInput::Init()
 	}
 	else
 	{
-		if (SDL_NumJoysticks() < 0)
+		if (SDL_NumJoysticks() <= 0)
 		{
 			LOG("Input: No gamepad detected");
 		}

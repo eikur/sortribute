@@ -9,6 +9,7 @@
 #include "ModuleCollision.h"
 #include "ModuleFadeToBlack.h"
 #include "ModuleUI.h"
+#include "ModuleSceneIntro.h"
 
 #include "ModuleScene3.h"
 
@@ -32,15 +33,15 @@ bool ModuleScene3::Start()
 	CreateSceneTriggers();
 	PlaceSceneItems();
 	
-	App->audio->PlayMusic(music_path.c_str(), 1.0F);	
-	App->audio->PlayFx(fx_waves);
+	App->getAudio().PlayMusic(music_path.c_str(), 1.0F);	
+	App->getAudio().PlayFx(fx_waves);
 	
-	App->manager->Enable();
-	App->manager->player = App->manager->CreateEntity(Entity::Types::player);
+	App->getEntityManager().Enable();
+	App->getEntityManager().player = App->getEntityManager().CreateEntity(Entity::Types::player);
 
-	App->ui->Enable();
+	App->getUI().Enable();
 	
-	App->renderer->locked = false;
+	App->getRenderer().locked = false;
 
 	return true;
 }
@@ -50,19 +51,19 @@ bool ModuleScene3::Start()
 UpdateStatus ModuleScene3::PreUpdate()
 {
 	//Draw everything except wave_splash
-	App->renderer->Blit(graphics, background_pos.x, background_pos.y, &background_section, (float)(background_section.w - App->window->m_screen_width) / (float)(foreground_section.w - App->window->m_screen_width));
-	App->renderer->Blit(graphics, middleground_pos.x, middleground_pos.y, &middleground_section, (float)(middleground_section.w - App->window->m_screen_width) / (float)(foreground_section.w - App->window->m_screen_width));
-	App->renderer->Blit(graphics, foreground_pos.x, foreground_pos.y, &foreground_section, 1.0F);
-	App->renderer->Blit(graphics, wave_sand_pos.x, wave_sand_pos.y, &(wave_sand.GetCurrentFrame()), 1.0F);			
+	App->getRenderer().Blit(graphics, background_pos.x, background_pos.y, &background_section, (float)(background_section.w - App->getWindow().m_screen_width) / (float)(foreground_section.w - App->getWindow().m_screen_width));
+	App->getRenderer().Blit(graphics, middleground_pos.x, middleground_pos.y, &middleground_section, (float)(middleground_section.w - App->getWindow().m_screen_width) / (float)(foreground_section.w - App->getWindow().m_screen_width));
+	App->getRenderer().Blit(graphics, foreground_pos.x, foreground_pos.y, &foreground_section, 1.0F);
+	App->getRenderer().Blit(graphics, wave_sand_pos.x, wave_sand_pos.y, &(wave_sand.GetCurrentFrame()), 1.0F);			
 	return UpdateStatus::Continue;
 }
 UpdateStatus ModuleScene3::Update()
 {
-	App->renderer->Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);
+	App->getRenderer().Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);
 
-	if (battle_zone4 == nullptr && App->manager->boss == nullptr && App->fade->isFading() == false)
+	if (battle_zone4 == nullptr && App->getEntityManager().boss == nullptr && App->getFade().isFading() == false)
 	{
-		App->fade->FadeToBlack((Module*)App->intro, this, 3.0f);
+		App->getFade().FadeToBlack((Module*)&App->getIntro(), this, 3.0f);
 	}
 	return UpdateStatus::Continue;
 }
@@ -70,7 +71,7 @@ UpdateStatus ModuleScene3::Update()
 bool ModuleScene3::CleanUp()
 {
 	LOG("Scene3: Unloading Moon Beach scene\n");
-	App->textures->Unload(graphics);
+	App->getTextures().Unload(graphics);
 	DeleteSceneTriggers();
 	return true;
 }
@@ -85,28 +86,28 @@ void ModuleScene3::HandleCollision(Collider* a, Collider* b)
 
 void ModuleScene3::CreateSceneTriggers()
 {
-	triggers.push_back(spawn1 = App->collision->AddCollider({ 300,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
-	triggers.push_back(spawn2 = App->collision->AddCollider({ 450,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
-	triggers.push_back(spawn3 = App->collision->AddCollider({ 520,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
-	triggers.push_back(spawn4 = App->collision->AddCollider({ 960,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
-	triggers.push_back(spawn5 = App->collision->AddCollider({ 1100,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
-	triggers.push_back(spawn6 = App->collision->AddCollider({ 1570,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
-	triggers.push_back(spawn7 = App->collision->AddCollider({ 1926,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
-	triggers.push_back(spawn8 = App->collision->AddCollider({ 2082,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
-	triggers.push_back(spawn9 = App->collision->AddCollider({ 2608,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
-	triggers.push_back(spawn10 = App->collision->AddCollider({ 2706,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn1 = App->getCollision().AddCollider({ 300,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn2 = App->getCollision().AddCollider({ 450,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn3 = App->getCollision().AddCollider({ 520,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn4 = App->getCollision().AddCollider({ 960,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn5 = App->getCollision().AddCollider({ 1100,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn6 = App->getCollision().AddCollider({ 1570,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn7 = App->getCollision().AddCollider({ 1926,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn8 = App->getCollision().AddCollider({ 2082,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn9 = App->getCollision().AddCollider({ 2608,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(spawn10 = App->getCollision().AddCollider({ 2706,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
 
-	triggers.push_back(cam_lock1 = App->collision->AddCollider({ 590,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
-	triggers.push_back(battle_zone1 = App->collision->AddCollider({ 450,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(cam_lock1 = App->getCollision().AddCollider({ 590,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(battle_zone1 = App->getCollision().AddCollider({ 450,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr));
 	
-	triggers.push_back(cam_lock2 = App->collision->AddCollider({ 1360,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
-	triggers.push_back(battle_zone2 = App->collision->AddCollider({ 1220,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(cam_lock2 = App->getCollision().AddCollider({ 1360,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(battle_zone2 = App->getCollision().AddCollider({ 1220,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr));
 
-	triggers.push_back(cam_lock3 = App->collision->AddCollider({ 2130,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
-	triggers.push_back(battle_zone3 = App->collision->AddCollider({ 1990,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(cam_lock3 = App->getCollision().AddCollider({ 2130,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(battle_zone3 = App->getCollision().AddCollider({ 1990,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr));
 
-	triggers.push_back(cam_lock4 = App->collision->AddCollider({ 2900,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
-	triggers.push_back(battle_zone4 = App->collision->AddCollider({ 2760,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(cam_lock4 = App->getCollision().AddCollider({ 2900,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
+	triggers.push_back(battle_zone4 = App->getCollision().AddCollider({ 2760,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr));
 }
 
 void ModuleScene3::DeleteSceneTriggers()
@@ -125,13 +126,13 @@ void ModuleScene3::DeleteSceneTriggers()
 void ModuleScene3::PlaceSceneItems()
 {
 	Entity *tmp = nullptr;
-	tmp = App->manager->CreateEntity(Entity::Types::item_apple);
+	tmp = App->getEntityManager().CreateEntity(Entity::Types::item_apple);
 	tmp->SetPosition({ 400,180 });
-	tmp = App->manager->CreateEntity(Entity::Types::item_apple);
+	tmp = App->getEntityManager().CreateEntity(Entity::Types::item_apple);
 	tmp->SetPosition({ 1155,180 });
-	tmp = App->manager->CreateEntity(Entity::Types::item_chicken);
+	tmp = App->getEntityManager().CreateEntity(Entity::Types::item_chicken);
 	tmp->SetPosition({1824,170});
-	tmp = App->manager->CreateEntity(Entity::Types::item_apple);
+	tmp = App->getEntityManager().CreateEntity(Entity::Types::item_apple);
 	tmp->SetPosition({ 1950,170 });
 }
 
@@ -144,7 +145,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	
 	if (trigger == spawn1)
 	{
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn1->rect.x -170, 200 });
 		spawn1 = nullptr;
@@ -152,7 +153,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn2)
 	{
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp!= nullptr)
 			tmp->SetPosition({ spawn2->rect.x + 170, 216 });
 		spawn2 = nullptr;
@@ -160,7 +161,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn3)
 	{
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn3->rect.x + 170, 162 });
 		spawn3 = nullptr;
@@ -168,34 +169,34 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == cam_lock1)
 	{
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock1->rect.x -180, 162 });
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock1->rect.x +170 , 210 });
-		App->renderer->locked = true;
+		App->getRenderer().locked = true;
 		cam_lock1 = nullptr;
 		trigger->to_delete = true;
 	}
 	else if (trigger == battle_zone1)
 	{
-		if (cam_lock1 == nullptr && App->manager->GetEnemyCount() == 0)
+		if (cam_lock1 == nullptr && App->getEntityManager().GetEnemyCount() == 0)
 		{
-			App->renderer->locked = false;
-			App->audio->PlayFx(fx_waves);
-			tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+			App->getRenderer().locked = false;
+			App->getAudio().PlayFx(fx_waves);
+			tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 			if (tmp != nullptr)
 				tmp->SetPosition({battle_zone1->rect.x +battle_zone1->rect.w + 340, 210});
-			App->manager->RestoreTimeLeft();
-			App->ui->ShowGoArrow();
+			App->getEntityManager().RestoreTimeLeft();
+			App->getUI().ShowGoArrow();
 			battle_zone1 = nullptr;
 			trigger->to_delete = true;
 		}
 	}
 	else if (trigger == spawn4)
 	{
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn4->rect.x + 170, 162 });
 		spawn4 = nullptr;
@@ -203,7 +204,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn5)
 	{
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn5->rect.x -170, 216 });
 		spawn5 = nullptr;
@@ -211,11 +212,11 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == cam_lock2)
 	{
-		App->renderer->locked = true;
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		App->getRenderer().locked = true;
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock2->rect.x - 170, 162 });
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock2->rect.x + 250, 210 });
 		cam_lock2 = nullptr;
@@ -223,22 +224,22 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == battle_zone2)
 	{
-		if (cam_lock2 == nullptr && App->manager->GetEnemyCount() == 0)
+		if (cam_lock2 == nullptr && App->getEntityManager().GetEnemyCount() == 0)
 		{
-			App->renderer->locked = false;
-			App->audio->PlayFx(fx_waves);
-			tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+			App->getRenderer().locked = false;
+			App->getAudio().PlayFx(fx_waves);
+			tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 			if (tmp != nullptr)
 				tmp->SetPosition({ battle_zone2->rect.x + battle_zone2->rect.w + 300, 210 });
-			App->manager->RestoreTimeLeft();
-			App->ui->ShowGoArrow();
+			App->getEntityManager().RestoreTimeLeft();
+			App->getUI().ShowGoArrow();
 			battle_zone2 = nullptr;
 			trigger->to_delete = true;
 		}
 	}
 	else if (trigger == spawn6)
 	{
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn6->rect.x + 180, 210 });
 		spawn6 = nullptr;
@@ -246,10 +247,10 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn7)
 	{
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn7->rect.x + 180, 175 });
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn7->rect.x + 250, 175 });
 		spawn7 = nullptr;
@@ -257,7 +258,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn8)
 	{
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn8->rect.x + 170, 210 });
 		spawn8 = nullptr;
@@ -265,17 +266,17 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == cam_lock3)
 	{
-		App->renderer->locked = true;
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		App->getRenderer().locked = true;
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock3->rect.x - 180, 162 });
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock3->rect.x + 250, 210 });
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock3->rect.x - 340, 202 });
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock3->rect.x + 420, 170 });
 		cam_lock3 = nullptr;
@@ -283,19 +284,19 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == battle_zone3)
 	{
-		if (cam_lock3 == nullptr && App->manager->GetEnemyCount() == 0)
+		if (cam_lock3 == nullptr && App->getEntityManager().GetEnemyCount() == 0)
 		{
-			App->renderer->locked = false;
-			App->audio->PlayFx(fx_waves);
-			App->manager->RestoreTimeLeft();
-			App->ui->ShowGoArrow();
+			App->getRenderer().locked = false;
+			App->getAudio().PlayFx(fx_waves);
+			App->getEntityManager().RestoreTimeLeft();
+			App->getUI().ShowGoArrow();
 			battle_zone3 = nullptr;
 			trigger->to_delete = true;
 		}
 	}
 	else if (trigger == spawn9)
 	{
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn9->rect.x + 180, 180 });
 		spawn9 = nullptr;
@@ -303,7 +304,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn10)
 	{
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn10->rect.x + 180, 210 });
 		spawn10 = nullptr;
@@ -311,8 +312,8 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == cam_lock4)
 	{
-		App->renderer->locked = true;
-		tmp = App->manager->CreateEntity(Entity::Types::npc_garcia);
+		App->getRenderer().locked = true;
+		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock4->rect.x - 180, 210 });
 		cam_lock4 = nullptr;
@@ -320,15 +321,15 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == battle_zone4)
 	{
-		if (cam_lock4 == nullptr && App->manager->GetEnemyCount() == 0)
+		if (cam_lock4 == nullptr && App->getEntityManager().GetEnemyCount() == 0)
 		{
-			App->audio->PlayMusic(boss_music_path.c_str(),0.0F);
-			App->manager->RestoreTimeLeft();
+			App->getAudio().PlayMusic(boss_music_path.c_str(),0.0F);
+			App->getEntityManager().RestoreTimeLeft();
 			do {
-				tmp = App->manager->CreateEntity(Entity::Types::npc_boss);
+				tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_boss);
 			} while (tmp == nullptr);
 			tmp->SetPosition({ battle_zone4->rect.x + battle_zone4->rect.w + 300, 180 });
-			App->manager->boss = tmp;
+			App->getEntityManager().boss = tmp;
 			battle_zone4 = nullptr;
 			trigger->to_delete = true;
 		}
@@ -351,7 +352,7 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 		root_object = json_object(root_value);
 
 	if (json_object_dothas_value_of_type(root_object, "scene3.graphics_file", JSONString))
-		graphics = App->textures->Load(json_object_dotget_string(root_object, "scene3.graphics_file"));
+		graphics = App->getTextures().Load(json_object_dotget_string(root_object, "scene3.graphics_file"));
 	
 	if (json_object_dothas_value_of_type(root_object, "scene3.music_file",JSONString))
 		music_path = json_object_dotget_string(root_object, "scene3.music_file");
@@ -360,7 +361,7 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 		boss_music_path = json_object_dotget_string(root_object, "scene3.boss_music_file");
 	
 	if (json_object_dothas_value_of_type(root_object, "scene3.fx_waves", JSONString))
-		fx_waves = App->audio->LoadFx(json_object_dotget_string(root_object, "scene3.fx_waves"));
+		fx_waves = App->getAudio().LoadFx(json_object_dotget_string(root_object, "scene3.fx_waves"));
 
 
 	//background load
@@ -449,7 +450,7 @@ bool ModuleScene3::LoadConfigFromFile(const char* file_path)
 	if (graphics == nullptr || music_path == "")
 	{
 		if (graphics != nullptr)
-			App->textures->Unload(graphics);
+			App->getTextures().Unload(graphics);
 		return false;
 	}
 	

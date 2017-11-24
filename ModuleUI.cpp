@@ -32,22 +32,22 @@ bool ModuleUI::Init()
 
 UpdateStatus ModuleUI::Update()
 {
-	if (App->input->GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN || App->input->GetGamepadButton(GamepadButton::START) == KEY_DOWN )
+	if (App->getInput().GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN || App->getInput().GetGamepadButton(GamepadButton::START) == KEY_DOWN )
 	{
 		pause = !pause;
 		if (pause)
 			App->timer->TimerPause();
 		else
 			App->timer->TimerResume();
-		if (App->manager->player != nullptr)
-			App->audio->PlayFx(fx_pause);
+		if (App->getEntityManager().player != nullptr)
+			App->getAudio().PlayFx(fx_pause);
 	}
 	if (pause == false)
 	{
 		if (remaining_msec_go_arrow > 0)
 			remaining_msec_go_arrow -= App->timer->DeltaTime();
 
-		if (App->input->GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
+		if (App->getInput().GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
 			debug = !debug;
 	}
 
@@ -63,50 +63,50 @@ bool ModuleUI::CleanUp() {
 // -------------------------- Miscellaneous -------------------------------
 void ModuleUI::PrintStatus()
 {
-	App->renderer->Blit(hud_graphics, 0, 0, &hud_section, 0.0F);
+	App->getRenderer().Blit(hud_graphics, 0, 0, &hud_section, 0.0F);
 	if (pause)
 	{
-		App->fonts->Print(112, 96, ModuleFonts::Fonts::scene_overlap, "P");
-		App->fonts->Print(132, 96, ModuleFonts::Fonts::scene_overlap, "A");
-		App->fonts->Print(152, 96, ModuleFonts::Fonts::scene_overlap, "U");
-		App->fonts->Print(172, 96, ModuleFonts::Fonts::scene_overlap, "S");
-		App->fonts->Print(192, 96, ModuleFonts::Fonts::scene_overlap, "E");
+		App->getFonts().Print(112, 96, ModuleFonts::Fonts::scene_overlap, "P");
+		App->getFonts().Print(132, 96, ModuleFonts::Fonts::scene_overlap, "A");
+		App->getFonts().Print(152, 96, ModuleFonts::Fonts::scene_overlap, "U");
+		App->getFonts().Print(172, 96, ModuleFonts::Fonts::scene_overlap, "S");
+		App->getFonts().Print(192, 96, ModuleFonts::Fonts::scene_overlap, "E");
 	}
-	if (App->manager->player != nullptr) {
-		App->fonts->Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(App->manager->time_left_msec / 2000, 2));
-		App->fonts->Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, App->fonts->GetPrintableValue(App->manager->player->score, 6));
-		App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(App->manager->player->help, 1));
-		App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, App->fonts->GetPrintableValue(App->manager->player->lives, 1));
+	if (App->getEntityManager().player != nullptr) {
+		App->getFonts().Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, App->getFonts().GetPrintableValue(App->getEntityManager().time_left_msec / 2000, 2));
+		App->getFonts().Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, App->getFonts().GetPrintableValue(App->getEntityManager().player->score, 6));
+		App->getFonts().Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, App->getFonts().GetPrintableValue(App->getEntityManager().player->help, 1));
+		App->getFonts().Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, App->getFonts().GetPrintableValue(App->getEntityManager().player->lives, 1));
 		PrintPlayerHealth();
 		PrintGoArrow();
 	}
 	else {
-		App->fonts->Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, "00");
-		App->fonts->Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, "000000");
-		App->fonts->Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, "0");
-		App->fonts->Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, "0");
-		App->fonts->Print(146, 110, ModuleFonts::Fonts::scene_overlap, "END");
+		App->getFonts().Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::Fonts::hud_big, "00");
+		App->getFonts().Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::Fonts::hud_small, "000000");
+		App->getFonts().Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::Fonts::hud_big, "0");
+		App->getFonts().Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::Fonts::hud_big, "0");
+		App->getFonts().Print(146, 110, ModuleFonts::Fonts::scene_overlap, "END");
 	}
-	if (App->manager->boss != nullptr)
+	if (App->getEntityManager().boss != nullptr)
 	{
-		App->renderer->Blit(hud_graphics, hud_boss_pos.x, hud_boss_pos.y, &hud_boss_section, 0.0F);
-		App->fonts->Print(hud_boss_msg_pos.x, hud_boss_msg_pos.y, ModuleFonts::Fonts::hud_small, "-BOSS-");
+		App->getRenderer().Blit(hud_graphics, hud_boss_pos.x, hud_boss_pos.y, &hud_boss_section, 0.0F);
+		App->getFonts().Print(hud_boss_msg_pos.x, hud_boss_msg_pos.y, ModuleFonts::Fonts::hud_small, "-BOSS-");
 		PrintBossHealth();
 	}
 	// debug options
-	App->fonts->Print(220, 2, ModuleFonts::Fonts::hud_small, "- TOOLS -");
-	App->fonts->Print(196, 11, ModuleFonts::Fonts::hud_small, "F1-COLS");
-	App->fonts->Print(196, 20, ModuleFonts::Fonts::hud_small, "F2-SPWN");
-	App->fonts->Print(260, 11, ModuleFonts::Fonts::hud_small, "F3-PLYR");
-	App->fonts->Print(260, 20, ModuleFonts::Fonts::hud_small, "F4-POS");
+	App->getFonts().Print(220, 2, ModuleFonts::Fonts::hud_small, "- TOOLS -");
+	App->getFonts().Print(196, 11, ModuleFonts::Fonts::hud_small, "F1-COLS");
+	App->getFonts().Print(196, 20, ModuleFonts::Fonts::hud_small, "F2-SPWN");
+	App->getFonts().Print(260, 11, ModuleFonts::Fonts::hud_small, "F3-PLYR");
+	App->getFonts().Print(260, 20, ModuleFonts::Fonts::hud_small, "F4-POS");
 
 	//debug show
 	if (debug)
 	{
-		App->fonts->Print(112, 40, ModuleFonts::Fonts::hud_small, "X-");
-		App->fonts->Print(128, 40, ModuleFonts::Fonts::hud_small, App->fonts->GetPrintableValue(App->manager->player->position.x, 4));
-		App->fonts->Print(168, 40, ModuleFonts::Fonts::hud_small, "Y-");
-		App->fonts->Print(184, 40, ModuleFonts::Fonts::hud_small, App->fonts->GetPrintableValue(App->manager->player->position.y, 4));
+		App->getFonts().Print(112, 40, ModuleFonts::Fonts::hud_small, "X-");
+		App->getFonts().Print(128, 40, ModuleFonts::Fonts::hud_small, App->getFonts().GetPrintableValue(App->getEntityManager().player->position.x, 4));
+		App->getFonts().Print(168, 40, ModuleFonts::Fonts::hud_small, "Y-");
+		App->getFonts().Print(184, 40, ModuleFonts::Fonts::hud_small, App->getFonts().GetPrintableValue(App->getEntityManager().player->position.y, 4));
 	}
 
 }
@@ -115,10 +115,10 @@ void ModuleUI::PrintStatus()
 void ModuleUI::PrintPlayerHealth()
 {
 	int min_pixels = 2;
-	int sections_to_draw = App->manager->player->health / min_pixels;
+	int sections_to_draw = App->getEntityManager().player->health / min_pixels;
 	for (int i = 0; i < sections_to_draw; ++i)
 	{
-		App->renderer->Blit(hud_graphics, hud_health_pos.x + i*hud_health_section.w, hud_health_pos.y, &hud_health_section, 0.0F);
+		App->getRenderer().Blit(hud_graphics, hud_health_pos.x + i*hud_health_section.w, hud_health_pos.y, &hud_health_section, 0.0F);
 	}
 }
 
@@ -128,23 +128,23 @@ void ModuleUI::PrintBossHealth()
 	int sections_to_draw;
 	SDL_Rect *h_section;
 
-	if (App->manager->boss->health > 110)
+	if (App->getEntityManager().boss->health > 110)
 	{
 		sections_to_draw = 40;
 		h_section = &hud_high_health_section;
 	}
-	else if (App->manager->boss->health > 80)
+	else if (App->getEntityManager().boss->health > 80)
 	{
 		sections_to_draw = 40;
 		h_section = &hud_medium_health_section;
 	}
 	else
 	{
-		sections_to_draw = App->manager->boss->health / min_pixels;
+		sections_to_draw = App->getEntityManager().boss->health / min_pixels;
 		h_section = &hud_health_section;
 	}
 	for (int i = 0; i < sections_to_draw; ++i)
-		App->renderer->Blit(hud_graphics, hud_health_boss_pos.x + i*hud_health_section.w, hud_health_boss_pos.y, h_section, 0.0F);
+		App->getRenderer().Blit(hud_graphics, hud_health_boss_pos.x + i*hud_health_section.w, hud_health_boss_pos.y, h_section, 0.0F);
 }
 
 void ModuleUI::PrintGoArrow()
@@ -158,10 +158,10 @@ void ModuleUI::PrintGoArrow()
 
 	if (show)
 	{
-		App->renderer->Blit(hud_graphics, hud_go_arrow_pos.x, hud_go_arrow_pos.y, &hud_go_arrow_section, 0.0F);
+		App->getRenderer().Blit(hud_graphics, hud_go_arrow_pos.x, hud_go_arrow_pos.y, &hud_go_arrow_section, 0.0F);
 		if (audio_in_turn != current_turn)
 		{
-			App->audio->PlayFx(fx_go_arrow);
+			App->getAudio().PlayFx(fx_go_arrow);
 			audio_in_turn = current_turn;
 		}
 	}
@@ -176,7 +176,7 @@ void ModuleUI::ShowCollidersDebugMode()
 {
 	if (active == true)
 	{
-		App->fonts->Print(8, 40, ModuleFonts::Fonts::hud_small, "COLS ON");
+		App->getFonts().Print(8, 40, ModuleFonts::Fonts::hud_small, "COLS ON");
 	}
 }
 
@@ -184,7 +184,7 @@ void ModuleUI::ShowEntityManagerDebugMode()
 {
 	if (active == true)
 	{
-		App->fonts->Print(8, 48, ModuleFonts::Fonts::hud_small, "SPWN ON");
+		App->getFonts().Print(8, 48, ModuleFonts::Fonts::hud_small, "SPWN ON");
 	}
 }
 
@@ -192,7 +192,7 @@ void ModuleUI::ShowPlayerDebugMode()
 {
 	if (active == true)
 	{
-		App->fonts->Print(8, 56, ModuleFonts::Fonts::hud_small, "PLYR ON");
+		App->getFonts().Print(8, 56, ModuleFonts::Fonts::hud_small, "PLYR ON");
 	}
 }
 
@@ -203,7 +203,7 @@ bool ModuleUI::LoadConfigFromFile()
 	JSON_Object *ui_object = App->config->GetJSONObject("hud"); 
 	if (ui_object == nullptr) { return false;  }
 	
-	hud_graphics = App->textures->Load(App->config->GetStringFromJSONObject(ui_object, "graphics_file"));
+	hud_graphics = App->getTextures().Load(App->config->GetStringFromJSONObject(ui_object, "graphics_file"));
 	if (hud_graphics == nullptr) { return false; }
 
 	if (App->config->LoadSDLRectFromJSONObject(ui_object, "section", &hud_section) == false) { return false; }
@@ -228,9 +228,9 @@ bool ModuleUI::LoadConfigFromFile()
 	
 	ui_object = App->config->GetJSONObject("fx"); 
 	if (ui_object == nullptr) { return false; }
-	fx_pause = App->audio->LoadFx(App->config->GetStringFromJSONObject(ui_object, "pause"));
+	fx_pause = App->getAudio().LoadFx(App->config->GetStringFromJSONObject(ui_object, "pause"));
 	if (fx_pause == -1) { return false; }
-	fx_go_arrow = App->audio->LoadFx(App->config->GetStringFromJSONObject(ui_object, "go_arrow"));
+	fx_go_arrow = App->getAudio().LoadFx(App->config->GetStringFromJSONObject(ui_object, "go_arrow"));
 	if (fx_go_arrow == -1) { return false; }
 
 	return true;

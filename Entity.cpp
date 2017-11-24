@@ -82,15 +82,15 @@ bool Entity::Draw() const
 {
 	if (facing_right)
 	{
-		App->renderer->Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, false);
+		App->getRenderer().Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, false);
 		if (grounded == false)
-			App->renderer->Blit(graphics, position.x + sprite_offset.x, ground_y + sprite_offset.y, &shadow, 1.0f, false);
+			App->getRenderer().Blit(graphics, position.x + sprite_offset.x, ground_y + sprite_offset.y, &shadow, 1.0f, false);
 	}
 	else
 	{
-		App->renderer->Blit(graphics, position.x + sprite_offset_flip.x, position.y + sprite_offset_flip.y, &(current_animation->GetCurrentFrame()), 1.0F, true);
+		App->getRenderer().Blit(graphics, position.x + sprite_offset_flip.x, position.y + sprite_offset_flip.y, &(current_animation->GetCurrentFrame()), 1.0F, true);
 		if (grounded == false)
-			App->renderer->Blit(graphics, position.x + sprite_offset_flip.x, ground_y + sprite_offset_flip.y, &shadow, 1.0f, true);
+			App->getRenderer().Blit(graphics, position.x + sprite_offset_flip.x, ground_y + sprite_offset_flip.y, &shadow, 1.0f, true);
 	}
 	return true;
 }
@@ -107,7 +107,7 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration
 		current_animation = new_anim;
 		current_animation->Reset();
 		if (fx_new_anim != -1)
-			App->audio->PlayFx(fx_new_anim);
+			App->getAudio().PlayFx(fx_new_anim);
 		blocking_animation_remaining_msec = block_anim_duration;
 
 		// grounded update
@@ -317,7 +317,7 @@ void Entity::RemoveColliders()
 void Entity::CleanUp()
 {
 	if (graphics != nullptr)
-		App->textures->Unload(graphics);
+		App->getTextures().Unload(graphics);
 }
 
 void Entity::CheatCodes()
@@ -453,7 +453,7 @@ void Entity::LoadSDLRectFromJSONObject(JSON_Object* j_object, const char *dotget
 void Entity::LoadSoundFXFromJSONObject(JSON_Object* j_object, const char *dotget_path, unsigned int *fx)
 {
 	if (json_object_dothas_value_of_type(j_object, dotget_path, JSONString))
-		*fx = App->audio->LoadFx(json_object_dotget_string(j_object, dotget_path));
+		*fx = App->getAudio().LoadFx(json_object_dotget_string(j_object, dotget_path));
 }
 
 void Entity::LoadiPointFromJSONObject(JSON_Object* j_object, const char *dotget_path, iPoint *point)
@@ -471,7 +471,7 @@ Collider* Entity::LoadColliderFromJSONObject(JSON_Object* j_object, const char *
 	Collider* ret;
 	j_array = json_object_dotget_array(j_object, dotget_path);
 	*offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
-	ret = App->collision->AddCollider(
+	ret = App->getCollision().AddCollider(
 	{ offset->x + position.x, offset->y + position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3) },
 		type, (Entity*) this);
 	json_array_clear(j_array);

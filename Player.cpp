@@ -271,7 +271,7 @@ bool Player::Update(unsigned int msec_elapsed, const bool upd_logic)
 	if (upd_logic)
 	{
 		UpdatePosition(move_speed);
-		App->renderer->MoveCamera(position.x, speed.x);
+		App->getRenderer().MoveCamera(position.x, speed.x);
 	}
 
 	// miscelaneous
@@ -307,7 +307,7 @@ void Player::ModifyLives(int mod_to_add)
 		return;		//Game over
 	}
 	if (mod_to_add > 0)
-		App->audio->PlayFx(fx_extra_life);
+		App->getAudio().PlayFx(fx_extra_life);
 }
 
 void Player::IncreaseHelp(int amount)
@@ -318,7 +318,7 @@ void Player::IncreaseHelp(int amount)
 		help = 9;
 		return;
 	}
-	App->audio->PlayFx(fx_extra_help);
+	App->getAudio().PlayFx(fx_extra_help);
 }
 
 void Player::ReSpawn()
@@ -332,8 +332,8 @@ void Player::ReSpawn()
 	air_remaining_msec = jump_duration;
 	health = max_health;
 	help = 1;
-	App->manager->KnockDownAllEnemies();
-	App->manager->RestoreTimeLeft();
+	App->getEntityManager().KnockDownAllEnemies();
+	App->getEntityManager().RestoreTimeLeft();
 }
 
 //-------------- Specific updates
@@ -344,7 +344,7 @@ void Player::UpdatePosition(const iPoint new_speed) {
 
 	position += new_speed;
 
-	App->renderer->GetPlayerPositionLimits(position_limits);
+	App->getRenderer().GetPlayerPositionLimits(position_limits);
 
 	int up = position_limits.y;
 	int down = up + position_limits.h;
@@ -452,62 +452,62 @@ void Player::GetInput()
 {
 	ResetInput();
 
-	if (App->input->UsingGamepad() == true)
+	if (App->getInput().UsingGamepad() == true)
 	{
-		if (App->input->GetGamepadButton(GamepadButton::UP) == KEY_REPEAT)
+		if (App->getInput().GetGamepadButton(GamepadButton::UP) == KEY_REPEAT)
 			input_vertical = -1;
 		else
-			if (App->input->GetGamepadButton(GamepadButton::DOWN) == KEY_REPEAT)
+			if (App->getInput().GetGamepadButton(GamepadButton::DOWN) == KEY_REPEAT)
 				input_vertical = 1;
 
-		if (App->input->GetGamepadButton(GamepadButton::LEFT) == KEY_REPEAT)
+		if (App->getInput().GetGamepadButton(GamepadButton::LEFT) == KEY_REPEAT)
 			input_horizontal = -1;
 		else
-			if (App->input->GetGamepadButton(GamepadButton::RIGHT) == KEY_REPEAT)
+			if (App->getInput().GetGamepadButton(GamepadButton::RIGHT) == KEY_REPEAT)
 				input_horizontal = 1;
 
-		input_help = App->input->GetGamepadButton(GamepadButton::Y) == KEY_DOWN;
-		input_jump = App->input->GetGamepadButton(GamepadButton::A) == KEY_DOWN;
+		input_help = App->getInput().GetGamepadButton(GamepadButton::Y) == KEY_DOWN;
+		input_jump = App->getInput().GetGamepadButton(GamepadButton::A) == KEY_DOWN;
 
 
 		input_hold_front_throw =
-			(App->input->GetGamepadButton(GamepadButton::X) == KEY_DOWN || App->input->GetGamepadButton(GamepadButton::X) == KEY_REPEAT) &&
+			(App->getInput().GetGamepadButton(GamepadButton::X) == KEY_DOWN || App->getInput().GetGamepadButton(GamepadButton::X) == KEY_REPEAT) &&
 			((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0));
 
 		input_attack_back =
-			(App->input->GetGamepadButton(GamepadButton::X) == KEY_DOWN && App->input->GetGamepadButton(GamepadButton::A) == KEY_REPEAT) ||
-			(App->input->GetGamepadButton(GamepadButton::X) == KEY_REPEAT && App->input->GetGamepadButton(GamepadButton::A) == KEY_DOWN);
+			(App->getInput().GetGamepadButton(GamepadButton::X) == KEY_DOWN && App->getInput().GetGamepadButton(GamepadButton::A) == KEY_REPEAT) ||
+			(App->getInput().GetGamepadButton(GamepadButton::X) == KEY_REPEAT && App->getInput().GetGamepadButton(GamepadButton::A) == KEY_DOWN);
 
-		input_attack = App->input->GetGamepadButton(GamepadButton:: X) == KEY_DOWN && input_hold_front_throw == false && ( jumping == true || jumping == false && input_attack_back == false);
+		input_attack = App->getInput().GetGamepadButton(GamepadButton:: X) == KEY_DOWN && input_hold_front_throw == false && ( jumping == true || jumping == false && input_attack_back == false);
 		
 	}
 	else
 	{
-		if (App->input->GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
+		if (App->getInput().GetKey(SDL_SCANCODE_UP) == KEY_REPEAT)
 			input_vertical = -1;
 		else
-			if (App->input->GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT || App->input->GetGamepadButton(GamepadButton::DOWN) == KEY_REPEAT)
+			if (App->getInput().GetKey(SDL_SCANCODE_DOWN) == KEY_REPEAT || App->getInput().GetGamepadButton(GamepadButton::DOWN) == KEY_REPEAT)
 				input_vertical = 1;
 
-		if (App->input->GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || App->input->GetGamepadButton(GamepadButton::LEFT) == KEY_REPEAT)
+		if (App->getInput().GetKey(SDL_SCANCODE_LEFT) == KEY_REPEAT || App->getInput().GetGamepadButton(GamepadButton::LEFT) == KEY_REPEAT)
 			input_horizontal = -1;
 		else
-			if (App->input->GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || App->input->GetGamepadButton(GamepadButton::RIGHT) == KEY_REPEAT)
+			if (App->getInput().GetKey(SDL_SCANCODE_RIGHT) == KEY_REPEAT || App->getInput().GetGamepadButton(GamepadButton::RIGHT) == KEY_REPEAT)
 				input_horizontal = 1;
 
-		input_help = App->input->GetKey(SDL_SCANCODE_Z) == KEY_DOWN;
-		input_jump = App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN;
+		input_help = App->getInput().GetKey(SDL_SCANCODE_Z) == KEY_DOWN;
+		input_jump = App->getInput().GetKey(SDL_SCANCODE_C) == KEY_DOWN;
 
 
 		input_hold_front_throw =
-			(App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN || App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT) &&
+			(App->getInput().GetKey(SDL_SCANCODE_X) == KEY_DOWN || App->getInput().GetKey(SDL_SCANCODE_X) == KEY_REPEAT) &&
 			((facing_right == true && input_horizontal < 0) || (facing_right == false && input_horizontal > 0));
 
 		input_attack_back =
-			(App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN && App->input->GetKey(SDL_SCANCODE_C) == KEY_REPEAT) ||
-			(App->input->GetKey(SDL_SCANCODE_X) == KEY_REPEAT && App->input->GetKey(SDL_SCANCODE_C) == KEY_DOWN);
+			(App->getInput().GetKey(SDL_SCANCODE_X) == KEY_DOWN && App->getInput().GetKey(SDL_SCANCODE_C) == KEY_REPEAT) ||
+			(App->getInput().GetKey(SDL_SCANCODE_X) == KEY_REPEAT && App->getInput().GetKey(SDL_SCANCODE_C) == KEY_DOWN);
 
-		input_attack = App->input->GetKey(SDL_SCANCODE_X) == KEY_DOWN && input_hold_front_throw == false && (jumping == true || jumping == false && input_attack_back == false);
+		input_attack = App->getInput().GetKey(SDL_SCANCODE_X) == KEY_DOWN && input_hold_front_throw == false && (jumping == true || jumping == false && input_attack_back == false);
 	}
 	
 }
@@ -523,8 +523,8 @@ void Player::UseHelp()
 	if (help <= 0)
 		return;
 	help -= 1;
-	App->audio->PlayFx(fx_use_help);
-	App->manager->KnockDownAllEnemies(true);
+	App->getAudio().PlayFx(fx_use_help);
+	App->getEntityManager().KnockDownAllEnemies(true);
 }
 //--------------------------- Miscelaneous ---------------------------------------------
 
@@ -540,7 +540,7 @@ bool Player::LoadFromConfigFile(const char* file_path)
 		root_object = json_object(root_value);
 
 	if (json_object_dothas_value_of_type(root_object, "player.graphics_file", JSONString))
-		graphics = App->textures->Load(json_object_dotget_string(root_object, "player.graphics_file"));
+		graphics = App->getTextures().Load(json_object_dotget_string(root_object, "player.graphics_file"));
 	if (graphics == nullptr)
 	{
 		json_value_free(root_value);
@@ -640,23 +640,23 @@ bool Player::LoadFromConfigFile(const char* file_path)
 void Player::CheatCodes() {
 	
 	if (debug)
-		App->ui->ShowPlayerDebugMode();
-	if (App->ui->pause == false)
+		App->getUI().ShowPlayerDebugMode();
+	if (App->getUI().pause == false)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
+		if (App->getInput().GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 			debug = !debug;
 		if (debug == true)
 		{
 
-			if (App->input->GetKey(SDL_SCANCODE_1) == KEY_DOWN)
+			if (App->getInput().GetKey(SDL_SCANCODE_1) == KEY_DOWN)
 				ModifyLives(+1);
-			if (App->input->GetKey(SDL_SCANCODE_2) == KEY_REPEAT)
+			if (App->getInput().GetKey(SDL_SCANCODE_2) == KEY_REPEAT)
 				AddScore(1000);
-			if (App->input->GetKey(SDL_SCANCODE_3) == KEY_DOWN)
+			if (App->getInput().GetKey(SDL_SCANCODE_3) == KEY_DOWN)
 				IncreaseHelp(1);
-			if (App->input->GetKey(SDL_SCANCODE_Q) == KEY_DOWN)
+			if (App->getInput().GetKey(SDL_SCANCODE_Q) == KEY_DOWN)
 				SetBeingHit(attack1_dmg);
-			if (App->input->GetKey(SDL_SCANCODE_W) == KEY_DOWN)
+			if (App->getInput().GetKey(SDL_SCANCODE_W) == KEY_DOWN)
 				SetBeingKnocked(attack3_dmg);
 		}
 	}

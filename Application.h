@@ -1,7 +1,7 @@
-#ifndef __APPLICATION_CPP__
-#define __APPLICATION_CPP__
+#pragma once
 
-#include<list>
+#include <memory>
+#include <vector>
 #include "Globals.h"
 #include "Module.h"
 
@@ -21,6 +21,17 @@ class EntityManager;
 class Timer;
 class ConfigurationLoader;
 
+// Defines a unique ptr of a class member, and its getter
+#define MEMBER_DECL( _CLASS_, _NAME_, _GETTER_ )	\
+		private:								\
+			std::unique_ptr<_CLASS_> _NAME_;	\
+		public:									\
+			_CLASS_& _GETTER_() const	\
+			{							\
+				return *_NAME_.get();	\
+			}
+				
+
 class Application
 {
 public:
@@ -33,31 +44,28 @@ public:
 	bool CleanUp();
 
 public:
-	ModuleRender* renderer = nullptr;
-	ModuleWindow* window = nullptr;
-	ModuleTextures* textures = nullptr;
-	ModuleInput* input = nullptr;
-	ModuleAudio* audio = nullptr;
-	ModuleFadeToBlack* fade = nullptr;
-	ModuleCollision* collision = nullptr;
-	ModuleParticles* particles = nullptr;
-	ModuleFonts* fonts = nullptr;
-	ModuleUI* ui = nullptr;
-
-	// Game modules ---
-	ModuleSceneIntro* intro = nullptr;
-	ModuleScene3* scene3 = nullptr;
-	EntityManager* manager = nullptr;
-
 	// Utils
 	ConfigurationLoader *config = nullptr;
 	Timer* timer = nullptr;
 
 private:
+	MEMBER_DECL(ModuleRender, _renderer, getRenderer)
+	MEMBER_DECL(ModuleWindow, _window, getWindow)
+	MEMBER_DECL(ModuleTextures, _textures, getTextures)
+	MEMBER_DECL(ModuleInput, _input, getInput)
+	MEMBER_DECL(ModuleAudio, _audio, getAudio)
+	MEMBER_DECL(ModuleFonts, _fonts, getFonts)
+	MEMBER_DECL(ModuleUI, _ui, getUI)
 
-	std::list<Module*> modules;
+	MEMBER_DECL(ModuleFadeToBlack, _fade, getFade)
+	MEMBER_DECL(ModuleSceneIntro, _intro, getIntro)
+	MEMBER_DECL(ModuleScene3, _scene3, getScene3)
+	MEMBER_DECL(EntityManager, _entityManager, getEntityManager)
+
+	MEMBER_DECL(ModuleCollision, _collision, getCollision)
+	MEMBER_DECL(ModuleParticles, _particles, getParticles)
+
+	std::vector<Module*> _modules;
 };
 
 extern Application* App;
-
-#endif // __APPLICATION_CPP__

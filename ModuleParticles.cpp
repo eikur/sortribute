@@ -19,7 +19,7 @@ ModuleParticles::~ModuleParticles()
 bool ModuleParticles::Start()
 {
 	LOG("Loading particles");
-	//graphics = App->textures->Load("rtype/particles.png");
+	//graphics = App->getTextures().Load("rtype/particles.png");
 	return true;
 }
 
@@ -27,7 +27,7 @@ bool ModuleParticles::Start()
 bool ModuleParticles::CleanUp()
 {
 	LOG("Unloading particles");
-//	App->textures->Unload(graphics);
+//	App->getTextures().Unload(graphics);
 
 	for (list<Particle*>::iterator it = active.begin(); it != active.end(); ++it)
 		RELEASE(*it);
@@ -51,7 +51,7 @@ UpdateStatus ModuleParticles::Update()
 		}
 		else
 		{
-			App->renderer->Blit(graphics, (*it)->position.x, (*it)->position.y, &(*it)->animation->GetCurrentFrame(), 1.0f);
+			App->getRenderer().Blit(graphics, (*it)->position.x, (*it)->position.y, &(*it)->animation->GetCurrentFrame(), 1.0f);
 			++it;
 		}
 	}

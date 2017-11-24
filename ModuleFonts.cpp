@@ -22,7 +22,7 @@ bool ModuleFonts::Init()
 	}
 	else
 	{
-		graphics = App->textures->Load(asset_file.c_str());
+		graphics = App->getTextures().Load(asset_file.c_str());
 	}
 	return res;
 }
@@ -31,7 +31,7 @@ bool ModuleFonts::CleanUp()
 {
 	LOG("Fonts: Unloading fonts\n");
 
-	App->textures->Unload(graphics);
+	App->getTextures().Unload(graphics);
 
 	for (std::vector<Font*>::iterator it = fonts.begin(); it != fonts.end(); ++it)
 		RELEASE(*it);
@@ -120,7 +120,7 @@ void ModuleFonts::Print(int x, int y, int font_id, const std::string text) const
 	{
 		lut_i = (*it)->lookup_table.find(text.at(i));
 		i_rect->x = (*it)->rect->x + lut_i * (*it)->pixels_per_element;
-		App->renderer->Blit(graphics, x+i*(*it)->pixels_per_element, y, i_rect, 0.0f);
+		App->getRenderer().Blit(graphics, x+i*(*it)->pixels_per_element, y, i_rect, 0.0f);
 	}
 
 	delete i_rect;

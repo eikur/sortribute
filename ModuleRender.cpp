@@ -37,7 +37,7 @@ bool ModuleRender::Init()
 			flags |= SDL_RENDERER_PRESENTVSYNC;
 		}
 
-		renderer = SDL_CreateRenderer(App->window->m_window, -1, flags);
+		renderer = SDL_CreateRenderer(App->getWindow().m_window, -1, flags);
 
 		if (renderer == nullptr)
 		{
@@ -61,16 +61,16 @@ UpdateStatus ModuleRender::Update()
 {
 	//move camera
 	/*
-	if (App->input->GetKey(SDL_SCANCODE_L) == KEY_DOWN)
+	if (App->getInput().GetKey(SDL_SCANCODE_L) == KEY_DOWN)
 	{
 		locked = !locked;
 	}
 
-	if (App->input->GetKey(SDL_SCANCODE_O) == KEY_REPEAT)
-		App->renderer->camera.x += m_speed;
+	if (App->getInput().GetKey(SDL_SCANCODE_O) == KEY_REPEAT)
+		App->getRenderer().camera.x += m_speed;
 
-	if (App->input->GetKey(SDL_SCANCODE_P) == KEY_REPEAT)
-		App->renderer->camera.x -= m_speed;
+	if (App->getInput().GetKey(SDL_SCANCODE_P) == KEY_REPEAT)
+		App->getRenderer().camera.x -= m_speed;
 		*/
 	return UpdateStatus::Continue;
 }

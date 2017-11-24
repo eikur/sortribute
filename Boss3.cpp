@@ -153,26 +153,26 @@ bool Boss3::Update(unsigned int msec_elapsed, const bool upd_logic)
 
 void Boss3::CleanUp()
 {
-	App->manager->enemy_queue.remove(this);
+	App->getEntityManager().enemy_queue.remove(this);
 }
 
 bool Boss3::InEnemyActionQueue() const
 {
 	unsigned int max_enemies_queue = 3;
-	unsigned int enemies_in_queue = App->manager->enemy_queue.size();
+	unsigned int enemies_in_queue = App->getEntityManager().enemy_queue.size();
 
 	if (enemies_in_queue == 0)
 	{
-		App->manager->enemy_queue.push_back((Entity*) this);
+		App->getEntityManager().enemy_queue.push_back((Entity*) this);
 		return true;
 	}
 
-	for (std::list<Entity*>::const_iterator it = App->manager->enemy_queue.cbegin(); it != App->manager->enemy_queue.cend(); ++it)
+	for (std::list<Entity*>::const_iterator it = App->getEntityManager().enemy_queue.cbegin(); it != App->getEntityManager().enemy_queue.cend(); ++it)
 		if (*it == this)
 			return true;
 
 	if (enemies_in_queue < max_enemies_queue) {
-		App->manager->enemy_queue.push_back((Entity*) this);
+		App->getEntityManager().enemy_queue.push_back((Entity*) this);
 		return true;
 	}
 	else
@@ -216,7 +216,7 @@ iPoint Boss3::SpeedTowardsPoint(iPoint to_point) const
 
 void Boss3::UpdateAIDestinationPoint(AIState curr_state)
 {
-	App->renderer->GetPlayerPositionLimits(position_limits);
+	App->getRenderer().GetPlayerPositionLimits(position_limits);
 	int left = position_limits.x;
 	int right = position_limits.x + position_limits.w;
 	int left_of_target_mod = position.x < target->position.x ? -1 : 1;
@@ -252,7 +252,7 @@ bool Boss3::LoadFromConfigFile(const char* file_path)
 		root_object = json_object(root_value);
 
 	if (json_object_dothas_value_of_type(root_object, "boss.graphics_file", JSONString))
-		graphics = App->textures->Load(json_object_dotget_string(root_object, "boss.graphics_file"));
+		graphics = App->getTextures().Load(json_object_dotget_string(root_object, "boss.graphics_file"));
 	if (graphics == nullptr)
 	{
 		json_value_free(root_value);

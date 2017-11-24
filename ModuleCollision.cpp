@@ -54,15 +54,15 @@ UpdateStatus ModuleCollision::Update()
 		}
 	}
 
-	if (App->ui->pause == false)
+	if (App->getUI().pause == false)
 	{
-		if (App->input->GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
+		if (App->getInput().GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 			debug = !debug;
 	}
 	if (debug == true)
 	{
 		DebugDraw();
-		App->ui->ShowCollidersDebugMode();
+		App->getUI().ShowCollidersDebugMode();
 	}
 	return UpdateStatus::Continue;
 }
@@ -72,17 +72,17 @@ void ModuleCollision::DebugDraw()
 	for (list<Collider*>::iterator it = colliders.begin(); it != colliders.end(); ++it)
 	{
 		if ((*it)->type == colliderType::PLAYER_ATTACK)
-			App->renderer->DrawQuad((*it)->rect, 0, 0, 255, 120);
+			App->getRenderer().DrawQuad((*it)->rect, 0, 0, 255, 120);
 		else if ((*it)->type == colliderType::PLAYER)
-			App->renderer->DrawQuad((*it)->rect, 0, 0, 255, 80);
+			App->getRenderer().DrawQuad((*it)->rect, 0, 0, 255, 80);
 		else if ((*it)->type == colliderType::ENEMY)
-			App->renderer->DrawQuad((*it)->rect, 255, 0, 0, 80);
+			App->getRenderer().DrawQuad((*it)->rect, 255, 0, 0, 80);
 		else if ((*it)->type == colliderType::ENEMY_ATTACK)
-			App->renderer->DrawQuad((*it)->rect, 255, 0, 0, 120);
+			App->getRenderer().DrawQuad((*it)->rect, 255, 0, 0, 120);
 		else if ((*it)->type == colliderType::ITEMS)
-			App->renderer->DrawQuad((*it)->rect, 0, 255, 0, 80);
+			App->getRenderer().DrawQuad((*it)->rect, 0, 255, 0, 80);
 		else 
-			App->renderer->DrawQuad((*it)->rect, 255, 0, 255, 40);
+			App->getRenderer().DrawQuad((*it)->rect, 255, 0, 255, 40);
 
 	}
 }

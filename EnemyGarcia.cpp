@@ -169,26 +169,26 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 
 void EnemyGarcia::CleanUp()
 {
-	App->manager->enemy_queue.remove(this);
+	App->getEntityManager().enemy_queue.remove(this);
 }
 
 bool EnemyGarcia::InEnemyActionQueue() const
 {
 	unsigned int max_enemies_queue = 2;	
-	unsigned int enemies_in_queue = App->manager->enemy_queue.size();
+	unsigned int enemies_in_queue = App->getEntityManager().enemy_queue.size();
 
 	if (enemies_in_queue == 0)
 	{
-		App->manager->enemy_queue.push_back((Entity*) this);
+		App->getEntityManager().enemy_queue.push_back((Entity*) this);
 		return true;
 	}
 
-	for (std::list<Entity*>::const_iterator it = App->manager->enemy_queue.cbegin(); it != App->manager->enemy_queue.cend(); ++it)
+	for (std::list<Entity*>::const_iterator it = App->getEntityManager().enemy_queue.cbegin(); it != App->getEntityManager().enemy_queue.cend(); ++it)
 		if (*it == this)
 			return true;
 	
 	if (enemies_in_queue < max_enemies_queue) {
-		App->manager->enemy_queue.push_back((Entity*) this);
+		App->getEntityManager().enemy_queue.push_back((Entity*) this);
 		return true;
 	}
 	else
@@ -232,7 +232,7 @@ iPoint EnemyGarcia::SpeedTowardsPoint( iPoint to_point) const
 
 void EnemyGarcia::UpdateAIDestinationPoint( AIState new_state)
 {
-	App->renderer->GetPlayerPositionLimits(position_limits);
+	App->getRenderer().GetPlayerPositionLimits(position_limits);
 	int up = position_limits.y;
 	int down = position_limits.y + position_limits.h;
 	int left = position_limits.x;
@@ -275,7 +275,7 @@ bool EnemyGarcia::LoadFromConfigFile(const char* file_path)
 		root_object = json_object(root_value);
 
 	if (json_object_dothas_value_of_type(root_object, "garcia.graphics_file", JSONString))
-		graphics = App->textures->Load(json_object_dotget_string(root_object, "garcia.graphics_file"));
+		graphics = App->getTextures().Load(json_object_dotget_string(root_object, "garcia.graphics_file"));
 	if (graphics == nullptr)
 	{
 		json_value_free(root_value);

@@ -17,32 +17,29 @@
 
 #include "Timer.h"
 
-using namespace std;
-
 Application::Application()
 {
 	config = new ConfigurationLoader(CONFIG_FILE);
 
-	// Order matters: they will init/start/pre/update/post in this order
-	modules.push_back(input = new ModuleInput());
-	modules.push_back(window = new ModuleWindow());
-
-	modules.push_back(renderer = new ModuleRender());
-	modules.push_back(textures = new ModuleTextures());
-	modules.push_back(audio = new ModuleAudio());
-	
-	modules.push_back(fonts = new ModuleFonts());
-	modules.push_back(ui = new ModuleUI(false));
-
+	// Base App modules
+	_window = std::make_unique<ModuleWindow>();
+	_renderer = std::make_unique<ModuleRender>();
+	_input = std::make_unique<ModuleInput>();
+	_textures = std::make_unique<ModuleTextures>();
+	_audio = std::make_unique<ModuleAudio>();
+	_fonts = std::make_unique<ModuleFonts>();
+	_ui = std::make_unique<ModuleUI>(false);
 	//Specific game modules
-	modules.push_back(manager = new EntityManager(false));
-	modules.push_back(scene3 = new ModuleScene3(false));
-	modules.push_back(intro = new ModuleSceneIntro(false));
+	_entityManager = std::make_unique<EntityManager>(false);
+	_scene3 = std::make_unique<ModuleScene3>(false);
+	_intro = std::make_unique<ModuleSceneIntro>(false);
+	// Modules on top of game logic
+	_collision = std::make_unique<ModuleCollision>((Module*)&getEntityManager(), (Module*)&getScene3());
+	_particles = std::make_unique<ModuleParticles>();
+	_fade = std::make_unique<ModuleFadeToBlack>();
 
-	// Modules to draw on top of game logic	
-	modules.push_back(collision = new ModuleCollision(manager,scene3));
-	modules.push_back(particles = new ModuleParticles());
-	modules.push_back(fade = new ModuleFadeToBlack());
+	// Order matters: they will init/start/pre/update/post in this order
+	_modules = { _window.get(), _renderer.get(), _input.get(), _textures.get(), _audio.get(), _fonts.get(), _ui.get(), _entityManager.get(), _scene3.get(), _intro.get(), _collision.get(), _particles.get(), _fade.get() };
 
 	timer = new Timer();
 	timer->TimerStart();
@@ -50,25 +47,38 @@ Application::Application()
 
 Application::~Application()
 {
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end(); ++it)
-		RELEASE(*it);
+	RELEASE(config);
+	RELEASE(timer);
 
+	_fade.reset();
+	_particles.reset();
+	_collision.reset();
+	_intro.reset();
+	_scene3.reset();
+	_entityManager.reset();
+	_ui.reset();
+	_fonts.reset();
+	_audio.reset();
+	_textures.reset();
+	_input.reset();
+	_renderer.reset();
+	_window.reset();
 }
 
 bool Application::Init()
 {
 	bool ret = true;
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
+	for(auto& it = _modules.begin(); it != _modules.end() && ret; ++it)
 		ret = (*it)->Init(); // we init everything, even if not enabled
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret; ++it)
+	for(auto& it = _modules.begin(); it != _modules.end() && ret; ++it)
 	{
 		if((*it)->IsEnabled() == true)
 			ret = (*it)->Start();
 	}
 
-	fade->FadeToBlack(intro, nullptr);
+	getFade().FadeToBlack(&getIntro(), nullptr);
 
 	return ret;
 }
@@ -79,15 +89,15 @@ UpdateStatus Application::Update()
 
 	timer->UpdateDeltaTime();
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UpdateStatus::Continue; ++it)
+	for(auto& it = _modules.begin(); it != _modules.end() && ret == UpdateStatus::Continue; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->PreUpdate();
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UpdateStatus::Continue; ++it)
+	for(auto& it = _modules.begin(); it != _modules.end() && ret == UpdateStatus::Continue; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->Update();
 
-	for(list<Module*>::iterator it = modules.begin(); it != modules.end() && ret == UpdateStatus::Continue; ++it)
+	for(auto& it = _modules.begin(); it != _modules.end() && ret == UpdateStatus::Continue; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->PostUpdate();
 
@@ -98,12 +108,8 @@ bool Application::CleanUp()
 {
 	bool ret = true;
 
-	for(list<Module*>::reverse_iterator it = modules.rbegin(); it != modules.rend() && ret; ++it)
+	for(auto& it = _modules.rbegin(); it != _modules.rend() && ret; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->CleanUp();
-
-	RELEASE(config);
-	RELEASE(timer);
-
 	return ret;
 }
