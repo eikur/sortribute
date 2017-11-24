@@ -13,7 +13,7 @@ public:
 	~ModuleUI();
 
 	bool Init();
-	UpdateStatus Update();
+	UpdateStatus Update(float dt = 0.0f) override;
 	bool CleanUp();
 
 	void ShowGoArrow();

@@ -21,7 +21,7 @@ public:
 
 	bool Init();
 	bool Start();
-	UpdateStatus Update();
+	UpdateStatus Update(float dt = 0.0f) override;
 	bool CleanUp();
 
 	Entity* CreateEntity(Entity::Types type);

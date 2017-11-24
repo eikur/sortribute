@@ -43,12 +43,12 @@ bool EntityManager::Start()
 	return true;
 }
 
-UpdateStatus EntityManager::Update()
+UpdateStatus EntityManager::Update(float dt)
 {
 	if (App->getUI().pause == false)
 	{
-		elapsed_msec += App->getTimer().DeltaTime();
-		time_left_msec -= App->getTimer().DeltaTime();
+		elapsed_msec += dt;
+		time_left_msec -= dt;
 
 		if (time_left_msec <= 0 && player != nullptr)
 		{

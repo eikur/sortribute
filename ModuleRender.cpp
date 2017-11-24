@@ -57,7 +57,7 @@ UpdateStatus ModuleRender::PreUpdate()
 }
 
 // Called every draw update
-UpdateStatus ModuleRender::Update()
+UpdateStatus ModuleRender::Update(float)
 {
 	//move camera
 	/*

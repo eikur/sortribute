@@ -38,7 +38,7 @@ bool ModuleParticles::CleanUp()
 }
 
 // Update: draw particles 
-UpdateStatus ModuleParticles::Update()
+UpdateStatus ModuleParticles::Update(float)
 {
 	for (list<Particle*>::iterator it = active.begin(); it != active.end();)
 	{

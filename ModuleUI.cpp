@@ -30,7 +30,7 @@ bool ModuleUI::Init()
 		return true;
 }
 
-UpdateStatus ModuleUI::Update()
+UpdateStatus ModuleUI::Update(float)
 {
 	if (App->getInput().GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN || App->getInput().GetGamepadButton(GamepadButton::START) == KEY_DOWN )
 	{

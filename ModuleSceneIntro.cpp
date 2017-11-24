@@ -55,7 +55,7 @@ bool ModuleSceneIntro::CleanUp()
 }
 
 // Update: draw background
-UpdateStatus ModuleSceneIntro::Update()
+UpdateStatus ModuleSceneIntro::Update(float)
 {
 	bool gamepad_attached = App->getInput().UsingGamepad();
 	App->getRenderer().Blit(background, 0, 0, 0, false);

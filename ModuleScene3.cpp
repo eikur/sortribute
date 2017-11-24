@@ -57,7 +57,7 @@ UpdateStatus ModuleScene3::PreUpdate()
 	App->getRenderer().Blit(graphics, wave_sand_pos.x, wave_sand_pos.y, &(wave_sand.GetCurrentFrame()), 1.0F);			
 	return UpdateStatus::Continue;
 }
-UpdateStatus ModuleScene3::Update()
+UpdateStatus ModuleScene3::Update(float)
 {
 	App->getRenderer().Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);
 

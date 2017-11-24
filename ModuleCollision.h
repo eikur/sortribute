@@ -42,7 +42,7 @@ public:
 	~ModuleCollision();
 
 	UpdateStatus PreUpdate();
-	UpdateStatus Update();
+	UpdateStatus Update(float dt) override;
 
 	bool CleanUp();
 

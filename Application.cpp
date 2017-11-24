@@ -86,7 +86,7 @@ UpdateStatus Application::Update()
 {
 	UpdateStatus ret = UpdateStatus::Continue;
 
-	_timer->UpdateDeltaTime();
+	getTimer().UpdateDeltaTime();
 
 	for(auto& it = _modules.begin(); it != _modules.end() && ret == UpdateStatus::Continue; ++it)
 		if((*it)->IsEnabled() == true) 
@@ -94,7 +94,7 @@ UpdateStatus Application::Update()
 
 	for(auto& it = _modules.begin(); it != _modules.end() && ret == UpdateStatus::Continue; ++it)
 		if((*it)->IsEnabled() == true) 
-			ret = (*it)->Update();
+			ret = (*it)->Update(getTimer().DeltaTime());
 
 	for(auto& it = _modules.begin(); it != _modules.end() && ret == UpdateStatus::Continue; ++it)
 		if((*it)->IsEnabled() == true) 

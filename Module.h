@@ -55,7 +55,7 @@ public:
 		return UpdateStatus::Continue;
 	}
 
-	virtual UpdateStatus Update()
+	virtual UpdateStatus Update(float dt = 0.0f)
 	{
 		return UpdateStatus::Continue;
 	}
