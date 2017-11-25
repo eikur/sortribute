@@ -39,13 +39,18 @@ public:
 	~SceneManager();
 
 	bool Init() override;
+	bool Start() override;
 	UpdateStatus PreUpdate() override;
 	UpdateStatus Update(float) override;
 	UpdateStatus PostUpdate() override;
 	bool CleanUp() override;
 
-	void SwapScene(SceneId sceneId);
+	void SwapScene(SceneId sceneId, float duration = 4.0f );
 	void HandleCollision(Collider*, Collider*) override;
+
+private:
+	bool IsInTransition() const;
+	void UpdateTransition(float dt);
 
 private:
 	Scene* _currentScene = nullptr;
@@ -53,4 +58,9 @@ private:
 
 	SCENE_DECL(Stage3, _stage3, getStage3)
 	SCENE_DECL(SceneIntro, _intro, getIntro)
+
+	bool _inTransition = false;
+	float _transitionTime = 0.0f;
+	float _transitionDuration = 0.0f;
+
 };
