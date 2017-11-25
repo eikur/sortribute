@@ -13,6 +13,7 @@
 #include "ModuleTextures.h"
 #include "ModuleUI.h"
 #include "ModuleWindow.h"
+#include "SceneManager.h"
 #include "Timer.h"
 
 Application::Application()
@@ -38,12 +39,15 @@ Application::Application()
 	_particles = std::make_unique<ModuleParticles>();
 	_fade = std::make_unique<ModuleFadeToBlack>();
 
+	_sceneManager = std::make_unique<SceneManager>();
+
 	// Order matters: they will init/start/pre/update/post in this order
-	_modules = { _window.get(), _renderer.get(), _input.get(), _textures.get(), _audio.get(), _fonts.get(), _ui.get(), _entityManager.get(), _scene3.get(), _intro.get(), _collision.get(), _particles.get(), _fade.get() };
+	_modules = { _window.get(), _renderer.get(), _input.get(), _textures.get(), _audio.get(), _fonts.get(), _ui.get(), _entityManager.get(), _scene3.get(), _intro.get(), _collision.get(), _particles.get(), _fade.get(), _sceneManager.get()};
 }
 
 Application::~Application()
 {
+	_sceneManager.reset();
 	_fade.reset();
 	_particles.reset();
 	_collision.reset();
