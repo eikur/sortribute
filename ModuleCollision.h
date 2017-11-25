@@ -38,7 +38,7 @@ class ModuleCollision : public Module
 {
 public:
 
-	ModuleCollision(Module* entities_report_to = nullptr, Module* scene_cols_report_to = nullptr);
+	ModuleCollision(Module& entitiesReporter, Module& sceneReporter);
 	~ModuleCollision();
 
 	UpdateStatus PreUpdate();
@@ -54,8 +54,8 @@ private:
 	std::list<Collider*> colliders;
 	bool debug = false;
 	int collision_matrix[6][6] = { { 0,0,1,1,1,1},{ 0,0,0,1,0,0 },{ 1,0,0,0,0,0 },{ 1,1,0,1,0,0 },{ 1,0,0,0,0,0 },{ 1,0,0,0,0,0 } };
-	Module* entities_report_to = nullptr;
-	Module* scene_cols_report_to = nullptr;
+	Module& entitiesReporter;
+	Module& scenesReporter;
 };
 
 #endif // __ModuleCollision_H__

@@ -35,7 +35,7 @@ Application::Application()
 	_scene3 = std::make_unique<ModuleScene3>(false);
 	_intro = std::make_unique<ModuleSceneIntro>(false);
 	// Modules on top of game logic
-	_collision = std::make_unique<ModuleCollision>((Module*)&getEntityManager(), (Module*)&getScene3());
+	_collision = std::make_unique<ModuleCollision>(getEntityManager(),getScene3());
 	_particles = std::make_unique<ModuleParticles>();
 	_fade = std::make_unique<ModuleFadeToBlack>();
 
