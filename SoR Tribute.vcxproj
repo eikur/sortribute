@@ -89,8 +89,8 @@
     <ClInclude Include="ModuleInput.h" />
     <ClInclude Include="ModuleParticles.h" />
     <ClInclude Include="ModuleRender.h" />
-    <ClInclude Include="ModuleScene3.h" />
-    <ClInclude Include="ModuleSceneIntro.h" />
+    <ClInclude Include="Stage3.h" />
+    <ClInclude Include="SceneIntro.h" />
     <ClInclude Include="ModuleTextures.h" />
     <ClInclude Include="ModuleUI.h" />
     <ClInclude Include="ModuleWindow.h" />
@@ -119,8 +119,8 @@
     <ClCompile Include="ModuleInput.cpp" />
     <ClCompile Include="ModuleParticles.cpp" />
     <ClCompile Include="ModuleRender.cpp" />
-    <ClCompile Include="ModuleScene3.cpp" />
-    <ClCompile Include="ModuleSceneIntro.cpp" />
+    <ClCompile Include="Stage3.cpp" />
+    <ClCompile Include="SceneIntro.cpp" />
     <ClCompile Include="ModuleTextures.cpp" />
     <ClCompile Include="ModuleUI.cpp" />
     <ClCompile Include="ModuleWindow.cpp" />

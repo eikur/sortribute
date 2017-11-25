@@ -12,20 +12,15 @@
 #include "ConfigurationLoader.h"
 #include "Timer.h"
 
-#include "ModuleSceneIntro.h"
+#include "SceneIntro.h"
 
-ModuleSceneIntro::ModuleSceneIntro(bool active) : Module(active)
+SceneIntro::SceneIntro(SceneManager& sceneManager) : Scene(sceneManager)
 {}
 
-ModuleSceneIntro::~ModuleSceneIntro()
+SceneIntro::~SceneIntro()
 {}
 
-bool ModuleSceneIntro::Init()
-{
-	return true; 
-}
-// Load assets
-bool ModuleSceneIntro::Start()
+bool SceneIntro::Init()
 {
 	LOG("Loading intro screen");
 	if (LoadConfigFromFile() == false)
@@ -34,6 +29,11 @@ bool ModuleSceneIntro::Start()
 		return false;
 	}
 
+	return true; 
+}
+// Load assets
+bool SceneIntro::Start()
+{
 	App->getRenderer().camera.x = App->getRenderer().camera.y = 0;
 	if (App->getEntityManager().IsEnabled())
 		App->getEntityManager().Disable();
@@ -45,7 +45,7 @@ bool ModuleSceneIntro::Start()
 }
 
 // UnLoad assets
-bool ModuleSceneIntro::CleanUp()
+bool SceneIntro::CleanUp()
 {
 	LOG("Unloading intro scene");
 
@@ -55,7 +55,7 @@ bool ModuleSceneIntro::CleanUp()
 }
 
 // Update: draw background
-UpdateStatus ModuleSceneIntro::Update(float)
+UpdateStatus SceneIntro::Update(float)
 {
 	bool gamepad_attached = App->getInput().UsingGamepad();
 	App->getRenderer().Blit(background, 0, 0, 0, false);
@@ -72,19 +72,19 @@ UpdateStatus ModuleSceneIntro::Update(float)
 	else if (elapsed_msec > 2 * blink_msg_msec)
 		elapsed_msec = 0;
 
-	if ( App->getFade().isFading() == false && 
-		(	(gamepad_attached == true && App->getInput().GetGamepadButton(GamepadButton::START) == KEY_DOWN) ||
-			(gamepad_attached == false && App->getInput().GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN )
-		))
+//	if ( App->getFade().isFading() == false && 
+	if ((gamepad_attached == true && App->getInput().GetGamepadButton(GamepadButton::START) == KEY_DOWN) ||
+		(gamepad_attached == false && App->getInput().GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN))
 	{
-		App->getFade().FadeToBlack((Module*)&App->getScene3(), this);
+		getManager().SwapScene(SceneManager::SceneId::Stage3);
+		//App->getFade().FadeToBlack((Module*)&App->getScene3(), this); // pandibu fade to be implemented here
 		App->getAudio().PlayFx(fx_start);
 	}
 
 	return UpdateStatus::Continue;
 }
 
-bool ModuleSceneIntro::LoadConfigFromFile()
+bool SceneIntro::LoadConfigFromFile()
 {
 	JSON_Object *json_intro = App->getConfig().GetJSONObject("intro");
 	if (json_intro == nullptr) { return false;  }

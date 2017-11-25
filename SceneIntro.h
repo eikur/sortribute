@@ -1,15 +1,15 @@
-#ifndef __MODULESCENEINTRO_H__
-#define __MODULESCENEINTRO_H__
+#pragma once
 
-#include "Module.h"
+#include "Scene.h"
+#include "SceneManager.h"
 
 struct SDL_Texture;
 
-class ModuleSceneIntro : public Module
+class SceneIntro : public Scene
 {
 public:
-	ModuleSceneIntro(bool active = true);
-	~ModuleSceneIntro();
+	SceneIntro(SceneManager& manager);
+	~SceneIntro();
 
 	bool Init(); 
 	bool Start();
@@ -27,5 +27,3 @@ private:
 	uint blink_msg_msec = 0;
 	uint elapsed_msec = 0;
 };
-
-#endif // __MODULESCENEINTRO_H__

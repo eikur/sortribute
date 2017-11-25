@@ -61,9 +61,6 @@
     <ClInclude Include="ModuleFonts.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleScene3.h">
-      <Filter>Game Modules</Filter>
-    </ClInclude>
     <ClInclude Include="EntityManager.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
@@ -85,9 +82,6 @@
     <ClInclude Include="Boss3.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleSceneIntro.h">
-      <Filter>Game Modules</Filter>
-    </ClInclude>
     <ClInclude Include="3rdparty\parson\parson.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -104,6 +98,12 @@
       <Filter>Core Modules</Filter>
     </ClInclude>
     <ClInclude Include="Scene.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="Stage3.h">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneIntro.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
   </ItemGroup>
@@ -144,9 +144,6 @@
     <ClCompile Include="ModuleFonts.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleScene3.cpp">
-      <Filter>Game Modules</Filter>
-    </ClCompile>
     <ClCompile Include="EntityManager.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
@@ -168,9 +165,6 @@
     <ClCompile Include="Boss3.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
-    <ClCompile Include="ModuleSceneIntro.cpp">
-      <Filter>Game Modules</Filter>
-    </ClCompile>
     <ClCompile Include="3rdparty\parson\parson.c">
       <Filter>Utils</Filter>
     </ClCompile>
@@ -187,6 +181,12 @@
       <Filter>Core Modules</Filter>
     </ClCompile>
     <ClCompile Include="Scene.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage3.cpp">
+      <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneIntro.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
   </ItemGroup>

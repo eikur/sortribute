@@ -1,29 +1,28 @@
-#ifndef __MODULESCENE3_H__
-#define __MODULESCENE3_H__
+#pragma once
 
-#include "Module.h"
+#include "Animation.h"
+#include "Scene.h"
 #include "Point.h"
 
-class Animation;
 struct SDL_Texture;
 class Player;
 
-class ModuleScene3 : public Module 
+class Stage3 : public Scene 
 {
-
 public:
+	Stage3(SceneManager& manager);
+	~Stage3();
 
-	ModuleScene3(bool active = true);
-	~ModuleScene3();
-
-	bool Start();
-	UpdateStatus PreUpdate();
+	bool Init() override;
+	bool Start() override;
+	UpdateStatus PreUpdate() override;
 	UpdateStatus Update(float dt = 0.0f) override;
-	bool CleanUp();
+	bool CleanUp() override;
+
+	void HandleCollision(Collider* a, Collider* b) override;
 
 private:
 	bool LoadConfigFromFile(const char* file_path);
-	void HandleCollision(Collider* a, Collider* b);
 	void CreateSceneTriggers();
 	void DeleteSceneTriggers();
 	void TriggerCollisionManagement(Collider *trigger);
@@ -77,9 +76,4 @@ private:
 	Collider *battle_zone2 = nullptr;
 	Collider *battle_zone3 = nullptr;
 	Collider *battle_zone4 = nullptr;
-
-
 };
-
-
-#endif // __MODULESCENE3_H__

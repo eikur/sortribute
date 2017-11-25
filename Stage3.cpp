@@ -9,18 +9,18 @@
 #include "ModuleCollision.h"
 #include "ModuleFadeToBlack.h"
 #include "ModuleUI.h"
-#include "ModuleSceneIntro.h"
+#include "SceneIntro.h"
 
-#include "ModuleScene3.h"
+#include "Stage3.h"
 
-ModuleScene3::ModuleScene3(bool active) : Module(active)
+Stage3::Stage3(SceneManager& manager) : Scene(manager)
 {
 }
 
-ModuleScene3::~ModuleScene3()
+Stage3::~Stage3()
 {}
 
-bool ModuleScene3::Start()
+bool Stage3::Init()
 {
 	LOG("Scene3: Starting MoonBeach\n");
 
@@ -30,9 +30,14 @@ bool ModuleScene3::Start()
 		return false;
 	}
 
+	return true;
+}
+
+bool Stage3::Start()
+{
 	CreateSceneTriggers();
 	PlaceSceneItems();
-	
+
 	App->getAudio().PlayMusic(music_path.c_str(), 1.0F);	
 	App->getAudio().PlayFx(fx_waves);
 	
@@ -48,7 +53,7 @@ bool ModuleScene3::Start()
 
 
 
-UpdateStatus ModuleScene3::PreUpdate()
+UpdateStatus Stage3::PreUpdate()
 {
 	//Draw everything except wave_splash
 	App->getRenderer().Blit(graphics, background_pos.x, background_pos.y, &background_section, (float)(background_section.w - App->getWindow().m_screen_width) / (float)(foreground_section.w - App->getWindow().m_screen_width));
@@ -57,26 +62,29 @@ UpdateStatus ModuleScene3::PreUpdate()
 	App->getRenderer().Blit(graphics, wave_sand_pos.x, wave_sand_pos.y, &(wave_sand.GetCurrentFrame()), 1.0F);			
 	return UpdateStatus::Continue;
 }
-UpdateStatus ModuleScene3::Update(float)
+UpdateStatus Stage3::Update(float)
 {
 	App->getRenderer().Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);
 
-	if (battle_zone4 == nullptr && App->getEntityManager().boss == nullptr && App->getFade().isFading() == false)
+	//if (battle_zone4 == nullptr && App->getEntityManager().boss == nullptr && App->getFade().isFading() == false)
+	if (battle_zone4 == nullptr && App->getEntityManager().boss == nullptr)
 	{
-		App->getFade().FadeToBlack((Module*)&App->getIntro(), this, 3.0f);
+		getManager().SwapScene(SceneManager::SceneId::Intro);
+		// App->getFade().FadeToBlack((Module*)&App->getIntro(), this, 3.0f); // pandibu fade to be implemented here
 	}
 	return UpdateStatus::Continue;
 }
 
-bool ModuleScene3::CleanUp()
+bool Stage3::CleanUp()
 {
 	LOG("Scene3: Unloading Moon Beach scene\n");
 	App->getTextures().Unload(graphics);
 	DeleteSceneTriggers();
+
 	return true;
 }
 
-void ModuleScene3::HandleCollision(Collider* a, Collider* b)
+void Stage3::HandleCollision(Collider* a, Collider* b)
 {
 	if (a->type)
 		TriggerCollisionManagement(a);
@@ -84,7 +92,7 @@ void ModuleScene3::HandleCollision(Collider* a, Collider* b)
 		TriggerCollisionManagement(b);
 }
 
-void ModuleScene3::CreateSceneTriggers()
+void Stage3::CreateSceneTriggers()
 {
 	triggers.push_back(spawn1 = App->getCollision().AddCollider({ 300,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
 	triggers.push_back(spawn2 = App->getCollision().AddCollider({ 450,32,5,192 }, colliderType::SCENE_TRIGGER, nullptr));
@@ -110,7 +118,7 @@ void ModuleScene3::CreateSceneTriggers()
 	triggers.push_back(battle_zone4 = App->getCollision().AddCollider({ 2760,130,280,94 }, colliderType::SCENE_TRIGGER, nullptr));
 }
 
-void ModuleScene3::DeleteSceneTriggers()
+void Stage3::DeleteSceneTriggers()
 {
 	for (std::vector<Collider*>::iterator it = triggers.begin(); it != triggers.end(); ++it)
 	{
@@ -123,7 +131,7 @@ void ModuleScene3::DeleteSceneTriggers()
 }
 
 
-void ModuleScene3::PlaceSceneItems()
+void Stage3::PlaceSceneItems()
 {
 	Entity *tmp = nullptr;
 	tmp = App->getEntityManager().CreateEntity(Entity::Types::item_apple);
@@ -136,7 +144,7 @@ void ModuleScene3::PlaceSceneItems()
 	tmp->SetPosition({ 1950,170 });
 }
 
-void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
+void Stage3::TriggerCollisionManagement(Collider *trigger)
 {
 	if (trigger == nullptr)
 		return;
@@ -337,7 +345,7 @@ void ModuleScene3::TriggerCollisionManagement(Collider *trigger)
 
 }
 
-bool ModuleScene3::LoadConfigFromFile(const char* file_path)
+bool Stage3::LoadConfigFromFile(const char* file_path)
 {
 	JSON_Value *root_value;
 	JSON_Object *root_object;

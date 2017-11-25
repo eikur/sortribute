@@ -3,13 +3,10 @@
 #include "EntityManager.h"
 #include "ModuleAudio.h"
 #include "ModuleCollision.h"
-#include "ModuleFadeToBlack.h"
 #include "ModuleFonts.h"
 #include "ModuleInput.h"
 #include "ModuleParticles.h"
 #include "ModuleRender.h"
-#include "ModuleSceneIntro.h"
-#include "ModuleScene3.h"
 #include "ModuleTextures.h"
 #include "ModuleUI.h"
 #include "ModuleWindow.h"
@@ -32,27 +29,20 @@ Application::Application()
 	_ui = std::make_unique<ModuleUI>(false);
 	//Specific game modules
 	_entityManager = std::make_unique<EntityManager>(false);
-	_scene3 = std::make_unique<ModuleScene3>(false);
-	_intro = std::make_unique<ModuleSceneIntro>(false);
-	// Modules on top of game logic
-	_collision = std::make_unique<ModuleCollision>(getEntityManager(),getScene3());
-	_particles = std::make_unique<ModuleParticles>();
-	_fade = std::make_unique<ModuleFadeToBlack>();
-
 	_sceneManager = std::make_unique<SceneManager>();
+	// Modules on top of game logic
+	_collision = std::make_unique<ModuleCollision>(getEntityManager(), getSceneManager());
+	_particles = std::make_unique<ModuleParticles>();
 
 	// Order matters: they will init/start/pre/update/post in this order
-	_modules = { _window.get(), _renderer.get(), _input.get(), _textures.get(), _audio.get(), _fonts.get(), _ui.get(), _entityManager.get(), _scene3.get(), _intro.get(), _collision.get(), _particles.get(), _fade.get(), _sceneManager.get()};
+	_modules = { _window.get(), _renderer.get(), _input.get(), _textures.get(), _audio.get(), _fonts.get(), _ui.get(), _entityManager.get(), _collision.get(), _particles.get(), _sceneManager.get()};
 }
 
 Application::~Application()
 {
 	_sceneManager.reset();
-	_fade.reset();
 	_particles.reset();
 	_collision.reset();
-	_intro.reset();
-	_scene3.reset();
 	_entityManager.reset();
 	_ui.reset();
 	_fonts.reset();
@@ -79,7 +69,7 @@ bool Application::Init()
 			ret = (*it)->Start();
 	}
 
-	getFade().FadeToBlack(&getIntro(), nullptr);
+	// getFade().FadeToBlack(&getIntro(), nullptr); // pandibu - 
 
 	return ret;
 }

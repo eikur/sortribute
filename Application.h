@@ -10,13 +10,10 @@ class ModuleWindow;
 class ModuleTextures;
 class ModuleInput;
 class ModuleAudio;
-class ModuleFadeToBlack;
 class ModuleCollision;
 class ModuleParticles;
 class ModuleFonts;
 class ModuleUI;
-class ModuleSceneIntro;
-class ModuleScene3;
 class EntityManager;
 class Timer;
 class ConfigurationLoader;
@@ -52,9 +49,6 @@ private:
 	MEMBER_DECL(ModuleAudio, _audio, getAudio)
 	MEMBER_DECL(ModuleFonts, _fonts, getFonts)
 	MEMBER_DECL(ModuleUI, _ui, getUI)
-	MEMBER_DECL(ModuleFadeToBlack, _fade, getFade)
-	MEMBER_DECL(ModuleSceneIntro, _intro, getIntro)
-	MEMBER_DECL(ModuleScene3, _scene3, getScene3)
 	MEMBER_DECL(EntityManager, _entityManager, getEntityManager)
 	MEMBER_DECL(ModuleCollision, _collision, getCollision)
 	MEMBER_DECL(ModuleParticles, _particles, getParticles)

@@ -8,7 +8,7 @@
 #include "ModuleCollision.h"
 #include "ModuleFadeToBlack.h"
 #include "ModuleUI.h"
-
+#include "SceneManager.h"
 #include "Timer.h"
 
 #include "Player.h"
@@ -91,8 +91,10 @@ UpdateStatus EntityManager::Update(float dt)
 
 	if (player == nullptr)
 	{
-		if (App->getFade().isFading() == false)
-			App->getFade().FadeToBlack((Module*)&App->getIntro(), (Module*)&App->getScene3(), 2.0f);
+		// pandibu fade to be implemented here
+		App->getSceneManager().SwapScene(SceneManager::SceneId::Intro);
+//		if (App->getFade().isFading() == false)
+//			App->getFade().FadeToBlack((Module*)&App->getIntro(), (Module*)&App->getScene3(), 2.0f);
 	}
 	
 	CheatCodes();
