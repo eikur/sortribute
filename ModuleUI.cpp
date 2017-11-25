@@ -45,7 +45,7 @@ UpdateStatus ModuleUI::Update(float)
 	if (pause == false)
 	{
 		if (remaining_msec_go_arrow > 0)
-			remaining_msec_go_arrow -= App->getTimer().DeltaTime();
+			remaining_msec_go_arrow -= App->getTimer().getDeltaTime();
 
 		if (App->getInput().GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
 			debug = !debug;

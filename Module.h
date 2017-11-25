@@ -1,13 +1,19 @@
-#ifndef __MODULE_H__
-#define __MODULE_H__
+#pragma once
 
-#include <string>
 #include "3rdparty/parson/parson.h"
 #include "3rdparty/SDL/include/SDL.h"
+#include <string>
 
 class Application;
 class Entity;
 struct Collider;
+
+enum class UpdateStatus
+{
+	Continue,
+	Stop,
+	Error
+};
 
 class Module
 {
@@ -55,7 +61,7 @@ public:
 		return UpdateStatus::Continue;
 	}
 
-	virtual UpdateStatus Update(float dt = 0.0f)
+	virtual UpdateStatus Update(float)
 	{
 		return UpdateStatus::Continue;
 	}
@@ -76,5 +82,3 @@ public:
 protected:
 	bool active = true;
 };
-
-#endif // __MODULE_H__

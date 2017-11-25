@@ -55,8 +55,8 @@ private:
 	iPoint hud_health_boss_pos = { 0,0 };
 
 	// go arrow
-	int remaining_msec_go_arrow = 0;
-	int blink_msec_go_arrow = 800;
+	float remaining_msec_go_arrow = 0.0f;
+	float blink_msec_go_arrow = 800.0f;
 	unsigned int fx_go_arrow = 0;
 
 	// debug

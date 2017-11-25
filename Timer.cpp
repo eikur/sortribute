@@ -41,7 +41,7 @@ void Timer::TimerResume() {
 	}
 }
 
-Uint32 Timer::ElapsedTime()
+Uint32 Timer::getElapsedTime() const 
 {
 	Uint32 elapsed_time = 0;
 
@@ -58,13 +58,13 @@ Uint32 Timer::ElapsedTime()
 
 void Timer::UpdateDeltaTime()
 {
-	m_delta_time = ElapsedTime() - m_ticks_last_update;
-	m_ticks_last_update = ElapsedTime();
+	m_delta_time = getElapsedTime() - m_ticks_last_update;
+	m_ticks_last_update = getElapsedTime();
 
 }
 
 
-Uint32 Timer::DeltaTime()
+float Timer::getDeltaTime() const
 {
-	return m_delta_time;
+	return static_cast<float>(m_delta_time);
 }

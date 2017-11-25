@@ -60,7 +60,7 @@ UpdateStatus ModuleSceneIntro::Update(float)
 	bool gamepad_attached = App->getInput().UsingGamepad();
 	App->getRenderer().Blit(background, 0, 0, 0, false);
 
-	elapsed_msec += App->getTimer().DeltaTime();
+	elapsed_msec += App->getTimer().getDeltaTime();
 
 	if (elapsed_msec <= blink_msg_msec)
 	{

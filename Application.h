@@ -1,9 +1,8 @@
 #pragma once
 
+#include "Module.h"
 #include <memory>
 #include <vector>
-#include "Globals.h"
-#include "Module.h"
 
 class ModuleRender;
 class ModuleWindow;
@@ -34,7 +33,6 @@ class ConfigurationLoader;
 class Application
 {
 public:
-
 	Application();
 	~Application();
 
@@ -61,7 +59,6 @@ private:
 
 	MEMBER_DECL(ConfigurationLoader, _config, getConfig)
 	MEMBER_DECL(Timer, _timer, getTimer)
-
 };
 
 extern Application* App;

@@ -61,9 +61,10 @@ UpdateStatus EntityManager::Update(float dt)
 			upd_logic = true;
 
 		entities.sort(Entity::ptrEntityDepthComparison());
+		unsigned int msecInt = static_cast<uint>(elapsed_msec);
 		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end();)
 		{
-			if ((*it)->Update(elapsed_msec, upd_logic) == false)
+			if ((*it)->Update(msecInt, upd_logic) == false)
 			{
  				if (*it == player)
 					player = nullptr;

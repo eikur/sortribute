@@ -39,13 +39,13 @@ public:
 	Entity* player = nullptr;
 	Entity* boss = nullptr;
 	std::list<Entity*> enemy_queue;
-	int time_left_msec = 81999;
+	float time_left_msec = 81999.0f;
 
 private:
 	std::list<Entity*> entities;
 	
-	Uint32 elapsed_msec = 0;
-	Uint32 upd_logic_msec = 20;
+	float elapsed_msec = 0.0f;
+	float upd_logic_msec = 20.0f;
 	bool upd_logic = false;
 
 	//collision check

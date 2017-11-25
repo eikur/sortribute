@@ -11,13 +11,6 @@ void log(const char file[], int line, const char* format, ...);
 #define MIN( a, b ) ( ((a) < (b)) ? (a) : (b) )
 #define MAX( a, b ) ( ((a) > (b)) ? (a) : (b) )
 
-enum class UpdateStatus
-{
-	Continue = 1,
-	Stop,
-	Error
-};
-
 // Useful typedefs ---------
 typedef unsigned int uint;
 

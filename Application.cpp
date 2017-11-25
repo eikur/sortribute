@@ -1,20 +1,18 @@
 #include "Application.h"
-#include "ModuleWindow.h"
-#include "ModuleRender.h"
-#include "ModuleTextures.h"
-#include "ModuleInput.h"
+#include "ConfigurationLoader.h"
+#include "EntityManager.h"
 #include "ModuleAudio.h"
-#include "ModuleFadeToBlack.h"
 #include "ModuleCollision.h"
-#include "ModuleParticles.h"
+#include "ModuleFadeToBlack.h"
 #include "ModuleFonts.h"
-#include "ModuleUI.h"
+#include "ModuleInput.h"
+#include "ModuleParticles.h"
+#include "ModuleRender.h"
 #include "ModuleSceneIntro.h"
 #include "ModuleScene3.h"
-#include "EntityManager.h"
-
-#include "ConfigurationLoader.h"
-
+#include "ModuleTextures.h"
+#include "ModuleUI.h"
+#include "ModuleWindow.h"
 #include "Timer.h"
 
 Application::Application()
@@ -68,10 +66,10 @@ bool Application::Init()
 {
 	bool ret = true;
 
-	for(auto& it = _modules.begin(); it != _modules.end() && ret; ++it)
-		ret = (*it)->Init(); // we init everything, even if not enabled
+	for(auto it = _modules.begin(); it != _modules.end() && ret; ++it)
+		ret = (*it)->Init();
 
-	for(auto& it = _modules.begin(); it != _modules.end() && ret; ++it)
+	for(auto it = _modules.begin(); it != _modules.end() && ret; ++it)
 	{
 		if((*it)->IsEnabled() == true)
 			ret = (*it)->Start();
@@ -88,15 +86,15 @@ UpdateStatus Application::Update()
 
 	getTimer().UpdateDeltaTime();
 
-	for(auto& it = _modules.begin(); it != _modules.end() && ret == UpdateStatus::Continue; ++it)
+	for(auto it = _modules.begin(); it != _modules.end() && ret == UpdateStatus::Continue; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->PreUpdate();
 
-	for(auto& it = _modules.begin(); it != _modules.end() && ret == UpdateStatus::Continue; ++it)
+	for(auto it = _modules.begin(); it != _modules.end() && ret == UpdateStatus::Continue; ++it)
 		if((*it)->IsEnabled() == true) 
-			ret = (*it)->Update(getTimer().DeltaTime());
+			ret = (*it)->Update(getTimer().getDeltaTime());
 
-	for(auto& it = _modules.begin(); it != _modules.end() && ret == UpdateStatus::Continue; ++it)
+	for(auto it = _modules.begin(); it != _modules.end() && ret == UpdateStatus::Continue; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->PostUpdate();
 
@@ -107,7 +105,7 @@ bool Application::CleanUp()
 {
 	bool ret = true;
 
-	for(auto& it = _modules.rbegin(); it != _modules.rend() && ret; ++it)
+	for(auto it = _modules.rbegin(); it != _modules.rend() && ret; ++it)
 		if((*it)->IsEnabled() == true) 
 			ret = (*it)->CleanUp();
 	return ret;

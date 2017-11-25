@@ -1,5 +1,4 @@
-#ifndef __TIMER_H__
-#define __TIMER_H__
+#pragma once
 
 #include "3rdparty\SDL\include\SDL_timer.h"
 
@@ -14,9 +13,11 @@ public:
 	void TimerPause();
 	void TimerResume();
 
-	Uint32 ElapsedTime();
 	void UpdateDeltaTime();
-	Uint32 DeltaTime();
+	float getDeltaTime() const;
+
+private:
+	Uint32 getElapsedTime() const;
 
 private:
 	Uint32 m_ticks_start = 0;
@@ -24,10 +25,8 @@ private:
 	Uint32 m_ticks_last_update = 0;
 	Uint32 m_delta_time = 0;
 
-	bool m_started;
-	bool m_paused;
+	bool m_started = false;
+	bool m_paused = false;
 	
 
 };
-
-#endif // __TIMER_H__
