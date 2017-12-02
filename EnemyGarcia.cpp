@@ -1,7 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRender.h"
-#include "ModuleTextures.h"
+#include "TextureHelper.h"
 #include "ModuleAudio.h"
 #include "ModuleCollision.h"
 #include "EntityManager.h"

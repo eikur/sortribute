@@ -1,5 +1,5 @@
 #include "Application.h"
-#include "ModuleTextures.h"
+#include "TextureHelper.h"
 #include "ModuleCollision.h"
 
 #include "Chicken.h"

@@ -1,25 +1,25 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleRender.h"
-#include "ModuleTextures.h"
+#include "TextureHelper.h"
 
 #include "3rdparty/SDL_image/include/SDL_image.h"
 #pragma comment( lib, "3rdparty/SDL_image/libx86/SDL2_image.lib" )
 
 using namespace std;
 
-ModuleTextures::ModuleTextures()
+TextureHelper::TextureHelper()
 {
 }
 
 // Destructor
-ModuleTextures::~ModuleTextures()
+TextureHelper::~TextureHelper()
 {
 	IMG_Quit();
 }
 
 // Called before render is available
-bool ModuleTextures::Init()
+bool TextureHelper::Init()
 {
 	LOG("Init Image library");
 	bool ret = true;
@@ -38,7 +38,7 @@ bool ModuleTextures::Init()
 }
 
 // Called before quitting
-bool ModuleTextures::CleanUp()
+bool TextureHelper::CleanUp()
 {
 	LOG("Freeing textures and Image library");
 
@@ -50,7 +50,7 @@ bool ModuleTextures::CleanUp()
 }
 
 // Load new texture from file path
-SDL_Texture* const ModuleTextures::Load(const char* path)
+SDL_Texture* const TextureHelper::Load(const char* path)
 {
 	SDL_Texture* texture = nullptr;
 	SDL_Surface* surface = nullptr; 
@@ -82,7 +82,7 @@ SDL_Texture* const ModuleTextures::Load(const char* path)
 }
 
 // Free texture from memory
-void ModuleTextures::Unload(SDL_Texture* texture)
+void TextureHelper::Unload(SDL_Texture* texture)
 {
 	for(list<SDL_Texture*>::iterator it = textures.begin(); it != textures.end(); ++it)
 	{

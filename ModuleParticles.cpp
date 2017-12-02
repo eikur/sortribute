@@ -2,7 +2,7 @@
 #include "ModuleParticles.h"
 #include "Application.h"
 #include "ModuleAudio.h"
-#include "ModuleTextures.h"
+#include "TextureHelper.h"
 #include "ModuleRender.h"
 #include "ModuleCollision.h"
 #include "ModuleFonts.h"

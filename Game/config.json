@@ -18,19 +18,22 @@
 		"layer_depth": 5
 	},
 	"fonts": {
-		"total": 3,
 		"file": "Assets/hud.png",
-		"rects": [
-			[0, 32, 80, 16],
-			[96, 32, 224, 8],
-			[0, 50, 132, 14]
-		],
-		"lookup_table": [
-			"0123456789",
-			"FARESUPT 0123456789-BONCLYWX",
-			"ROUND SATPE"
-		],
-		"ppe": [8, 8, 12]
+		"HudBig": {
+			"rect" : [0, 32, 80, 16],
+			"lookup_table": "0123456789",
+			"ppe": 8
+		},
+		"HudSmall": {
+			"rect" : [96, 32, 224, 8],
+			"lookup_table": "FARESUPT 0123456789-BONCLYWX",
+			"ppe": 8
+		},
+		"SceneOverlay": {
+			"rect" : [0, 50, 132, 14],
+			"lookup_table": "ROUND SATPE",
+			"ppe": 12
+		}
 	},
 	"intro":{
 		"graphics_file": "Assets/intro_screen.png",

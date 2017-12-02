@@ -19,9 +19,6 @@
     <ClInclude Include="ModuleRender.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
-    <ClInclude Include="ModuleTextures.h">
-      <Filter>Core Modules</Filter>
-    </ClInclude>
     <ClInclude Include="ModuleWindow.h">
       <Filter>Core Modules</Filter>
     </ClInclude>
@@ -106,6 +103,9 @@
     <ClInclude Include="SceneIntro.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
+    <ClInclude Include="TextureHelper.h">
+      <Filter>Core Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -115,9 +115,6 @@
       <Filter>Main</Filter>
     </ClCompile>
     <ClCompile Include="ModuleRender.cpp">
-      <Filter>Core Modules</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleTextures.cpp">
       <Filter>Core Modules</Filter>
     </ClCompile>
     <ClCompile Include="ModuleWindow.cpp">
@@ -188,6 +185,9 @@
     </ClCompile>
     <ClCompile Include="SceneIntro.cpp">
       <Filter>Game Modules</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureHelper.cpp">
+      <Filter>Core Modules</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

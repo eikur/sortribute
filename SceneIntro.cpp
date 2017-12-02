@@ -1,6 +1,6 @@
 #include "Globals.h"
 #include "Application.h"
-#include "ModuleTextures.h"
+#include "TextureHelper.h"
 #include "ModuleAudio.h"
 #include "ModuleInput.h"
 #include "ModuleRender.h"
@@ -65,9 +65,9 @@ UpdateStatus SceneIntro::Update(float)
 	if (elapsed_msec <= blink_msg_msec)
 	{
 		if (gamepad_attached == true)
-			App->getFonts().Print(102, 150, ModuleFonts::Fonts::hud_small, "PRESS 1P START");
+			App->getFonts().Print(102, 150, ModuleFonts::FontType::HudSmall, "PRESS 1P START");
 		else
-			App->getFonts().Print(110, 150, ModuleFonts::Fonts::hud_small, "PRESS ENTER");
+			App->getFonts().Print(110, 150, ModuleFonts::FontType::HudSmall, "PRESS ENTER");
 	}
 	else if (elapsed_msec > 2 * blink_msg_msec)
 		elapsed_msec = 0;

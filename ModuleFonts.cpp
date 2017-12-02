@@ -1,7 +1,7 @@
 #include "Globals.h"
 #include "Application.h"
 #include "ModuleFonts.h"
-#include "ModuleTextures.h"
+#include "TextureHelper.h"
 #include "ModuleRender.h"
 
 ModuleFonts::ModuleFonts()
@@ -33,8 +33,6 @@ bool ModuleFonts::CleanUp()
 
 	App->getTextures().Unload(graphics);
 
-	for (std::vector<Font*>::iterator it = fonts.begin(); it != fonts.end(); ++it)
-		RELEASE(*it);
 	fonts.clear();
 	
 	return true;
@@ -44,19 +42,13 @@ bool ModuleFonts::CleanUp()
 bool ModuleFonts::LoadConfigFromFile(const char* file_path)
 {
 	JSON_Value *root_value = json_parse_file(file_path);
-	JSON_Array *j_rects;
+	JSON_Object *root_object;
 	JSON_Array *j_rect;
-	JSON_Array *j_lookup;
-	JSON_Array *j_ppe;
 
 	if (root_value == nullptr)
 		return false;
-
-	int total = (int) json_object_dotget_number(json_object(root_value), "fonts.total");
-	if (total == 0) {
-		json_value_free(root_value);
-		return false;
-	}
+	else
+		root_object = json_object(root_value);
 
 	//get the path to the asset
 	if (json_object_dothas_value_of_type(json_object(root_value), "fonts.file", JSONString))
@@ -66,45 +58,47 @@ bool ModuleFonts::LoadConfigFromFile(const char* file_path)
 		return false;
 	}
 
-	//get the fonts 
-	j_rects = json_object_dotget_array(json_object(root_value), "fonts.rects");
-	j_lookup = json_object_dotget_array(json_object(root_value), "fonts.lookup_table");
-	j_ppe = json_object_dotget_array(json_object(root_value), "fonts.ppe");
+	//background load
+	Font font;
+	
+	j_rect = json_object_dotget_array(root_object, "fonts.HudBig.rect");
+	font.rect.x = (int)json_array_get_number(j_rect, 0);
+	font.rect.y = (int)json_array_get_number(j_rect, 1);
+	font.rect.w = (int)json_array_get_number(j_rect, 2);
+	font.rect.h = (int)json_array_get_number(j_rect, 3);
+	font.lookup_table = json_object_dotget_string(root_object, "fonts.HudBig.lookup_table");
+	font.pixels_per_element = (int)json_object_dotget_number(root_object, "fonts.HudBig.ppe");
+	font.type = FontType::HudBig;
+	fonts[FontType::HudBig] = font;
 
-	Font *tmp = new Font();
+	j_rect = json_object_dotget_array(root_object, "fonts.HudSmall.rect");
+	font.rect.x = (int)json_array_get_number(j_rect, 0);
+	font.rect.y = (int)json_array_get_number(j_rect, 1);
+	font.rect.w = (int)json_array_get_number(j_rect, 2);
+	font.rect.h = (int)json_array_get_number(j_rect, 3);
+	font.lookup_table = json_object_dotget_string(root_object, "fonts.HudSmall.lookup_table");
+	font.pixels_per_element = (int)json_object_dotget_number(root_object, "fonts.HudSmall.ppe");
+	font.type = FontType::HudSmall;
+	fonts[FontType::HudSmall] = font;
 
-	for (int i = 0; i < total; ++i)
-	{
-		tmp->id = i;
-
-		j_rect = json_array_get_array(j_rects, i);
-		tmp->rect->x = (int)json_array_get_number(j_rect, 0);
-		tmp->rect->y = (int)json_array_get_number(j_rect, 1);
-		tmp->rect->w = (int)json_array_get_number(j_rect, 2);
-		tmp->rect->h = (int)json_array_get_number(j_rect, 3);
-
-		tmp->lookup_table = json_array_get_string(j_lookup, i);
-
-		tmp->pixels_per_element = (int)json_array_get_number(j_ppe, i);
-
-		fonts.push_back(new Font(*tmp));
-	}
-
-	delete tmp;
+	j_rect = json_object_dotget_array(root_object, "fonts.SceneOverlay.rect");
+	font.rect.x = (int)json_array_get_number(j_rect, 0);
+	font.rect.y = (int)json_array_get_number(j_rect, 1);
+	font.rect.w = (int)json_array_get_number(j_rect, 2);
+	font.rect.h = (int)json_array_get_number(j_rect, 3);
+	font.lookup_table = json_object_dotget_string(root_object, "fonts.SceneOverlay.lookup_table");
+	font.pixels_per_element = (int)json_object_dotget_number(root_object, "fonts.SceneOverlay.ppe");
+	font.type = FontType::SceneOverlay;
+	fonts[FontType::SceneOverlay] = font;
 
 	json_value_free(root_value);
 
 	return true;
 }
 
-void ModuleFonts::Print(int x, int y, int font_id, const std::string text) const
+void ModuleFonts::Print(int x, int y, FontType fontType, const std::string text) const
 {	
-	// find selected font
-	std::vector<Font*>::const_iterator it;
-
-	for (it = fonts.cbegin(); it != fonts.cend(); ++it)
-		if ((*it)->id == font_id)
-			break;
+	const Font& font = fonts.at(fontType);
 
 	// draw the fonts
 	int i = 0;
@@ -112,15 +106,15 @@ void ModuleFonts::Print(int x, int y, int font_id, const std::string text) const
 	int lut_i;
 
 	SDL_Rect *i_rect = new SDL_Rect();
-	i_rect->y = (*it)->rect->y;
-	i_rect->w = (*it)->pixels_per_element;
-	i_rect->h = (*it)->rect->h;
+	i_rect->y = font.rect.y;
+	i_rect->w = font.pixels_per_element;
+	i_rect->h = font.rect.h;
 	
 	for (i = 0; i < i_max; ++i)
 	{
-		lut_i = (*it)->lookup_table.find(text.at(i));
-		i_rect->x = (*it)->rect->x + lut_i * (*it)->pixels_per_element;
-		App->getRenderer().Blit(graphics, x+i*(*it)->pixels_per_element, y, i_rect, 0.0f);
+		lut_i = font.lookup_table.find(text.at(i));
+		i_rect->x = font.rect.x + lut_i * font.pixels_per_element;
+		App->getRenderer().Blit(graphics, x+i*font.pixels_per_element, y, i_rect, 0.0f);
 	}
 
 	delete i_rect;
@@ -143,23 +137,22 @@ std::string ModuleFonts::GetPrintableValue(int value, int desired_length) const
 
 /*---------------------------------------------------------*/
 
-Font::Font()
+ModuleFonts::Font::Font()
 {
-	rect = new SDL_Rect();
-	id = 0;
+	type = FontType::Invalid;
 	lookup_table = "";
 	pixels_per_element = 0;
 }
 
-Font::Font(const Font& f)
+ModuleFonts::Font::Font(const Font& f)
 {
-	rect = new SDL_Rect(*f.rect);
-	id = f.id;
+	rect = SDL_Rect(f.rect);
+	type = f.type;
 	lookup_table = f.lookup_table;
 	pixels_per_element = f.pixels_per_element;
 }
 
-Font::~Font()
+ModuleFonts::Font::~Font()
 {
-	RELEASE(rect);
+
 }

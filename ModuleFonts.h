@@ -1,31 +1,32 @@
 #ifndef __MODULEFONTS_H__
 #define __MODULEFONTS_H__
 
-#include <vector>
+#include <map>
 #include <stdlib.h>
 #include "Module.h"
 
 
 struct SDL_Texture;
 
-struct Font {
-	int id;
-	SDL_Rect *rect;
-	std::string lookup_table;
-	int pixels_per_element;
-
-	Font();
-	Font(const Font& f);
-	~Font();
-};
-
 class ModuleFonts : public Module
 {
 public:
-	enum Fonts {
-		hud_big, 
-		hud_small,
-		scene_overlap
+	enum class FontType {
+		HudBig, 
+		HudSmall,
+		SceneOverlay,
+		Invalid
+	};
+
+	struct Font {
+		FontType type;
+		SDL_Rect rect;
+		std::string lookup_table;
+		int pixels_per_element;
+
+		Font();
+		Font(const Font& f);
+		~Font();
 	};
 
 public:
@@ -36,12 +37,12 @@ public:
 	bool LoadConfigFromFile(const char* file_path);
 	bool CleanUp();
 
-	void Print(int x, int y, int font_id, const std::string text) const;
+	void Print(int x, int y, FontType fontType, const std::string text) const;
 	std::string GetPrintableValue(int value, int desired_length) const;
 	
 private:
 	SDL_Texture* graphics = nullptr;
 	std::string asset_file = "";
-	std::vector<Font*> fonts;
+	std::map<FontType, Font> fonts;
 };
 #endif	// __MODULEFONTS_H__

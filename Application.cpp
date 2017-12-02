@@ -7,10 +7,10 @@
 #include "ModuleInput.h"
 #include "ModuleParticles.h"
 #include "ModuleRender.h"
-#include "ModuleTextures.h"
 #include "ModuleUI.h"
 #include "ModuleWindow.h"
 #include "SceneManager.h"
+#include "TextureHelper.h"
 #include "Timer.h"
 
 Application::Application()
@@ -18,12 +18,12 @@ Application::Application()
 	_config = std::make_unique<ConfigurationLoader>(CONFIG_FILE);
 	_timer = std::make_unique<Timer>();
 	_timer->TimerStart();
+	_textures = std::make_unique<TextureHelper>();
 
 	// Base App modules
 	_window = std::make_unique<ModuleWindow>();
 	_renderer = std::make_unique<ModuleRender>();
 	_input = std::make_unique<ModuleInput>();
-	_textures = std::make_unique<ModuleTextures>();
 	_audio = std::make_unique<ModuleAudio>();
 	_fonts = std::make_unique<ModuleFonts>();
 	_ui = std::make_unique<ModuleUI>(false);
@@ -35,7 +35,7 @@ Application::Application()
 	_particles = std::make_unique<ModuleParticles>();
 
 	// Order matters: they will init/start/pre/update/post in this order
-	_modules = { _window.get(), _renderer.get(), _input.get(), _textures.get(), _audio.get(), _fonts.get(), _ui.get(), _entityManager.get(), _collision.get(), _particles.get(), _sceneManager.get()};
+	_modules = { _window.get(), _renderer.get(), _input.get(), _audio.get(), _fonts.get(), _ui.get(), _entityManager.get(), _collision.get(), _particles.get(), _sceneManager.get()};
 }
 
 Application::~Application()
