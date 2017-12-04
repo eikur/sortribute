@@ -3,7 +3,7 @@
 #include "ModuleRender.h"
 #include "TextureHelper.h"
 #include "ModuleInput.h"
-#include "ModuleFonts.h"
+#include "TextureFontsHelper.h"
 #include "ModuleAudio.h"
 #include "EntityManager.h"
 
@@ -12,6 +12,23 @@
 
 #include "ModuleUI.h"
 
+namespace
+{
+	std::string getPrintableValue(int value, int desired_length)
+	{
+		std::string ret = "";
+		std::string tmp = std::to_string(value);
+
+		int current_length = tmp.length();
+
+		for (int i = current_length; i < desired_length; ++i)
+		{
+			ret.append("0");
+		}
+		ret.append(tmp);
+		return ret;
+	}
+}
 
 ModuleUI::ModuleUI(bool active) : Module(active)
 {}
@@ -66,47 +83,47 @@ void ModuleUI::PrintStatus()
 	App->getRenderer().Blit(hud_graphics, 0, 0, &hud_section, 0.0F);
 	if (pause)
 	{
-		App->getFonts().Print(112, 96, ModuleFonts::FontType::SceneOverlay, "P");
-		App->getFonts().Print(132, 96, ModuleFonts::FontType::SceneOverlay, "A");
-		App->getFonts().Print(152, 96, ModuleFonts::FontType::SceneOverlay, "U");
-		App->getFonts().Print(172, 96, ModuleFonts::FontType::SceneOverlay, "S");
-		App->getFonts().Print(192, 96, ModuleFonts::FontType::SceneOverlay, "E");
+		App->getFonts().Print(112, 96, TextureFontsHelper::FontType::SceneOverlay, "P");
+		App->getFonts().Print(132, 96, TextureFontsHelper::FontType::SceneOverlay, "A");
+		App->getFonts().Print(152, 96, TextureFontsHelper::FontType::SceneOverlay, "U");
+		App->getFonts().Print(172, 96, TextureFontsHelper::FontType::SceneOverlay, "S");
+		App->getFonts().Print(192, 96, TextureFontsHelper::FontType::SceneOverlay, "E");
 	}
 	if (App->getEntityManager().player != nullptr) {
-		App->getFonts().Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::FontType::HudBig, App->getFonts().GetPrintableValue(App->getEntityManager().time_left_msec / 2000, 2));
-		App->getFonts().Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::FontType::HudSmall, App->getFonts().GetPrintableValue(App->getEntityManager().player->score, 6));
-		App->getFonts().Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::FontType::HudBig, App->getFonts().GetPrintableValue(App->getEntityManager().player->help, 1));
-		App->getFonts().Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::FontType::HudBig, App->getFonts().GetPrintableValue(App->getEntityManager().player->lives, 1));
+		App->getFonts().Print(hud_time_pos.x, hud_time_pos.y, TextureFontsHelper::FontType::HudBig, getPrintableValue(App->getEntityManager().time_left_msec / 2000, 2));
+		App->getFonts().Print(hud_score_pos.x, hud_score_pos.y, TextureFontsHelper::FontType::HudSmall, getPrintableValue(App->getEntityManager().player->score, 6));
+		App->getFonts().Print(hud_help_pos.x, hud_help_pos.y, TextureFontsHelper::FontType::HudBig, getPrintableValue(App->getEntityManager().player->help, 1));
+		App->getFonts().Print(hud_lives_pos.x, hud_lives_pos.y, TextureFontsHelper::FontType::HudBig, getPrintableValue(App->getEntityManager().player->lives, 1));
 		PrintPlayerHealth();
 		PrintGoArrow();
 	}
 	else {
-		App->getFonts().Print(hud_time_pos.x, hud_time_pos.y, ModuleFonts::FontType::HudBig, "00");
-		App->getFonts().Print(hud_score_pos.x, hud_score_pos.y, ModuleFonts::FontType::HudSmall, "000000");
-		App->getFonts().Print(hud_help_pos.x, hud_help_pos.y, ModuleFonts::FontType::HudBig, "0");
-		App->getFonts().Print(hud_lives_pos.x, hud_lives_pos.y, ModuleFonts::FontType::HudBig, "0");
-		App->getFonts().Print(146, 110, ModuleFonts::FontType::SceneOverlay, "END");
+		App->getFonts().Print(hud_time_pos.x, hud_time_pos.y, TextureFontsHelper::FontType::HudBig, "00");
+		App->getFonts().Print(hud_score_pos.x, hud_score_pos.y, TextureFontsHelper::FontType::HudSmall, "000000");
+		App->getFonts().Print(hud_help_pos.x, hud_help_pos.y, TextureFontsHelper::FontType::HudBig, "0");
+		App->getFonts().Print(hud_lives_pos.x, hud_lives_pos.y, TextureFontsHelper::FontType::HudBig, "0");
+		App->getFonts().Print(146, 110, TextureFontsHelper::FontType::SceneOverlay, "END");
 	}
 	if (App->getEntityManager().boss != nullptr)
 	{
 		App->getRenderer().Blit(hud_graphics, hud_boss_pos.x, hud_boss_pos.y, &hud_boss_section, 0.0F);
-		App->getFonts().Print(hud_boss_msg_pos.x, hud_boss_msg_pos.y, ModuleFonts::FontType::HudSmall, "-BOSS-");
+		App->getFonts().Print(hud_boss_msg_pos.x, hud_boss_msg_pos.y, TextureFontsHelper::FontType::HudSmall, "-BOSS-");
 		PrintBossHealth();
 	}
 	// debug options
-	App->getFonts().Print(220, 2, ModuleFonts::FontType::HudSmall, "- TOOLS -");
-	App->getFonts().Print(196, 11, ModuleFonts::FontType::HudSmall, "F1-COLS");
-	App->getFonts().Print(196, 20, ModuleFonts::FontType::HudSmall, "F2-SPWN");
-	App->getFonts().Print(260, 11, ModuleFonts::FontType::HudSmall, "F3-PLYR");
-	App->getFonts().Print(260, 20, ModuleFonts::FontType::HudSmall, "F4-POS");
+	App->getFonts().Print(220, 2, TextureFontsHelper::FontType::HudSmall, "- TOOLS -");
+	App->getFonts().Print(196, 11, TextureFontsHelper::FontType::HudSmall, "F1-COLS");
+	App->getFonts().Print(196, 20, TextureFontsHelper::FontType::HudSmall, "F2-SPWN");
+	App->getFonts().Print(260, 11, TextureFontsHelper::FontType::HudSmall, "F3-PLYR");
+	App->getFonts().Print(260, 20, TextureFontsHelper::FontType::HudSmall, "F4-POS");
 
 	//debug show
 	if (debug)
 	{
-		App->getFonts().Print(112, 40, ModuleFonts::FontType::HudSmall, "X-");
-		App->getFonts().Print(128, 40, ModuleFonts::FontType::HudSmall, App->getFonts().GetPrintableValue(App->getEntityManager().player->position.x, 4));
-		App->getFonts().Print(168, 40, ModuleFonts::FontType::HudSmall, "Y-");
-		App->getFonts().Print(184, 40, ModuleFonts::FontType::HudSmall, App->getFonts().GetPrintableValue(App->getEntityManager().player->position.y, 4));
+		App->getFonts().Print(112, 40, TextureFontsHelper::FontType::HudSmall, "X-");
+		App->getFonts().Print(128, 40, TextureFontsHelper::FontType::HudSmall, getPrintableValue(App->getEntityManager().player->position.x, 4));
+		App->getFonts().Print(168, 40, TextureFontsHelper::FontType::HudSmall, "Y-");
+		App->getFonts().Print(184, 40, TextureFontsHelper::FontType::HudSmall, getPrintableValue(App->getEntityManager().player->position.y, 4));
 	}
 
 }
@@ -176,7 +193,7 @@ void ModuleUI::ShowCollidersDebugMode()
 {
 	if (active == true)
 	{
-		App->getFonts().Print(8, 40, ModuleFonts::FontType::HudSmall, "COLS ON");
+		App->getFonts().Print(8, 40, TextureFontsHelper::FontType::HudSmall, "COLS ON");
 	}
 }
 
@@ -184,7 +201,7 @@ void ModuleUI::ShowEntityManagerDebugMode()
 {
 	if (active == true)
 	{
-		App->getFonts().Print(8, 48, ModuleFonts::FontType::HudSmall, "SPWN ON");
+		App->getFonts().Print(8, 48, TextureFontsHelper::FontType::HudSmall, "SPWN ON");
 	}
 }
 
@@ -192,7 +209,7 @@ void ModuleUI::ShowPlayerDebugMode()
 {
 	if (active == true)
 	{
-		App->getFonts().Print(8, 56, ModuleFonts::FontType::HudSmall, "PLYR ON");
+		App->getFonts().Print(8, 56, TextureFontsHelper::FontType::HudSmall, "PLYR ON");
 	}
 }
 

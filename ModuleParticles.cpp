@@ -5,7 +5,7 @@
 #include "TextureHelper.h"
 #include "ModuleRender.h"
 #include "ModuleCollision.h"
-#include "ModuleFonts.h"
+#include "TextureFontsHelper.h"
 
 //#include "3rdparty/SDL/include/SDL_timer.h"
 

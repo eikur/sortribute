@@ -12,7 +12,7 @@ class ModuleInput;
 class ModuleAudio;
 class ModuleCollision;
 class ModuleParticles;
-class ModuleFonts;
+class TextureFontsHelper;
 class ModuleUI;
 class EntityManager;
 class Timer;
@@ -46,7 +46,6 @@ private:
 	MEMBER_DECL(ModuleWindow, _window, getWindow)
 	MEMBER_DECL(ModuleInput, _input, getInput)
 	MEMBER_DECL(ModuleAudio, _audio, getAudio)
-	MEMBER_DECL(ModuleFonts, _fonts, getFonts)
 	MEMBER_DECL(ModuleUI, _ui, getUI)
 	MEMBER_DECL(EntityManager, _entityManager, getEntityManager)
 	MEMBER_DECL(ModuleCollision, _collision, getCollision)
@@ -54,6 +53,7 @@ private:
 	MEMBER_DECL(SceneManager, _sceneManager, getSceneManager)
 
 	MEMBER_DECL(TextureHelper, _textures, getTextures)
+	MEMBER_DECL(TextureFontsHelper, _fonts, getFonts)
 	MEMBER_DECL(ConfigurationLoader, _config, getConfig)
 	MEMBER_DECL(Timer, _timer, getTimer)
 };

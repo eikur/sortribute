@@ -1,5 +1,4 @@
-#ifndef __MODULEUI_H__
-#define __MODULEUI_H__
+#pragma once
 
 #include "Module.h"
 #include "Point.h"
@@ -64,5 +63,3 @@ private:
 	bool debug = false;
 
 };
-
-#endif // __MODULEUI_H__
