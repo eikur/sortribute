@@ -68,9 +68,6 @@ bool Application::Init()
 		if((*it)->IsEnabled() == true)
 			ret = (*it)->Start();
 	}
-
-	// getFade().FadeToBlack(&getIntro(), nullptr); // pandibu - 
-
 	return ret;
 }
 

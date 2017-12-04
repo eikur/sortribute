@@ -99,7 +99,6 @@ bool SceneManager::IsInTransition() const
 
 void SceneManager::UpdateTransition(float dt)
 {
-	LOG("I AM IN TRANSITION****\n\n");
 	_transitionTime -= dt;
 
 	if (_currentScene == nullptr && _nextScene != nullptr)

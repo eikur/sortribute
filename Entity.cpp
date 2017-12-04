@@ -316,8 +316,6 @@ void Entity::RemoveColliders()
 }
 void Entity::CleanUp()
 {
-	if (graphics != nullptr)
-		App->getTextures().Unload(graphics);
 }
 
 void Entity::CheatCodes()

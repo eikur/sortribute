@@ -1,21 +1,10 @@
 #pragma once
 
-#include <list>
+#include <map>
 #include <stdlib.h>
 
 struct SDL_Texture;
-/*
-struct Font {
-	int id;
-	SDL_Rect *rect;
-	std::string lookup_table;
-	int pixels_per_element;
 
-	Font();
-	Font(const Font& f);
-	~Font();
-};
-*/
 class TextureHelper
 {
 public:
@@ -25,9 +14,9 @@ public:
 	bool Init();
 	bool CleanUp();
 
-	SDL_Texture* const Load(const char* path);
+	SDL_Texture* const Load(const std::string& path);
 	void Unload(SDL_Texture* texture);
 
 private:
-	std::list<SDL_Texture*> textures;
+	std::map<std::string, SDL_Texture*> _textureMap;
 };

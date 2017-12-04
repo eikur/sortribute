@@ -31,8 +31,6 @@ bool ModuleFonts::CleanUp()
 {
 	LOG("Fonts: Unloading fonts\n");
 
-	App->getTextures().Unload(graphics);
-
 	fonts.clear();
 	
 	return true;

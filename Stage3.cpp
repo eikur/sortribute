@@ -66,11 +66,9 @@ UpdateStatus Stage3::Update(float)
 {
 	App->getRenderer().Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);
 
-	//if (battle_zone4 == nullptr && App->getEntityManager().boss == nullptr && App->getFade().isFading() == false)
 	if (battle_zone4 == nullptr && App->getEntityManager().boss == nullptr)
 	{
 		getManager().SwapScene(SceneManager::SceneId::Intro);
-		// App->getFade().FadeToBlack((Module*)&App->getIntro(), this, 3.0f); // pandibu fade to be implemented here
 	}
 	return UpdateStatus::Continue;
 }
@@ -78,7 +76,6 @@ UpdateStatus Stage3::Update(float)
 bool Stage3::CleanUp()
 {
 	LOG("Scene3: Unloading Moon Beach scene\n");
-	App->getTextures().Unload(graphics);
 	DeleteSceneTriggers();
 
 	return true;
@@ -457,8 +454,6 @@ bool Stage3::LoadConfigFromFile(const char* file_path)
 
 	if (graphics == nullptr || music_path == "")
 	{
-		if (graphics != nullptr)
-			App->getTextures().Unload(graphics);
 		return false;
 	}
 	

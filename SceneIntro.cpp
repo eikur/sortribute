@@ -49,8 +49,6 @@ bool SceneIntro::CleanUp()
 {
 	LOG("Unloading intro scene");
 
-	App->getTextures().Unload(background);
-	
 	return true;
 }
 
@@ -71,13 +69,11 @@ UpdateStatus SceneIntro::Update(float)
 	}
 	else if (elapsed_msec > 2 * blink_msg_msec)
 		elapsed_msec = 0;
-
-//	if ( App->getFade().isFading() == false && 
+	
 	if ((gamepad_attached == true && App->getInput().GetGamepadButton(GamepadButton::START) == KEY_DOWN) ||
 		(gamepad_attached == false && App->getInput().GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN))
 	{
 		getManager().SwapScene(SceneManager::SceneId::Stage3);
-		//App->getFade().FadeToBlack((Module*)&App->getScene3(), this); // pandibu fade to be implemented here
 		App->getAudio().PlayFx(fx_start);
 	}
 
