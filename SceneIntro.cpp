@@ -68,7 +68,9 @@ UpdateStatus SceneIntro::Update(float)
 			App->getFonts().Print(110, 150, ModuleFonts::FontType::HudSmall, "PRESS ENTER");
 	}
 	else if (elapsed_msec > 2 * blink_msg_msec)
+	{
 		elapsed_msec = 0;
+	}
 	
 	if ((gamepad_attached == true && App->getInput().GetGamepadButton(GamepadButton::START) == KEY_DOWN) ||
 		(gamepad_attached == false && App->getInput().GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN))

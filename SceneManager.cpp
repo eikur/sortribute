@@ -64,6 +64,11 @@ bool SceneManager::CleanUp()
 
 void SceneManager::SwapScene(SceneId sceneId, float duration)
 {
+	if (_inTransition)
+	{
+		return;
+	}
+
 	switch (sceneId)
 	{
 	case SceneId::Intro:
