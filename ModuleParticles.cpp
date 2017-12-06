@@ -29,7 +29,7 @@ bool ModuleParticles::CleanUp()
 	LOG("Unloading particles");
 //	App->getTextures().Unload(graphics);
 
-	for (list<Particle*>::iterator it = active.begin(); it != active.end(); ++it)
+	for (std::list<Particle*>::iterator it = active.begin(); it != active.end(); ++it)
 		RELEASE(*it);
 
 	active.clear();
@@ -40,7 +40,7 @@ bool ModuleParticles::CleanUp()
 // Update: draw particles 
 UpdateStatus ModuleParticles::Update(float)
 {
-	for (list<Particle*>::iterator it = active.begin(); it != active.end();)
+	for (std::list<Particle*>::iterator it = active.begin(); it != active.end();)
 	{
 		Particle* p = *it;
 

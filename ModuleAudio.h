@@ -20,17 +20,11 @@ public:
 	bool Init();
 	bool CleanUp();
 
-	// Play a music file
-	bool PlayMusic(const char* path, float fade_time = DEFAULT_MUSIC_FADE_TIME);
-
-	// Load a WAV in memory
-	unsigned int LoadFx(const char* path);
-
-	// Play a previously loaded WAV
+	bool PlayMusic(const std::string& path, float fade_time = DEFAULT_MUSIC_FADE_TIME);
+	unsigned int LoadFx(const std::string& path);
 	bool PlayFx(unsigned int fx, int repeat = 0);
 
 private:
-
 	Mix_Music*	music = nullptr;
 	std::vector<Mix_Chunk*>	fx;
 };

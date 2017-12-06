@@ -1,5 +1,4 @@
-#ifndef __ModuleCollision_H__
-#define __ModuleCollision_H__
+#pragma once
 
 #include<list>
 #include "Module.h"
@@ -57,5 +56,3 @@ private:
 	Module& entitiesReporter;
 	Module& scenesReporter;
 };
-
-#endif // __ModuleCollision_H__

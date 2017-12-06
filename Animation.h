@@ -1,16 +1,13 @@
-#ifndef __ANIMATION_H__
-#define __ANIMATION_H__
+#pragma once 
 
 #include <vector>
-
-using namespace std;
 
 class Animation
 {
 public:
 	bool loop = true;
 	float speed = 1.0f;
-	vector<SDL_Rect> frames;
+	std::vector<SDL_Rect> frames;
 
 private:
 	float current_frame = 0.0f;
@@ -52,5 +49,3 @@ public:
 		current_frame = 0.0f;
 	}
 };
-
-#endif // __ANIMATION_H__

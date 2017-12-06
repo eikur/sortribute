@@ -68,7 +68,7 @@ bool ModuleAudio::CleanUp()
 }
 
 // Play a music file
-bool ModuleAudio::PlayMusic(const char* path, float fade_time)
+bool ModuleAudio::PlayMusic(const std::string& path, float fade_time)
 {
 	bool ret = true;
 
@@ -87,7 +87,7 @@ bool ModuleAudio::PlayMusic(const char* path, float fade_time)
 		Mix_FreeMusic(music);
 	}
 
-	music = Mix_LoadMUS(path);
+	music = Mix_LoadMUS(path.c_str());
 
 	if(music == nullptr)
 	{
@@ -119,10 +119,10 @@ bool ModuleAudio::PlayMusic(const char* path, float fade_time)
 }
 
 // Load WAV
-unsigned int ModuleAudio::LoadFx(const char* path)
+unsigned int ModuleAudio::LoadFx(const std::string& path)
 {
 	unsigned int ret = -1;	// 0
-	Mix_Chunk* chunk = Mix_LoadWAV(path);
+	Mix_Chunk* chunk = Mix_LoadWAV(path.c_str());
 
 	if(chunk == nullptr)
 	{

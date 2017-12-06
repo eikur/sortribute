@@ -3,13 +3,17 @@
 
 #include "ConfigurationLoader.h"
 
-ConfigurationLoader::ConfigurationLoader(const char* config_file_path)
+ConfigurationLoader::ConfigurationLoader(const std::string& path)
 {
-	root_value = json_parse_file(config_file_path);
+	root_value = json_parse_file(path.c_str());
 	if (root_value != nullptr)
+	{
 		root_object = json_object(root_value);
+	}
 	else
+	{
 		root_object = nullptr;
+	}
 }
 
 ConfigurationLoader::~ConfigurationLoader()
@@ -17,29 +21,32 @@ ConfigurationLoader::~ConfigurationLoader()
 	json_value_free(root_value);
 }
 
-JSON_Object* ConfigurationLoader::GetJSONObject( const char* section_name )
+JSON_Object* ConfigurationLoader::GetJSONObject(const std::string& sectionName)
 {
-	if (strcmp(section_name, "") == 0)
+	if (sectionName.empty())
+	{
 		return root_object;
-	const char *found = strchr(section_name, '.');
-	if (found == nullptr)
-		return json_object_get_object(root_object, section_name);
+	}
+	if (sectionName.find(".", 0))
+	{
+		return json_object_dotget_object(root_object, sectionName.c_str());
+	}
 	else
-		return json_object_dotget_object(root_object, section_name); 
+	{
+		return json_object_get_object(root_object, sectionName.c_str());
+	}
 }
 
-//--- Load*FromJSONObject : Load and set * variables using the values read in config file
-
-bool ConfigurationLoader::LoadAnimationFromJSONObject(JSON_Object *j_object, const char *animation_name, Animation* animation) const
+bool ConfigurationLoader::LoadAnimationFromJSONObject(JSON_Object *j_object, const std::string& name, Animation* animation) const
 {
 	JSON_Array *j_array = nullptr; 
 	JSON_Array *j_array_inner = nullptr; 
 
-	std::string tmp = animation_name;
+	std::string tmp = name;
 	tmp.append(".speed");
 	animation->speed = (float)json_object_get_number(j_object, tmp.c_str());
 
-	tmp = animation_name;
+	tmp = name;
 	tmp.append(".frames");
 	j_array = json_object_get_array(j_object, tmp.c_str());
 	if (j_array == nullptr)
@@ -58,9 +65,9 @@ bool ConfigurationLoader::LoadAnimationFromJSONObject(JSON_Object *j_object, con
 	return true; 
 }
 
-bool ConfigurationLoader::LoadSDLRectFromJSONObject(JSON_Object* j_object, const char *rect_name, SDL_Rect *rect) const 
+bool ConfigurationLoader::LoadSDLRectFromJSONObject(JSON_Object* j_object, const std::string& name, SDL_Rect *rect) const 
 {
-	JSON_Array *j_array = json_object_get_array(j_object, rect_name); 
+	JSON_Array *j_array = json_object_get_array(j_object, name.c_str()); 
 	if (j_array == nullptr) { return false; }
 
 	*rect = { (int)json_array_get_number(j_array,0), (int)json_array_get_number(j_array,1), (int)json_array_get_number(j_array,2), (int)json_array_get_number(j_array,3) };
@@ -69,9 +76,9 @@ bool ConfigurationLoader::LoadSDLRectFromJSONObject(JSON_Object* j_object, const
 	return true; 
 }
 
-bool ConfigurationLoader::LoadiPointFromJSONObject(JSON_Object* j_object, const char *point_name, iPoint *point) const
+bool ConfigurationLoader::LoadiPointFromJSONObject(JSON_Object* j_object, const std::string& name, iPoint *point) const
 {
-	JSON_Array *j_array = json_object_get_array(j_object, point_name);
+	JSON_Array *j_array = json_object_get_array(j_object, name.c_str());
 	if (j_array == nullptr) { return false; }
 
 	*point = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
@@ -79,28 +86,29 @@ bool ConfigurationLoader::LoadiPointFromJSONObject(JSON_Object* j_object, const 
 	return true;
 }
 
-
-
-// -- Get* : Only return the values read from the configuration files, no Load and Set
-const char* ConfigurationLoader::GetStringFromJSONObject(JSON_Object *j_object, const char *string_name) const
+std::string ConfigurationLoader::GetStringFromJSONObject(JSON_Object *j_object, const std::string& name) const
 {
-	if (json_object_has_value_of_type(j_object, string_name, JSONString))
-		return json_object_get_string(j_object, string_name );
+	if (json_object_has_value_of_type(j_object, name.c_str(), JSONString))
+	{
+		return json_object_get_string(j_object, name.c_str());
+	}
 	else
-		return ""; 
+	{
+		return "";
+	}
 }
 
-int ConfigurationLoader::GetIntFromJSONObject(JSON_Object *j_object, const char* int_name) const
+int ConfigurationLoader::GetIntFromJSONObject(JSON_Object *j_object, const std::string& name) const
 {
-	return (int)json_object_get_number(j_object, int_name);
+	return static_cast<int>(json_object_get_number(j_object, name.c_str()));
 }
 
-float ConfigurationLoader::GetFloatFromJSONObject(JSON_Object *j_object, const char* float_name) const
+float ConfigurationLoader::GetFloatFromJSONObject(JSON_Object *j_object, const std::string& name) const
 {
-	return (float)json_object_get_number(j_object, float_name);
+	return static_cast<float>(json_object_get_number(j_object, name.c_str()));
 }
 
-bool ConfigurationLoader::GetBoolFromJSONObject(JSON_Object *j_object, const char* bool_name) const
+bool ConfigurationLoader::GetBoolFromJSONObject(JSON_Object *j_object, const std::string& name) const
 {
-	 return (json_object_get_boolean(j_object, bool_name) != 0) ? true : false;
+	 return (json_object_get_boolean(j_object, name.c_str()) != 0) ? true : false;
 }

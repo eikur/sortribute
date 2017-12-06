@@ -97,11 +97,11 @@
     <ClInclude Include="SceneIntro.h">
       <Filter>Game Modules</Filter>
     </ClInclude>
-    <ClInclude Include="TextureHelper.h">
-      <Filter>Core Modules</Filter>
-    </ClInclude>
     <ClInclude Include="TextureFontsHelper.h">
-      <Filter>Core Modules</Filter>
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureHelper.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -177,11 +177,11 @@
     <ClCompile Include="SceneIntro.cpp">
       <Filter>Game Modules</Filter>
     </ClCompile>
-    <ClCompile Include="TextureHelper.cpp">
-      <Filter>Core Modules</Filter>
-    </ClCompile>
     <ClCompile Include="TextureFontsHelper.cpp">
-      <Filter>Core Modules</Filter>
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureHelper.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
