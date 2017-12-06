@@ -7,7 +7,6 @@
 #include "ModuleWindow.h"
 #include "EntityManager.h"
 #include "ModuleCollision.h"
-#include "ModuleFadeToBlack.h"
 #include "ModuleUI.h"
 #include "SceneIntro.h"
 

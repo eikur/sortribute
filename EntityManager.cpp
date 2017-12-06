@@ -6,7 +6,6 @@
 #include "ModuleInput.h"
 #include "ModuleAudio.h"
 #include "ModuleCollision.h"
-#include "ModuleFadeToBlack.h"
 #include "ModuleUI.h"
 #include "SceneManager.h"
 #include "Timer.h"

@@ -4,7 +4,6 @@
 #include "ModuleAudio.h"
 #include "ModuleInput.h"
 #include "ModuleRender.h"
-#include "ModuleFadeToBlack.h"
 #include "TextureFontsHelper.h"
 #include "ModuleUI.h"
 #include "EntityManager.h"
