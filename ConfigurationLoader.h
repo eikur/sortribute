@@ -9,74 +9,74 @@ class Animation;
 struct SDL_Rect;
 struct Collider;
 
+enum class ParsePhase
+{
+	Name,
+	Value
+};
+
+class NodeBase
+{
+	std::string _name;
+	NodeBase* _parent = nullptr;
+protected:
+	std::vector<NodeBase*> _children;
+public:
+	NodeBase* getParent() const
+	{
+		return _parent;
+	}
+
+	void addChild(NodeBase* node)
+	{
+		node->_parent = this;
+		_children.push_back(node);
+	}
+	void setName(const std::string& name)
+	{
+		_name = name;
+	}
+	virtual void cleanUp()
+	{
+		for (auto child : _children)
+		{
+			child->cleanUp();
+			delete child;
+		}
+	}
+};
+
+template <class T>
+class Node : public NodeBase
+{
+	T* _value = nullptr;
+	bool _isArray = false;
+public:
+	bool isArray() const
+	{
+		return _isArray;
+	}
+	void setValue(const T& value)
+	{
+		_value = new T(value);
+	}
+	const T& getValue() const
+	{
+		return _value;
+	}
+	void cleanUp() override
+	{
+		for (auto child : _children)
+		{
+			child->cleanUp();
+			delete child;
+		}
+		delete _value;
+	}
+};
+
 class ConfigurationLoader 
 {
-	enum class ParsePhase
-	{
-		Name,
-		Value
-	};
-
-	class NodeBase
-	{
-		std::string _name;
-		NodeBase* _parent = nullptr;
-	protected:
-		std::vector<NodeBase*> _children;
-	public:
-		NodeBase* getParent() const
-		{
-			return _parent;
-		}
-
-		void addChild(NodeBase* node)
-		{
-			node->_parent = this;
-			_children.push_back(node);
-		}
-		void setName(const std::string& name)
-		{
-			_name = name;
-		}
-		virtual void cleanUp()
-		{
-			for (auto child : _children)
-			{
-				child->cleanUp();
-				delete child;
-			}
-		}
-	};
-
-	template <class T>
-	class Node : public NodeBase
-	{
-		T* _value = nullptr;
-		bool _isArray = false;
-	public:
-		bool isArray() const
-		{
-			return _isArray;
-		}
-		void setValue(const T& value)
-		{
-			_value = new T(value);
-		}
-		const T& getValue() const
-		{
-			return _value;
-		}
-		void cleanUp() override
-		{
-			for (auto child : _children)
-			{
-				child->cleanUp();
-				delete child;
-			}
-			delete _value;
-		}
-	};
-
 public: 
 	ConfigurationLoader(const std::string& path);
 	~ConfigurationLoader();

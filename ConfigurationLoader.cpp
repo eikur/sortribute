@@ -5,12 +5,29 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <memory>
 
 namespace
 {
 	bool isNumber(const char& c)
 	{
 		return ('0' <= c && c <= '9');
+	}
+
+	Node<std::string>* getStringNode(const std::string& name, const std::string& parsedValue)
+	{
+		auto ret = std::make_unique<Node<std::string>>();
+		ret->setName(name);
+		ret->setValue(parsedValue);
+		return ret.release();
+	}
+
+	Node<double>* getNumberNode(const std::string& name, const std::string& parsedValue)
+	{
+		auto ret = std::make_unique<Node<double>>();
+		ret->setName(name);
+		ret->setValue(std::stod(parsedValue));
+		return ret.release();
 	}
 }
 
@@ -82,25 +99,15 @@ ConfigurationLoader::ConfigurationLoader(const std::string& path)
 					 }
 					 else
 					 {
-						 // we're dealing with a string node!
-						 Node<std::string>* tmp = new Node<std::string>();
-						 tmp->setName(name);
-						 name.clear();
-						 tmp->setValue(line.substr(i+1, doubleCommaPos-(i+1)));
-						 currentNode->addChild(std::move(tmp));
+						 currentNode->addChild(std::move(getStringNode(name, line.substr(i + 1, doubleCommaPos - (i + 1)))));
 						 phase = ParsePhase::Name;
 					 }
 					 i = doubleCommaPos;
 				 }
 				else if (isNumber(c))
 				{
-					// dealing with numbers
 					size_t numberEndPos = line.find_last_of("0123456789.");
-					Node<double>* tmp = new Node<double>();
-					tmp->setName(name);
-					name.clear();
-					tmp->setValue(std::atof(line.substr(i,numberEndPos-i+1).c_str()));
-					currentNode->addChild(std::move(tmp));
+					currentNode->addChild(std::move(getNumberNode(name, line.substr(i, numberEndPos - i + 1))));
 					i = numberEndPos + 1;
 					phase = ParsePhase::Name;
 				}
