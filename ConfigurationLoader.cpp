@@ -2,6 +2,17 @@
 #include "Animation.h"
 
 #include "ConfigurationLoader.h"
+#include <fstream>
+#include <iostream>
+#include <string>
+
+namespace
+{
+	bool isNumber(const char& c)
+	{
+		return ('0' <= c && c <= '9');
+	}
+}
 
 ConfigurationLoader::ConfigurationLoader(const std::string& path)
 {
@@ -14,11 +25,108 @@ ConfigurationLoader::ConfigurationLoader(const std::string& path)
 	{
 		root_object = nullptr;
 	}
+
+	std::string line;
+	std::ifstream configFile(path);
+	
+	NodeBase* currentNode = nullptr;
+	ParsePhase phase = ParsePhase::Value;
+	std::string name;
+
+	if (configFile.is_open())
+	{
+		while (!configFile.eof())
+		{
+			std::getline(configFile, line);
+			for (size_t i = 0; i < line.size(); ++i)
+			{
+				char c = line.at(i);
+
+				if (c == '{'  && phase == ParsePhase::Value)
+				{
+					if (currentNode == nullptr)	// first time only
+					{
+						rootNode = new NodeBase();
+						currentNode = rootNode;
+					}
+					else
+					{
+						NodeBase* tmp = new NodeBase();
+						tmp->setName(name);
+						name.clear();
+						currentNode->addChild(std::move(tmp));
+						currentNode = tmp;
+					}
+					phase = ParsePhase::Name;
+				}
+				else if (c == '}')
+				{
+					if (currentNode == rootNode)
+					{
+						break;
+					}
+					currentNode = currentNode->getParent();
+					phase = ParsePhase::Name;
+				}
+				else if (c == ':')
+				{
+					// enter parse value mode
+					phase = ParsePhase::Value;
+				}
+				else if (c == '"')
+				 {
+					 size_t doubleCommaPos = line.find_first_of('"', i + 1);
+					 if (phase == ParsePhase::Name)
+					 {
+						 name = line.substr(i+1, doubleCommaPos-(i+1));
+					 }
+					 else
+					 {
+						 // we're dealing with a string node!
+						 Node<std::string>* tmp = new Node<std::string>();
+						 tmp->setName(name);
+						 name.clear();
+						 tmp->setValue(line.substr(i+1, doubleCommaPos-(i+1)));
+						 currentNode->addChild(std::move(tmp));
+						 phase = ParsePhase::Name;
+					 }
+					 i = doubleCommaPos;
+				 }
+				else if (isNumber(c))
+				{
+					// dealing with numbers
+					size_t numberEndPos = line.find_last_of("0123456789.");
+					Node<double>* tmp = new Node<double>();
+					tmp->setName(name);
+					name.clear();
+					tmp->setValue(std::atof(line.substr(i,numberEndPos-i+1).c_str()));
+					currentNode->addChild(std::move(tmp));
+					i = numberEndPos + 1;
+					phase = ParsePhase::Name;
+				}
+				else if (c == '[')
+				{
+					size_t arrayEndPos = line.find_last_of("]");
+					//#todo - read array
+					Node<std::string>* tmp = new Node<std::string>();
+					tmp->setName(name);
+					name.clear();
+					tmp->setValue(line.substr(i, arrayEndPos - i));
+					currentNode->addChild(std::move(tmp));
+					i = arrayEndPos + 1;
+					phase = ParsePhase::Name;
+				}
+			}
+		}
+	}
+	configFile.close();
 }
 
 ConfigurationLoader::~ConfigurationLoader()
 {
 	json_value_free(root_value);
+	rootNode->cleanUp();
+	delete rootNode;
 }
 
 JSON_Object* ConfigurationLoader::GetJSONObject(const std::string& sectionName)
