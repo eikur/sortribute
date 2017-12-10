@@ -71,7 +71,6 @@ void ModuleParticles::AddParticle(const Particle&, int, int)
 Particle::Particle()
 {
 	animation = new Animation();
-	collider = new Collider();
 }
 
 Particle::Particle(const Particle& p)
@@ -81,10 +80,6 @@ Particle::Particle(const Particle& p)
 	time_to_live = p.time_to_live;
 	age = p.age;
 	speed = p.speed;
-	has_collider = p.has_collider;
-	if (has_collider)
-		collider = p.collider;
-	
 }
 
 Particle::~Particle()
@@ -94,25 +89,11 @@ Particle::~Particle()
 bool Particle::Update()
 {
 	// Return false if the particle must be destroyed
-
-	//death by age
 	++age;
 	if(age >= time_to_live)	{
 		to_delete = true;
-		if (has_collider)
-			collider->to_delete = true;
 		return false;
 	}
-	//death by collision
-	if (has_collider && collider->to_delete == true)
-	{
-		to_delete = true;
-		return false;
-	}
-	//else
 	position.x += speed;
-	if (has_collider)
-		collider->rect.x += speed;
-
 	return true;
 }

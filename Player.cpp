@@ -377,8 +377,8 @@ void Player::UpdatePosition(const iPoint new_speed) {
 	}
 	else
 	{
-		attack_collider->rect.x = position.x + -(attack_collider_offset.x + attack_collider->rect.w);
-		hit_collider->rect.x = position.x - (hit_collider_offset.x + hit_collider->rect.w);
+		attack_collider->rect.x = position.x + -(attack_collider_offset.x + attack_collider->getRect().w);
+		hit_collider->rect.x = position.x - (hit_collider_offset.x + hit_collider->getRect().w);
 	}
 	attack_collider->rect.y = position.y + attack_collider_offset.y;	
 	hit_collider->rect.y = position.y + hit_collider_offset.y;

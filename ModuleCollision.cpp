@@ -20,15 +20,17 @@ ModuleCollision::~ModuleCollision()
 UpdateStatus ModuleCollision::PreUpdate()
 {
 	// Remove all colliders scheduled for deletion
-	for (list<Collider*>::iterator it = colliders.begin(); it != colliders.end();)
+	for (auto&& it = _colliders.begin(); it != _colliders.end();)
 	{
 		if ((*it)->to_delete == true)
 		{
-			RELEASE(*it);
-			it = colliders.erase(it);
+			it->reset();
+			it = _colliders.erase(it);
 		}
 		else
+		{
 			++it;
+		}
 	}
 
 	return UpdateStatus::Continue;
@@ -36,18 +38,18 @@ UpdateStatus ModuleCollision::PreUpdate()
 
 UpdateStatus ModuleCollision::Update(float)
 {
-	for (list<Collider*>::const_iterator it = colliders.cbegin(); it != colliders.cend();++it )
+	for (auto& c1 : _colliders)
 	{
-		for (list<Collider*>::const_iterator it2 = it; it2 != colliders.cend();++it2)	
+		for (auto& c2 : _colliders)	
 		{
-			if ((*it)->CheckCollision((*it2)->rect) == true && (*it) != (*it2))
+			if (c1->CheckCollision(c2->getRect()) == true && c1 != c2)
 			{
-				if (collision_matrix[(*it)->type][(*it2)->type] == 1)
+				if (collision_matrix[c1->type][c2->type] == 1)
 				{
-					if ((*it)->type != colliderType::SCENE_TRIGGER && (*it2)->type != colliderType::SCENE_TRIGGER )
-						entitiesReporter.HandleCollision((*it), (*it2));
+					if (c1->type != colliderType::SCENE_TRIGGER && c2->type != colliderType::SCENE_TRIGGER )
+						entitiesReporter.HandleCollision(c1.get(), c2.get());
 					else
-						scenesReporter.HandleCollision((*it), (*it2));
+						scenesReporter.HandleCollision(c1.get(), c2.get());
 					
 				}
 			}
@@ -69,20 +71,24 @@ UpdateStatus ModuleCollision::Update(float)
 
 void ModuleCollision::DebugDraw()
 {
-	for (list<Collider*>::iterator it = colliders.begin(); it != colliders.end(); ++it)
+	for (auto& collider : _colliders)
 	{
-		if ((*it)->type == colliderType::PLAYER_ATTACK)
-			App->getRenderer().DrawQuad((*it)->rect, 0, 0, 255, 120);
-		else if ((*it)->type == colliderType::PLAYER)
-			App->getRenderer().DrawQuad((*it)->rect, 0, 0, 255, 80);
-		else if ((*it)->type == colliderType::ENEMY)
-			App->getRenderer().DrawQuad((*it)->rect, 255, 0, 0, 80);
-		else if ((*it)->type == colliderType::ENEMY_ATTACK)
-			App->getRenderer().DrawQuad((*it)->rect, 255, 0, 0, 120);
-		else if ((*it)->type == colliderType::ITEMS)
-			App->getRenderer().DrawQuad((*it)->rect, 0, 255, 0, 80);
+		if (!collider->isActive())
+		{
+			continue;
+		}
+		if (collider->type == colliderType::PLAYER_ATTACK)
+			App->getRenderer().DrawQuad(collider->getRect(), 0, 0, 255, 120);
+		else if (collider->type == colliderType::PLAYER)
+			App->getRenderer().DrawQuad(collider->getRect(), 0, 0, 255, 80);
+		else if (collider->type == colliderType::ENEMY)
+			App->getRenderer().DrawQuad(collider->getRect(), 255, 0, 0, 80);
+		else if (collider->type == colliderType::ENEMY_ATTACK)
+			App->getRenderer().DrawQuad(collider->getRect(), 255, 0, 0, 120);
+		else if (collider->type == colliderType::ITEMS)
+			App->getRenderer().DrawQuad(collider->getRect(), 0, 255, 0, 80);
 		else 
-			App->getRenderer().DrawQuad((*it)->rect, 255, 0, 255, 40);
+			App->getRenderer().DrawQuad(collider->getRect(), 255, 0, 255, 40);
 
 	}
 }
@@ -92,27 +98,30 @@ bool ModuleCollision::CleanUp()
 {
 	LOG("Freeing all colliders");
 
-	for (list<Collider*>::iterator it = colliders.begin(); it != colliders.end(); ++it)
-		RELEASE(*it);
+	for (auto&& it : _colliders)
+	{
+		it.reset();
+	}
 
-	colliders.clear();
+	_colliders.clear();
 
 	return true;
 }
 
 Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, colliderType type, Entity* parent)
 {
-	Collider* ret = new Collider(rect, type, parent);
-
-	colliders.push_back(ret);
-
-	return ret;
+	_colliders.push_back(std::make_unique<Collider>(rect, type, parent));
+	return _colliders.back().get();
 }
 
 // -----------------------------------------------------
 
 bool Collider::CheckCollision(const SDL_Rect& r) const
 {
+	if (_active == false)
+	{
+		return false;
+	}
 	bool collision;
 	if ((r.y + r.h <= rect.y))
 		collision = false;

@@ -206,8 +206,8 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			{
 				if (first->IsGrounded() && !first->IsHoldingSomeone() && first->AllowAnimationInterruption() &&
 					second->IsGrounded() && !second->is_being_thrown_back && second->IsAlive() &&
-					((first->facing_right == true && first_col->rect.x <= second_col->rect.x) ||
-					(first->facing_right == false && second_col->rect.x <= first_col->rect.x)))
+					((first->facing_right == true && first_col->getRect().x <= second_col->getRect().x) ||
+					(first->facing_right == false && second_col->getRect().x <= first_col->getRect().x)))
 				{
 					if (first->facing_right == second->facing_right)
 					{
@@ -220,12 +220,12 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 						second->SetBeingHoldFront();
 					}
 					
-					if (depth_difference != -1 || abs(first->position.x - second->position.x) < first_col->rect.w)
+					if (depth_difference != -1 || abs(first->position.x - second->position.x) < first_col->getRect().w)
 					{
 						if (first->facing_right)
-							second->UpdatePosition({ first->position.x - second->position.x + first_col->rect.w, first->position.y - second->position.y - 1 });
+							second->UpdatePosition({ first->position.x - second->position.x + first_col->getRect().w, first->position.y - second->position.y - 1 });
 						else
-							second->UpdatePosition({ first->position.x - second->position.x - first_col->rect.w, first->position.y - second->position.y - 1 });
+							second->UpdatePosition({ first->position.x - second->position.x - first_col->getRect().w, first->position.y - second->position.y - 1 });
 					}
 				}
 			}

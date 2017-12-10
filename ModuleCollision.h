@@ -1,7 +1,9 @@
 #pragma once
 
-#include<list>
+#include <list>
+#include <memory>
 #include "Module.h"
+#include "Point.h"
 
 enum colliderType {
 	PLAYER = 0,
@@ -18,19 +20,40 @@ struct Collider
 	bool to_delete = false;
 	colliderType type;
 	Entity* parent = nullptr;
+	bool _active = true;
 
 	Collider() {}
 	Collider(SDL_Rect rectangle, colliderType t, Entity* parent = nullptr) :
-		rect(rectangle), type(t), parent(parent)
+		rect(rectangle), type(t), parent(parent), _active(true)
 	{}
 
-	void SetPos(int x, int y)
+	void setPos(iPoint pos)
 	{
-		rect.x = x;
-		rect.y = y;
+		rect.x = pos.x;
+		rect.y = pos.y;
+	}
+	void SetRect(const SDL_Rect& r)
+	{
+		rect.x = r.x;
+		rect.y = r.y; 
+		rect.h = r.h;
+		rect.w = r.w;
+	}
+	const SDL_Rect& getRect() const
+	{
+		return rect;
 	}
 
 	bool CheckCollision(const SDL_Rect& r) const;
+
+	void setActive(bool value)
+	{
+		_active = value;
+	}
+	bool isActive() const
+	{
+		return _active;
+	}
 };
 
 class ModuleCollision : public Module
@@ -49,8 +72,8 @@ public:
 	void DebugDraw();
 
 private:
+	std::list<std::unique_ptr<Collider>> _colliders;
 
-	std::list<Collider*> colliders;
 	bool debug = false;
 	int collision_matrix[6][6] = { { 0,0,1,1,1,1},{ 0,0,0,1,0,0 },{ 1,0,0,0,0,0 },{ 1,1,0,1,0,0 },{ 1,0,0,0,0,0 },{ 1,0,0,0,0,0 } };
 	Module& entitiesReporter;

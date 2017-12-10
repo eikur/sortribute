@@ -27,30 +27,44 @@ bool Entity::Update(unsigned int, const bool)
 void Entity::UpdatePosition(const iPoint new_speed)
 {
 	if (grounded)
+	{
 		ground_y = position.y;
+	}
 
 	position += new_speed;
+	iPoint newColliderPos;
 
 	if (attack_collider != nullptr)
 	{
 		if (facing_right)
-			attack_collider->rect.x = position.x + attack_collider_offset.x;
+		{
+			newColliderPos.x = position.x + attack_collider_offset.x;
+		}
 		else
-			attack_collider->rect.x = position.x + -(attack_collider_offset.x + attack_collider->rect.w);
-		attack_collider->rect.y = position.y + attack_collider_offset.y;
+		{
+			newColliderPos.x = position.x + -(attack_collider_offset.x + attack_collider->getRect().w);
+		}
+		newColliderPos.y = position.y + attack_collider_offset.y;
+		attack_collider->setPos(newColliderPos);
 	}
 	if (hit_collider != nullptr)
 	{
 		if (facing_right)
-			hit_collider->rect.x = position.x + hit_collider_offset.x;
+		{
+			newColliderPos.x = position.x + hit_collider_offset.x;
+		}
 		else
-			hit_collider->rect.x = position.x - (hit_collider_offset.x + hit_collider->rect.w);
-		hit_collider->rect.y = position.y + hit_collider_offset.y;
+		{
+			newColliderPos.x = position.x - (hit_collider_offset.x + hit_collider->getRect().w);
+		}
+		newColliderPos.y = position.y + hit_collider_offset.y;
+		hit_collider->setPos(newColliderPos);
 	}
 
 	if (grounded)
+	{
 		ground_y = position.y;
-	
+	}
 }
 
 void Entity::SetPosition(const iPoint new_position)
@@ -70,8 +84,8 @@ void Entity::SetPosition(const iPoint new_position)
 	else
 	{
 		if (attack_collider != nullptr)
-			attack_collider->rect.x = position.x + -(attack_collider_offset.x + attack_collider->rect.w);
-		hit_collider->rect.x = position.x - (hit_collider_offset.x + hit_collider->rect.w);
+			attack_collider->rect.x = position.x + -(attack_collider_offset.x + attack_collider->getRect().w);
+		hit_collider->rect.x = position.x - (hit_collider_offset.x + hit_collider->getRect().w);
 	}
 	if (attack_collider != nullptr)
 		attack_collider->rect.y = position.y + attack_collider_offset.y;
@@ -116,15 +130,23 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration
 			current_animation == &being_thrown_front ||
 			current_animation == &being_knocked ||
 			current_animation == &holding_swap)
+		{
 			grounded = false;
+		}
 		else
+		{
 			grounded = true;
+		}
 
 		//update jumping status
 		if (current_animation == &jump || current_animation == &jump_attack)
+		{
 			jumping = true;
+		}
 		else
+		{
 			jumping = false;
+		}
 
 		// update the hittable status!
 		if (current_animation == &being_hit ||
@@ -147,10 +169,22 @@ void Entity::UpdateCurrentAnimation(Animation *new_anim, int block_anim_duration
 			current_animation == &attack2 ||
 			current_animation == &attack3 ||
 			//current_animation == &attack_back ||
-			current_animation == &jump_attack )
+			current_animation == &jump_attack)
+		{
 			is_attacking = true;
+			if (attack_collider)
+			{
+				attack_collider->setActive(true);
+			}
+		}
 		else
+		{
 			is_attacking = false;
+			if (attack_collider)
+			{
+				attack_collider->setActive(false);
+			}
+		}
 
 		// holding status
 		if (current_animation == &holding_front || current_animation == &holding_front_attack || current_animation == &holding_front_attack2 ||

@@ -23,9 +23,6 @@ struct Particle
 	int time_to_live;
 	int age;
 
-	Collider* collider = nullptr;
-	bool has_collider = false;
-	
 	Particle();
 	Particle(const Particle& p);
 	~Particle();

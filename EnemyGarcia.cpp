@@ -111,7 +111,7 @@ bool EnemyGarcia::Update(unsigned int msec_elapsed, const bool upd_logic)
 	if (AllowAnimationInterruption() && is_being_hold_front == false && is_being_hold_back == false)
 	{
 		int attack_decision = rand() % 101;
-		int attack_range = attack_collider->rect.w + attack_collider_offset.x;
+		int attack_range = attack_collider->getRect().w + attack_collider_offset.x;
 			
 		switch (state) {
 			
