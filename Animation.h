@@ -2,15 +2,33 @@
 
 #include <vector>
 
+class TimedFrame
+{
+	float _normTime = 0.0f;
+	SDL_Rect _frame;
+
+public:
+	TimedFrame(float normTime, const SDL_Rect& frame) : _normTime(normTime), _frame(frame)
+	{}
+
+	const SDL_Rect& getRect() const
+	{
+		return _frame;
+	}
+};
+
 class Animation
 {
 public:
 	bool loop = true;
 	float speed = 1.0f;
-	std::vector<SDL_Rect> frames;
+	float duration = 1.0f;
+
+	std::vector<TimedFrame> frames;
 
 private:
 	float current_frame = 0.0f;
+	float currentSpeed = 0.0f;
 	int loops = 0;
 
 public:
@@ -20,7 +38,7 @@ public:
 	Animation(const Animation& anim) : loop(anim.loop), speed(anim.speed), frames(anim.frames)
 	{}
 
-	SDL_Rect& GetCurrentFrame()
+	const SDL_Rect& GetCurrentFrame()
 	{
 		float last_frame = (float) frames.size();
 
@@ -31,7 +49,7 @@ public:
 			loops++;
 		} 
 
-		return frames[(int)current_frame];
+		return frames[(int)current_frame].getRect();
 	}
 
 	void SetCurrentFrame(int frame_num)

@@ -347,6 +347,7 @@ bool Stage3::LoadConfigFromFile(const char* file_path)
 	JSON_Object *root_object;
 	JSON_Array *j_array_pos; 
 	JSON_Array *j_array_section;
+	JSON_Array *j_array_normTimes;
 	JSON_Array *j_array_tmp;
 
 	root_value = json_parse_file(file_path);
@@ -412,7 +413,8 @@ bool Stage3::LoadConfigFromFile(const char* file_path)
 
 	//wave_sand load
 	j_array_pos = json_object_dotget_array(root_object, "scene3.wave_sand.position");
-	j_array_section = json_object_dotget_array(root_object, "scene3.wave_sand.section");
+	j_array_section = json_object_dotget_array(root_object, "scene3.wave_sand.frames");
+	j_array_normTimes = json_object_dotget_array(root_object, "scene3.wave_sand.norm_times");
 
 	wave_sand_pos.x = (int)json_array_get_number(j_array_pos, 0);
 	wave_sand_pos.y = (int)json_array_get_number(j_array_pos, 1);
@@ -420,7 +422,13 @@ bool Stage3::LoadConfigFromFile(const char* file_path)
 	for (int i = 0; i < (int) json_array_get_count(j_array_section); ++i)
 	{
 		j_array_tmp = json_array_get_array(j_array_section, i);
-		wave_sand.frames.push_back({ (int)json_array_get_number(j_array_tmp, 0), (int)json_array_get_number(j_array_tmp, 1), (int)json_array_get_number(j_array_tmp, 2), (int)json_array_get_number(j_array_tmp, 3) });
+		TimedFrame frame(json_array_get_number(j_array_normTimes, i), 
+			{	(int)json_array_get_number(j_array_tmp, 0),
+				(int)json_array_get_number(j_array_tmp, 1), 
+				(int)json_array_get_number(j_array_tmp, 2), 
+				(int)json_array_get_number(j_array_tmp, 3) }
+		);
+		wave_sand.frames.push_back(frame);
 		json_array_clear(j_array_tmp);
 	}
 
@@ -431,7 +439,8 @@ bool Stage3::LoadConfigFromFile(const char* file_path)
 
 	//wave_splash load
 	j_array_pos = json_object_dotget_array(root_object, "scene3.wave_splash.position");
-	j_array_section = json_object_dotget_array(root_object, "scene3.wave_splash.section");
+	j_array_section = json_object_dotget_array(root_object, "scene3.wave_splash.frames");
+	j_array_normTimes = json_object_dotget_array(root_object, "scene3.wave_splash.norm_times");
 
 	wave_splash_pos.x = (int)json_array_get_number(j_array_pos, 0);
 	wave_splash_pos.y = (int)json_array_get_number(j_array_pos, 1);
@@ -439,7 +448,13 @@ bool Stage3::LoadConfigFromFile(const char* file_path)
 	for (int i = 0; i < (int)json_array_get_count(j_array_section); ++i)
 	{
 		j_array_tmp = json_array_get_array(j_array_section, i);
-		wave_splash.frames.push_back({ (int)json_array_get_number(j_array_tmp, 0), (int)json_array_get_number(j_array_tmp, 1), (int)json_array_get_number(j_array_tmp, 2), (int)json_array_get_number(j_array_tmp, 3) });
+		TimedFrame frame(json_array_get_number(j_array_normTimes, i),
+		{ (int)json_array_get_number(j_array_tmp, 0),
+			(int)json_array_get_number(j_array_tmp, 1),
+			(int)json_array_get_number(j_array_tmp, 2),
+			(int)json_array_get_number(j_array_tmp, 3) }
+		);
+		wave_splash.frames.push_back(frame);
 		json_array_clear(j_array_tmp);
 	}
 

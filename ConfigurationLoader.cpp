@@ -37,31 +37,34 @@ JSON_Object* ConfigurationLoader::GetJSONObject(const std::string& sectionName)
 	}
 }
 
-bool ConfigurationLoader::LoadAnimationFromJSONObject(JSON_Object *j_object, const std::string& name, Animation* animation) const
+bool ConfigurationLoader::LoadAnimationFromJSONObject(JSON_Object *j_object, const std::string& dotget_path, Animation* animation) const
 {
-	JSON_Array *j_array = nullptr; 
-	JSON_Array *j_array_inner = nullptr; 
+	JSON_Array *j_array, *j_array_inner, *j_array_normTimes;
+	std::string tmp = dotget_path;
 
-	std::string tmp = name;
 	tmp.append(".speed");
-	animation->speed = (float)json_object_get_number(j_object, tmp.c_str());
+	animation->speed = (float)json_object_dotget_number(j_object, tmp.c_str());
 
-	tmp = name;
+	tmp = dotget_path;
 	tmp.append(".frames");
-	j_array = json_object_get_array(j_object, tmp.c_str());
-	if (j_array == nullptr)
-		return false; 
+	j_array = json_object_dotget_array(j_object, tmp.c_str());
+
+	tmp = dotget_path;
+	tmp.append(".norm_times");
+	j_array_normTimes = json_object_dotget_array(j_object, tmp.c_str());
 
 	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
 	{
 		j_array_inner = json_array_get_array(j_array, i);
-		if (j_array == nullptr)
-			return false; 
-		animation->frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
+		TimedFrame frame(json_array_get_number(j_array_normTimes, i),
+		{ (int)json_array_get_number(j_array_inner, 0),
+			(int)json_array_get_number(j_array_inner, 1),
+			(int)json_array_get_number(j_array_inner, 2),
+			(int)json_array_get_number(j_array_inner, 3) }
+		);
+		animation->frames.push_back(frame);
 		json_array_clear(j_array_inner);
 	}
-	
-	json_array_clear(j_array);
 	return true; 
 }
 

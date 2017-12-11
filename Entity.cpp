@@ -457,7 +457,7 @@ bool Entity::LoadFromConfigFile(const char* ) {
 
 void Entity::LoadAnimationFromJSONObject(JSON_Object* j_object, const char *dotget_path, Animation* animation)
 {
-	JSON_Array *j_array, *j_array_inner;
+	JSON_Array *j_array, *j_array_inner, *j_array_normTimes;
 	std::string tmp = dotget_path;
 
 	tmp.append(".speed");
@@ -466,10 +466,21 @@ void Entity::LoadAnimationFromJSONObject(JSON_Object* j_object, const char *dotg
 	tmp = dotget_path;
 	tmp.append(".frames");
 	j_array = json_object_dotget_array(j_object, tmp.c_str());
+
+	tmp = dotget_path;
+	tmp.append(".norm_times");
+	j_array_normTimes = json_object_dotget_array(j_object, tmp.c_str());
+
 	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
 	{
 		j_array_inner = json_array_get_array(j_array, i);
-		animation->frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
+		TimedFrame frame(json_array_get_number(j_array_normTimes, i),
+		{ (int)json_array_get_number(j_array_inner, 0),
+			(int)json_array_get_number(j_array_inner, 1),
+			(int)json_array_get_number(j_array_inner, 2),
+			(int)json_array_get_number(j_array_inner, 3) }
+		);
+		animation->frames.push_back(frame);
 		json_array_clear(j_array_inner);
 	}
 }
