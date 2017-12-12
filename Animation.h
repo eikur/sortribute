@@ -15,55 +15,74 @@ public:
 	{
 		return _frame;
 	}
+
+	const float getNormTime() const
+	{
+		return _normTime;
+	}
 };
 
 class Animation
 {
 public:
 	bool loop = true;
-	float speed = 1.0f;
 	float duration = 1.0f;
 
 	std::vector<TimedFrame> frames;
 
 private:
-	float current_frame = 0.0f;
-	float currentSpeed = 0.0f;
-	int loops = 0;
+	float _animationTime = 0.0f;
 
 public:
 	Animation()
 	{}
 
-	Animation(const Animation& anim) : loop(anim.loop), speed(anim.speed), frames(anim.frames)
+	Animation(const Animation& anim) : loop(anim.loop), duration(anim.duration), frames(anim.frames)
 	{}
 
-	const SDL_Rect& GetCurrentFrame()
+	const SDL_Rect& getCurrentFrame() const
 	{
-		float last_frame = (float) frames.size();
+		float normalizedTime = _animationTime / duration;
+		normalizedTime = MIN(normalizedTime, 1.0f);
 
-		current_frame += speed;
-		if (current_frame >= last_frame)
+		int retIndex = 0;
+		for (int i = 0; i < frames.size(); ++i)
 		{
-			current_frame = (loop) ? 0.0f : MAX(last_frame - 1.0f, 0.0f);
-			loops++;
-		} 
-
-		return frames[(int)current_frame].getRect();
+			if (frames.at(i).getNormTime() <= normalizedTime)
+			{
+				retIndex = i; 
+			}
+			else
+			{
+				break;
+			}
+		}
+		return frames.at(retIndex).getRect();
 	}
 
 	void SetCurrentFrame(int frame_num)
 	{
-		current_frame = (float)frame_num;
-	}
-
-	bool Finished() const
-	{
-		return loops > 0;
+		if (frame_num >= frames.size())
+		{
+			return;
+		}
+		float normTime = frames.at(frame_num).getNormTime();
+		_animationTime = duration * normTime;
 	}
 
 	void Reset()
 	{
-		current_frame = 0.0f;
+		_animationTime = 0.0f;
 	}
+
+	void updateAnimationTime(float dt)
+	{
+		_animationTime += dt;
+		if (_animationTime >= duration)
+		{
+			_animationTime = (loop) ? _animationTime - duration : duration;
+		}
+
+	}
+
 };

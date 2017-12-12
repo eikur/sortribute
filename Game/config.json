@@ -63,15 +63,13 @@
 			"position":[-772, 192],
 			"frames":[[0,192,3844,32],[0,224,3844,32],[0,256,3844,32],[0,288,3844,32],[0,320,3844,32]],
 			"norm_times" : [0, 0.2, 0.4, 0.6, 0.8],
-			"duration": 25,
-			"speed": 0.04
+			"duration": 2
 		},
 		"wave_splash":{
 			"position":[-772, 184],
 			"frames":[[0,352,3844,40],[0,392,3844,40],[0,432,3844,40],[0,472,3844,40],[0,512,3844,40]],
 			"norm_times" : [0, 0.2, 0.4, 0.6, 0.8],
-			"duration": 25,
-			"speed": 0.04
+			"duration": 2
 		}
 	},
 	"hud":
@@ -158,110 +156,92 @@
 		"idle": {
 			"frames": [[0,0, 96,80],[192,0, 96,80]],
 			"norm_times": [0,0.86],
-			"duration": 25.0,
-			"speed" : 0.04
+			"duration": 3.0
 		},
 		"walk":{
 			"frames": [[288,0, 96,80],[384,0, 96,80],[480,0, 96,80],[574,0, 96,80]],
 			"norm_times" : [0, 0.25, 0.5, 0.75],
-			"duration" : 17.0,
-			"speed" : 0.06
+			"duration" : 1.2
 		},
 		"jump_prep":{
 			"frames": [[0,160, 96,80]],
 			"norm_times" : [0],
-			"duration": 1.0,
-			"speed": 0.01
+			"duration": 0.24
 		},
 		"jump":{
 			"frames": [[96,160, 96,80]],
 			"norm_times": [0],
-			"duration" : 1.0,
-			"speed": 0.01
+			"duration" : 0.768
 		},
 		"jump_attack":{
 			"frames": [[192,160, 96,80]],
 			"norm_times": [0],
-			"duration" : 5.0,
-			"speed" : 0.2
+			"duration" : 1.0
 		},
 		"attack1":{
 			"frames": [[96,80, 96,80],[0,80, 96,80]],
 			"norm_times" : [0, 0.2],
-			"duration" : 4.0, 
-			"speed" : 0.25
+			"duration" : 0.256
 		},
 		"attack2":{
 			"frames": [[96,80, 96,80],[192,80, 96,80]],
 			"norm_times" : [0, 0.2],
-			"duration" : 4.0,
-			"speed" : 0.25
+			"duration" : 0.256
 		},
 		"attack3":{
 			"frames": [[288,80, 96,80],[384,80, 96,80]],
 			"norm_times" : [0, 0.2],
-			"duration" : 4.0,
-			"speed" : 0.25
+			"duration" : 0.256
 		},
 		"attack_back":{
 			"frames": [[576,80, 96,80],[480,80, 96,80]],
 			"norm_times" : [0, 0.2],
-			"duration" : 5.0,
-			"speed" : 0.2
+			"duration" : 0.256
 		},		
 		"holding_front":{
 			"frames": [[0,240, 96,80]],
 			"norm_times": [0],
-			"duration" : 1.0,
-			"speed" : 1.0
+			"duration" : 1.0
 		},
 		"holding_front_attack":{
 			"frames": [[96,240, 96,80]],
 			"norm_times" : [0],
-			"duration" : 1.0,
-			"speed" : 0.2
+			"duration" : 0.38
 		},
 		"holding_front_attack2":{
 			"frames": [[192,240, 96,80],[288,240, 96,80]],
 			"norm_times" : [0, 0.5],
-			"duration" : 10,
-			"speed" : 0.1
+			"duration" : 0.38
 		},
 		"holding_back":{
 			"frames": [[0,320, 96,80]],
 			"norm_times" : [0],
-			"duration" : 1.0,
-			"speed" : 1.0
+			"duration" : 1.0
 		},
 		"holding_swap":{
 			"frames": [[0,480, 96,80],[96,480, 96,80], [192,480, 96,80], [288,480, 96,80], [384,480, 96,80]],
 			"norm_times": [0,0.2, 0.4, 0.6, 0.8],
-			"duration" : 1.0,
-			"speed" : 0
+			"duration" : 1.024
 		},
 		"throwing_front":{
 			"frames": [[384,240, 96,80],[480,240, 96,80],[480,240, 96,80],[480,240, 96,80]],
 			"norm_times": [0, 0.25, 0.5, 0.75],
-			"duration" : 1.0,
-			"speed" : 0
+			"duration" : 0.768
 		},
 		"throwing_back":{
 			"frames": [[96,320, 96,80],[192,320, 96,80],[288,320, 96,80],[384,320, 96,80]],
 			"norm_times": [0, 0.25, 0.5, 0.75],
-			"duration" : 1.0,
-			"speed" : 0
+			"duration" : 0.768
 		},		
 		"take_item":{
 			"frames": [[480,400, 96,80]],
 			"norm_times": [0],
-			"duration" : 1.0,
-			"speed" : 0.1
+			"duration" : 0.256
 		},
 		"being_hit":{
 			"frames": [[0,400, 96,80],[0,401, 96,80]],
 			"norm_times": [0, 0.5],
-			"duration" : 10,
-			"speed" : 0.1
+			"duration" : 0.512
 		},
 		"being_knocked":{
 			"frames": [[192,400, 96,80], [288,400, 96,80]],
@@ -270,22 +250,19 @@
 			"speed" : 0.15
 		},
 		"being_thrown_front":{
-			"frames": [[96,400, 96,80],[576,400, 96,80],[192,400, 96,80],[288,400, 96,80],[289,400, 96,80],[288,400, 96,80]],
+			"frames": [[96,400, 96,80],[576,400, 96,80],[192,400, 96,80],[288,400, 96,80],[288,400, 96,80],[288,400, 96,80]],
 			"norm_times" : [0, 0.16, 0.33, 0.5, 0.67, 0.83],
-			"duration" : 12.5,
-			"speed" : 0.2
+			"duration" : 1.536
 		},
 		"standing_up":{
 			"frames": [[288,400, 96,80],[384,400, 96,80],[288,400, 96,80],[384,400, 96,80],[480,400, 96,80]],
 			"norm_times" : [0, 0.2, 0.4, 0.6, 0.8],
-			"duration" : 12.5,
-			"speed" : 0.08
+			"duration" : 1.536
 		},
 		"dying":{
 			"frames": [[288,400, 96,80], [384,160, 96,80]],
 			"norm_times" : [0, 0.5],
-			"duration" : 12.5,
-			"speed" : 0.08
+			"duration" : 2.048
 		},
 		
 		"shadow": [288,160, 96,80]		
@@ -304,55 +281,68 @@
 		"sprite_offset_flip": [-61,-80],
 		"idle": {
 			"frames": [[0,0, 96,80]],
-			"speed" : 0.04
+			"norm_times" : [0],
+			"duration" : 1.0
 		},
 		"walk":{
 			"frames": [[0,0, 96,80],[96,0, 96,80],[192,0, 96,80],[96,0, 96,80]],
-			"speed" : 0.06
+			"norm_times" : [0, 0.25, 0.5, 0.75],
+			"duration" : 1.2
 		},
 		"attack1":{
 			"frames": [[288,0,96,80]],
-			"speed" : 0.2
+			"norm_times": [0],
+			"duration" : 0.256
 		},
 		"attack2":{
 			"frames": [[384,0,96,80]],
-			"speed" : 0.2
+			"norm_times": [0],
+			"duration" : 0.256
 		},
 		"being_hit":{
 			"frames": [[0,80, 96,80],[0,81, 96,80]],
-			"speed" : 0.2
+			"norm_times" : [0, 0.5],
+			"duration" : 1.024
 		},
 		"being_hold_front":{
 			"frames": [[96,80, 96,80]],
-			"speed" : 0.1
+			"norm_times": [0],
+			"duration" : 1
 		},
 		"being_hold_front_hit":{
 			"frames": [[192,80, 96,80], [192,81, 96,80]],
-			"speed" : 0.2
+			"norm_times" : [0, 0.5],
+			"duration": 1.024
 		},
 		"being_hold_back":{
 			"frames": [[192,80, 96,80]],
-			"speed" : 0.1
+			"norm_times" : [0],
+			"duration" : 1.0
 		},
 		"being_knocked":{
 			"frames": [[288,80, 96,80],[384,80, 96,80]],
-			"speed" : 0
+			"norm_times" : [0, 0.5],
+			"duration" : 0.768
 		},
 		"being_thrown_front":{
 			"frames": [[96,80, 96,80],[576,80, 96,80],[576,80, 96,80],[576,80, 96,80],[384,80, 96,80],[384,80, 96,80],[384,80, 96,80],[384,80, 96,80]],	
-			"speed" : 0		
+			"norm_times" : [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875],
+			"duration" : 1.536
 		},
 		"being_thrown_back":{
 			"frames": [[192,80, 96,80],[288,80, 96,80],[288,80, 96,80],[576,80, 96,80],[576,80, 96,80],[576,80, 96,80],[384,80, 96,80],[384,80, 96,80]],	
-			"speed" : 0
+			"norm_times" : [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875],
+			"duration" : 1.536
 		},
 		"standing_up":{
 			"frames": [[480,80, 96,80]],
-			"speed" : 0.08
+			"norm_times" : [0],
+			"duration" : 0.512
 		},
 		"dying":{
-			"frames": [[384,80, 96,80],[576,0, 96,80]],
-			"speed" : 0.1
+			"frames": [[384,80, 96,80],[576,0, 96,80],[384,80, 96,80],[576,0, 96,80],[384,80, 96,80]],
+			"norm_times" : [0, 0.2, 0.4, 0.6, 0.8],
+			"duration" : 1.536
 		},
 		"shadow": [480,0, 96,80]
 		
@@ -432,8 +422,7 @@
 		"idle": {
 			"frames": [[0,0, 16,16]],
 			"norm_times" : [0],
-			"duration" : 1.0,
-			"speed" : 0
+			"duration" : 1.0
 		},
 		"colliders": {
 			"hit": [-8,-16,16,16]
@@ -446,8 +435,7 @@
 		"idle": {
 			"frames": [[0,16, 16,16]],
 			"norm_times" : [0],
-			"duration" : 1.0,
-			"speed" : 0
+			"duration" : 1.0
 		},
 		"colliders": {
 			"hit": [-8,-16,16,16]

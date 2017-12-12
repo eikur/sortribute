@@ -42,8 +42,8 @@ bool ConfigurationLoader::LoadAnimationFromJSONObject(JSON_Object *j_object, con
 	JSON_Array *j_array, *j_array_inner, *j_array_normTimes;
 	std::string tmp = dotget_path;
 
-	tmp.append(".speed");
-	animation->speed = (float)json_object_dotget_number(j_object, tmp.c_str());
+	tmp.append(".duration");
+	animation->duration = (float)json_object_dotget_number(j_object, tmp.c_str());
 
 	tmp = dotget_path;
 	tmp.append(".frames");

@@ -92,17 +92,18 @@ void Entity::SetPosition(const iPoint new_position)
 	hit_collider->rect.y = position.y + hit_collider_offset.y;
 }
 
-bool Entity::Draw() const
+bool Entity::updateAnimAndDraw(float dt)
 {
+	current_animation->updateAnimationTime(dt);
 	if (facing_right)
 	{
-		App->getRenderer().Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, false);
+		App->getRenderer().Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->getCurrentFrame()), 1.0F, false);
 		if (grounded == false)
 			App->getRenderer().Blit(graphics, position.x + sprite_offset.x, ground_y + sprite_offset.y, &shadow, 1.0f, false);
 	}
 	else
 	{
-		App->getRenderer().Blit(graphics, position.x + sprite_offset_flip.x, position.y + sprite_offset_flip.y, &(current_animation->GetCurrentFrame()), 1.0F, true);
+		App->getRenderer().Blit(graphics, position.x + sprite_offset_flip.x, position.y + sprite_offset_flip.y, &(current_animation->getCurrentFrame()), 1.0F, true);
 		if (grounded == false)
 			App->getRenderer().Blit(graphics, position.x + sprite_offset_flip.x, ground_y + sprite_offset_flip.y, &shadow, 1.0f, true);
 	}
@@ -460,8 +461,8 @@ void Entity::LoadAnimationFromJSONObject(JSON_Object* j_object, const char *dotg
 	JSON_Array *j_array, *j_array_inner, *j_array_normTimes;
 	std::string tmp = dotget_path;
 
-	tmp.append(".speed");
-	animation->speed = (float)json_object_dotget_number(j_object, tmp.c_str());
+	tmp.append(".duration");
+	animation->duration = (float)json_object_dotget_number(j_object, tmp.c_str());
 	
 	tmp = dotget_path;
 	tmp.append(".frames");

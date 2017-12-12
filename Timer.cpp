@@ -66,5 +66,5 @@ void Timer::UpdateDeltaTime()
 
 float Timer::getDeltaTime() const
 {
-	return static_cast<float>(m_delta_time);
+	return static_cast<float>(m_delta_time)/1000;
 }

@@ -87,7 +87,7 @@ void SceneManager::SwapScene(SceneId sceneId, float duration)
 	case SceneId::Stage8:
 		break;
 	}
-	_transitionDuration = duration * 0.5f * 1000.0f;
+	_transitionDuration = duration * 0.5f;
 	_transitionTime = _transitionDuration;
 	_inTransition = true;
 }

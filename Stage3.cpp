@@ -58,17 +58,20 @@ UpdateStatus Stage3::PreUpdate()
 	App->getRenderer().Blit(graphics, background_pos.x, background_pos.y, &background_section, (float)(background_section.w - App->getWindow().m_screen_width) / (float)(foreground_section.w - App->getWindow().m_screen_width));
 	App->getRenderer().Blit(graphics, middleground_pos.x, middleground_pos.y, &middleground_section, (float)(middleground_section.w - App->getWindow().m_screen_width) / (float)(foreground_section.w - App->getWindow().m_screen_width));
 	App->getRenderer().Blit(graphics, foreground_pos.x, foreground_pos.y, &foreground_section, 1.0F);
-	App->getRenderer().Blit(graphics, wave_sand_pos.x, wave_sand_pos.y, &(wave_sand.GetCurrentFrame()), 1.0F);			
+	App->getRenderer().Blit(graphics, wave_sand_pos.x, wave_sand_pos.y, &(wave_sand.getCurrentFrame()), 1.0F);			
 	return UpdateStatus::Continue;
 }
-UpdateStatus Stage3::Update(float)
+UpdateStatus Stage3::Update(float dt)
 {
-	App->getRenderer().Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);
+	App->getRenderer().Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.getCurrentFrame()), 1.0F);
 
 	if (battle_zone4 == nullptr && App->getEntityManager().boss == nullptr)
 	{
 		getManager().SwapScene(SceneManager::SceneId::Intro);
 	}
+
+	wave_sand.updateAnimationTime(dt);
+	wave_splash.updateAnimationTime(dt);
 	return UpdateStatus::Continue;
 }
 
@@ -432,7 +435,7 @@ bool Stage3::LoadConfigFromFile(const char* file_path)
 		json_array_clear(j_array_tmp);
 	}
 
-	wave_sand.speed = (float)json_object_dotget_number(root_object, "scene3.wave_sand.speed");
+	wave_sand.duration = (float)json_object_dotget_number(root_object, "scene3.wave_sand.duration");
 
 	json_array_clear(j_array_pos);
 	json_array_clear(j_array_section);
@@ -458,7 +461,7 @@ bool Stage3::LoadConfigFromFile(const char* file_path)
 		json_array_clear(j_array_tmp);
 	}
 
-	wave_splash.speed = (float)json_object_dotget_number(root_object, "scene3.wave_splash.speed");
+	wave_splash.duration = (float)json_object_dotget_number(root_object, "scene3.wave_splash.duration");
 
 	json_array_clear(j_array_pos);
 	json_array_clear(j_array_section);
