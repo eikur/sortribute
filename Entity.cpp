@@ -92,17 +92,18 @@ void Entity::SetPosition(const iPoint new_position)
 	hit_collider->rect.y = position.y + hit_collider_offset.y;
 }
 
-bool Entity::Draw() const
+bool Entity::updateAnimAndDraw(float dt)
 {
+	current_animation->updateAnimationTime(dt);
 	if (facing_right)
 	{
-		App->getRenderer().Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->GetCurrentFrame()), 1.0F, false);
+		App->getRenderer().Blit(graphics, position.x + sprite_offset.x, position.y + sprite_offset.y, &(current_animation->getCurrentFrame()), 1.0F, false);
 		if (grounded == false)
 			App->getRenderer().Blit(graphics, position.x + sprite_offset.x, ground_y + sprite_offset.y, &shadow, 1.0f, false);
 	}
 	else
 	{
-		App->getRenderer().Blit(graphics, position.x + sprite_offset_flip.x, position.y + sprite_offset_flip.y, &(current_animation->GetCurrentFrame()), 1.0F, true);
+		App->getRenderer().Blit(graphics, position.x + sprite_offset_flip.x, position.y + sprite_offset_flip.y, &(current_animation->getCurrentFrame()), 1.0F, true);
 		if (grounded == false)
 			App->getRenderer().Blit(graphics, position.x + sprite_offset_flip.x, ground_y + sprite_offset_flip.y, &shadow, 1.0f, true);
 	}
@@ -457,19 +458,30 @@ bool Entity::LoadFromConfigFile(const char* ) {
 
 void Entity::LoadAnimationFromJSONObject(JSON_Object* j_object, const char *dotget_path, Animation* animation)
 {
-	JSON_Array *j_array, *j_array_inner;
+	JSON_Array *j_array, *j_array_inner, *j_array_normTimes;
 	std::string tmp = dotget_path;
 
-	tmp.append(".speed");
-	animation->speed = (float)json_object_dotget_number(j_object, tmp.c_str());
+	tmp.append(".duration");
+	animation->duration = (float)json_object_dotget_number(j_object, tmp.c_str());
 	
 	tmp = dotget_path;
 	tmp.append(".frames");
 	j_array = json_object_dotget_array(j_object, tmp.c_str());
+
+	tmp = dotget_path;
+	tmp.append(".norm_times");
+	j_array_normTimes = json_object_dotget_array(j_object, tmp.c_str());
+
 	for (int i = 0; i < (int)json_array_get_count(j_array); ++i)
 	{
 		j_array_inner = json_array_get_array(j_array, i);
-		animation->frames.push_back({ (int)json_array_get_number(j_array_inner, 0), (int)json_array_get_number(j_array_inner, 1), (int)json_array_get_number(j_array_inner, 2), (int)json_array_get_number(j_array_inner, 3) });
+		TimedFrame frame(json_array_get_number(j_array_normTimes, i),
+		{ (int)json_array_get_number(j_array_inner, 0),
+			(int)json_array_get_number(j_array_inner, 1),
+			(int)json_array_get_number(j_array_inner, 2),
+			(int)json_array_get_number(j_array_inner, 3) }
+		);
+		animation->frames.push_back(frame);
 		json_array_clear(j_array_inner);
 	}
 }

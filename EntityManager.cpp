@@ -46,8 +46,9 @@ UpdateStatus EntityManager::Update(float dt)
 {
 	if (App->getUI().pause == false)
 	{
-		elapsed_msec += dt;
-		time_left_msec -= dt;
+		float dtMsec = dt * 1000.0f;
+		elapsed_msec += dtMsec;
+		time_left_msec -= dtMsec;
 
 		if (time_left_msec <= 0 && player != nullptr)
 		{
@@ -76,7 +77,7 @@ UpdateStatus EntityManager::Update(float dt)
 			}
 			else
 			{
-				(*it)->Draw();
+				(*it)->updateAnimAndDraw(dt);
 				++it;
 			}
 		}
