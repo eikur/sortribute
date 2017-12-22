@@ -44,7 +44,7 @@ bool EntityManager::Start()
 
 UpdateStatus EntityManager::Update(float dt)
 {
-	if (App->getUI().pause == false)
+	if (App->getTimer().isRunning())
 	{
 		elapsed_msec += dt;
 		time_left_msec -= dt;
@@ -65,7 +65,7 @@ UpdateStatus EntityManager::Update(float dt)
 		{
 			if ((*it)->Update(msecInt, upd_logic) == false)
 			{
- 				if (*it == player)
+				if (*it == player)
 					player = nullptr;
 				else
 					player->AddScore((*it)->score);
@@ -80,14 +80,13 @@ UpdateStatus EntityManager::Update(float dt)
 				++it;
 			}
 		}
-		
+
 		if (upd_logic == true)
 		{
 			elapsed_msec = 0;
 			upd_logic = false;
 		}
-	} 
-
+	}
 	if (player == nullptr)
 	{
 		App->getSceneManager().SwapScene(SceneManager::SceneId::Intro);
@@ -330,7 +329,7 @@ void EntityManager::CheatCodes()
 	if (debug)
 		App->getUI().ShowEntityManagerDebugMode();
 
-	if (App->getUI().pause == false)
+	if (App->getTimer().isRunning())
 	{
 		if (App->getInput().GetKey(SDL_SCANCODE_F2) == KEY_DOWN)
 			debug = !debug;

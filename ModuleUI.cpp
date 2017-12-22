@@ -51,15 +51,18 @@ UpdateStatus ModuleUI::Update(float)
 {
 	if (App->getInput().GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN || App->getInput().GetGamepadButton(GamepadButton::START) == KEY_DOWN )
 	{
-		pause = !pause;
+		// refactor me
+		bool pause = App->getTimer().isPaused();
+			
 		if (pause)
-			App->getTimer().TimerPause();
-		else
 			App->getTimer().TimerResume();
+		else
+			App->getTimer().TimerPause();
+
 		if (App->getEntityManager().player != nullptr)
 			App->getAudio().PlayFx(fx_pause);
 	}
-	if (pause == false)
+	if (App->getTimer().isRunning())
 	{
 		if (remaining_msec_go_arrow > 0)
 			remaining_msec_go_arrow -= App->getTimer().getDeltaTime();
@@ -81,7 +84,7 @@ bool ModuleUI::CleanUp() {
 void ModuleUI::PrintStatus()
 {
 	App->getRenderer().Blit(hud_graphics, 0, 0, &hud_section, 0.0F);
-	if (pause)
+	if (App->getTimer().isPaused())
 	{
 		App->getFonts().Print(112, 96, TextureFontsHelper::FontType::SceneOverlay, "P");
 		App->getFonts().Print(132, 96, TextureFontsHelper::FontType::SceneOverlay, "A");

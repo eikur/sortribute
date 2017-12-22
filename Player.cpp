@@ -7,6 +7,7 @@
 #include "ModuleCollision.h"
 #include "ModuleUI.h"
 #include "EntityManager.h"
+#include "Timer.h"
 
 #include "Player.h"
 
@@ -637,11 +638,9 @@ bool Player::LoadFromConfigFile(const char* file_path)
 
 }
 
-void Player::CheatCodes() {
-	
-	if (debug)
-		App->getUI().ShowPlayerDebugMode();
-	if (App->getUI().pause == false)
+void Player::CheatCodes()
+{
+	if (App->getTimer().isRunning())
 	{
 		if (App->getInput().GetKey(SDL_SCANCODE_F3) == KEY_DOWN)
 			debug = !debug;
@@ -659,5 +658,9 @@ void Player::CheatCodes() {
 			if (App->getInput().GetKey(SDL_SCANCODE_W) == KEY_DOWN)
 				SetBeingKnocked(attack3_dmg);
 		}
+	}
+	if (debug)
+	{
+		App->getUI().ShowPlayerDebugMode();
 	}
 }

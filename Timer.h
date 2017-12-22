@@ -4,6 +4,12 @@
 
 class Timer{
 
+	enum class State
+	{
+		Paused,
+		Running,
+		Stopped
+	};
 public:
 	Timer();
 	~Timer();
@@ -16,17 +22,16 @@ public:
 	void UpdateDeltaTime();
 	float getDeltaTime() const;
 
+	bool isPaused() const;
+	bool isRunning() const;
+
 private:
 	Uint32 getElapsedTime() const;
 
 private:
-	Uint32 m_ticks_start = 0;
-	Uint32 m_ticks_pause = 0;
-	Uint32 m_ticks_last_update = 0;
-	Uint32 m_delta_time = 0;
+	Uint32 _ticksLastStateChange = 0;
+	Uint32 _ticksLastUpdate = 0;
+	Uint32 _ticksDeltaTime = 0;
 
-	bool m_started = false;
-	bool m_paused = false;
-	
-
+	State _state = State::Stopped;
 };

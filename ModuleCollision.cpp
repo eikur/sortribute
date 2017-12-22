@@ -5,6 +5,7 @@
 #include "ModuleRender.h"
 #include "ModuleCollision.h"
 #include "ModuleUI.h"
+#include "Timer.h"
 
 using namespace std;
 
@@ -56,7 +57,7 @@ UpdateStatus ModuleCollision::Update(float)
 		}
 	}
 
-	if (App->getUI().pause == false)
+	if (App->getTimer().isRunning())
 	{
 		if (App->getInput().GetKey(SDL_SCANCODE_F1) == KEY_DOWN)
 			debug = !debug;

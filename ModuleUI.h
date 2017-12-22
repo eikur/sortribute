@@ -28,9 +28,6 @@ private:
 
 	bool LoadConfigFromFile();
 
-public:
-	bool pause = false;
-
 private:
 	unsigned int fx_pause = 0;
 

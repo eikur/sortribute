@@ -1,70 +1,73 @@
 #include "Timer.h"
 
 
-Timer::Timer() : m_ticks_start(0), m_ticks_pause(0), m_started(false), m_paused(false)
+Timer::Timer() : _state(State::Stopped)
 {}
 
-Timer::~Timer() {}
+Timer::~Timer() 
+{}
 
-void Timer::TimerStart() {
-	m_started = true;
-	m_paused = false;
-
-	m_ticks_start = SDL_GetTicks();
-	m_ticks_pause = 0;
+void Timer::TimerStart() 
+{
+	_state = State::Running;
+	_ticksLastStateChange = SDL_GetTicks();
 }
 
-void Timer::TimerStop() {
-	m_started = false;
-	m_paused = false;
-
-	m_ticks_start = 0;
-	m_ticks_pause = 0;
+void Timer::TimerStop()
+{
+	_state = State::Stopped;
+	_ticksLastStateChange = 0;
 }
 
-void Timer::TimerPause() {
-	if (m_started && !m_paused)
+void Timer::TimerPause() 
+{
+	if( _state == State::Running)
 	{
-		m_paused = true;
-
-		m_ticks_pause = SDL_GetTicks() - m_ticks_start;
-		m_ticks_start = 0;
+		_state = State::Paused;
+		_ticksLastStateChange = SDL_GetTicks() - _ticksLastStateChange;
 	}
 }
 
-void Timer::TimerResume() {
-	if (m_started && m_paused)
+void Timer::TimerResume() 
+{
+	if ( _state == State::Paused)
 	{
-		m_paused = false;
-		m_ticks_start = SDL_GetTicks() - m_ticks_pause;
-		m_ticks_pause = 0;
+		_state = State::Running;
+		_ticksLastStateChange = SDL_GetTicks() - _ticksLastStateChange;
 	}
 }
 
 Uint32 Timer::getElapsedTime() const 
 {
-	Uint32 elapsed_time = 0;
-
-	if (m_started)
+	switch (_state)
 	{
-		if (m_paused)
-			elapsed_time = m_ticks_pause;
-		else
-			elapsed_time = SDL_GetTicks() - m_ticks_start;
+	case Timer::State::Paused:
+		return _ticksLastStateChange;
+	case Timer::State::Running:
+		return SDL_GetTicks() - _ticksLastStateChange;
+		break;
+	case Timer::State::Stopped:
+		return 0;
 	}
-	return elapsed_time;
 }
-
 
 void Timer::UpdateDeltaTime()
 {
-	m_delta_time = getElapsedTime() - m_ticks_last_update;
-	m_ticks_last_update = getElapsedTime();
-
+	_ticksDeltaTime = getElapsedTime() - _ticksLastUpdate;
+	_ticksLastUpdate = getElapsedTime();
 }
-
 
 float Timer::getDeltaTime() const
 {
-	return static_cast<float>(m_delta_time);
+	return static_cast<float>(_ticksDeltaTime);
+}
+
+bool Timer::isPaused() const
+{
+	return _state == State::Paused;
+}
+
+bool Timer::isRunning() const
+{
+	return _state == State::Running;
 }
