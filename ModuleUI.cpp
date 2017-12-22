@@ -47,7 +47,7 @@ bool ModuleUI::Init()
 		return true;
 }
 
-UpdateStatus ModuleUI::Update(float)
+UpdateStatus ModuleUI::Update(float dt)
 {
 	if (App->getInput().GetKey(SDL_SCANCODE_RETURN) == KEY_DOWN || App->getInput().GetGamepadButton(GamepadButton::START) == KEY_DOWN )
 	{
@@ -65,7 +65,7 @@ UpdateStatus ModuleUI::Update(float)
 	if (App->getTimer().isRunning())
 	{
 		if (remaining_msec_go_arrow > 0)
-			remaining_msec_go_arrow -= App->getTimer().getDeltaTime();
+			remaining_msec_go_arrow -= dt * 1000.0f;
 
 		if (App->getInput().GetKey(SDL_SCANCODE_F4) == KEY_DOWN)
 			debug = !debug;

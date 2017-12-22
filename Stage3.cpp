@@ -58,17 +58,20 @@ UpdateStatus Stage3::PreUpdate()
 	App->getRenderer().Blit(graphics, background_pos.x, background_pos.y, &background_section, (float)(background_section.w - App->getWindow().m_screen_width) / (float)(foreground_section.w - App->getWindow().m_screen_width));
 	App->getRenderer().Blit(graphics, middleground_pos.x, middleground_pos.y, &middleground_section, (float)(middleground_section.w - App->getWindow().m_screen_width) / (float)(foreground_section.w - App->getWindow().m_screen_width));
 	App->getRenderer().Blit(graphics, foreground_pos.x, foreground_pos.y, &foreground_section, 1.0F);
-	App->getRenderer().Blit(graphics, wave_sand_pos.x, wave_sand_pos.y, &(wave_sand.GetCurrentFrame()), 1.0F);			
+	App->getRenderer().Blit(graphics, wave_sand_pos.x, wave_sand_pos.y, &(wave_sand.getCurrentFrame()), 1.0F);			
 	return UpdateStatus::Continue;
 }
-UpdateStatus Stage3::Update(float)
+UpdateStatus Stage3::Update(float dt)
 {
-	App->getRenderer().Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.GetCurrentFrame()), 1.0F);
+	App->getRenderer().Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.getCurrentFrame()), 1.0F);
 
 	if (battle_zone4 == nullptr && App->getEntityManager().boss == nullptr)
 	{
 		getManager().SwapScene(SceneManager::SceneId::Intro);
 	}
+
+	wave_sand.updateAnimationTime(dt);
+	wave_splash.updateAnimationTime(dt);
 	return UpdateStatus::Continue;
 }
 
@@ -347,6 +350,7 @@ bool Stage3::LoadConfigFromFile(const char* file_path)
 	JSON_Object *root_object;
 	JSON_Array *j_array_pos; 
 	JSON_Array *j_array_section;
+	JSON_Array *j_array_normTimes;
 	JSON_Array *j_array_tmp;
 
 	root_value = json_parse_file(file_path);
@@ -412,7 +416,8 @@ bool Stage3::LoadConfigFromFile(const char* file_path)
 
 	//wave_sand load
 	j_array_pos = json_object_dotget_array(root_object, "scene3.wave_sand.position");
-	j_array_section = json_object_dotget_array(root_object, "scene3.wave_sand.section");
+	j_array_section = json_object_dotget_array(root_object, "scene3.wave_sand.frames");
+	j_array_normTimes = json_object_dotget_array(root_object, "scene3.wave_sand.norm_times");
 
 	wave_sand_pos.x = (int)json_array_get_number(j_array_pos, 0);
 	wave_sand_pos.y = (int)json_array_get_number(j_array_pos, 1);
@@ -420,18 +425,25 @@ bool Stage3::LoadConfigFromFile(const char* file_path)
 	for (int i = 0; i < (int) json_array_get_count(j_array_section); ++i)
 	{
 		j_array_tmp = json_array_get_array(j_array_section, i);
-		wave_sand.frames.push_back({ (int)json_array_get_number(j_array_tmp, 0), (int)json_array_get_number(j_array_tmp, 1), (int)json_array_get_number(j_array_tmp, 2), (int)json_array_get_number(j_array_tmp, 3) });
+		TimedFrame frame(json_array_get_number(j_array_normTimes, i), 
+			{	(int)json_array_get_number(j_array_tmp, 0),
+				(int)json_array_get_number(j_array_tmp, 1), 
+				(int)json_array_get_number(j_array_tmp, 2), 
+				(int)json_array_get_number(j_array_tmp, 3) }
+		);
+		wave_sand.frames.push_back(frame);
 		json_array_clear(j_array_tmp);
 	}
 
-	wave_sand.speed = (float)json_object_dotget_number(root_object, "scene3.wave_sand.speed");
+	wave_sand.duration = (float)json_object_dotget_number(root_object, "scene3.wave_sand.duration");
 
 	json_array_clear(j_array_pos);
 	json_array_clear(j_array_section);
 
 	//wave_splash load
 	j_array_pos = json_object_dotget_array(root_object, "scene3.wave_splash.position");
-	j_array_section = json_object_dotget_array(root_object, "scene3.wave_splash.section");
+	j_array_section = json_object_dotget_array(root_object, "scene3.wave_splash.frames");
+	j_array_normTimes = json_object_dotget_array(root_object, "scene3.wave_splash.norm_times");
 
 	wave_splash_pos.x = (int)json_array_get_number(j_array_pos, 0);
 	wave_splash_pos.y = (int)json_array_get_number(j_array_pos, 1);
@@ -439,11 +451,17 @@ bool Stage3::LoadConfigFromFile(const char* file_path)
 	for (int i = 0; i < (int)json_array_get_count(j_array_section); ++i)
 	{
 		j_array_tmp = json_array_get_array(j_array_section, i);
-		wave_splash.frames.push_back({ (int)json_array_get_number(j_array_tmp, 0), (int)json_array_get_number(j_array_tmp, 1), (int)json_array_get_number(j_array_tmp, 2), (int)json_array_get_number(j_array_tmp, 3) });
+		TimedFrame frame(json_array_get_number(j_array_normTimes, i),
+		{ (int)json_array_get_number(j_array_tmp, 0),
+			(int)json_array_get_number(j_array_tmp, 1),
+			(int)json_array_get_number(j_array_tmp, 2),
+			(int)json_array_get_number(j_array_tmp, 3) }
+		);
+		wave_splash.frames.push_back(frame);
 		json_array_clear(j_array_tmp);
 	}
 
-	wave_splash.speed = (float)json_object_dotget_number(root_object, "scene3.wave_splash.speed");
+	wave_splash.duration = (float)json_object_dotget_number(root_object, "scene3.wave_splash.duration");
 
 	json_array_clear(j_array_pos);
 	json_array_clear(j_array_section);

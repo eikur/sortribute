@@ -59,7 +59,7 @@ void Timer::UpdateDeltaTime()
 
 float Timer::getDeltaTime() const
 {
-	return static_cast<float>(_ticksDeltaTime);
+	return static_cast<float>(_ticksDeltaTime) / 1000.0f;
 }
 
 bool Timer::isPaused() const
