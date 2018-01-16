@@ -77,6 +77,11 @@ public:
 
 	void updateAnimationTime(float dt)
 	{
+		// todo - improve this
+		if (dt <= 0.0003f)
+		{
+			return;
+		}
 		_animationTime += dt;
 		if (_animationTime >= duration)
 		{

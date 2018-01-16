@@ -65,7 +65,8 @@ UpdateStatus Stage3::Update(float dt)
 {
 	App->getRenderer().Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.getCurrentFrame()), 1.0F);
 
-	if (battle_zone4 == nullptr && App->getEntityManager().boss == nullptr)
+	const auto& entityManager = App->getEntityManager();
+	if (entityManager.player == nullptr || battle_zone4 == nullptr && entityManager.boss == nullptr)
 	{
 		getManager().SwapScene(SceneManager::SceneId::Intro);
 	}
@@ -85,10 +86,7 @@ bool Stage3::CleanUp()
 
 void Stage3::HandleCollision(Collider* a, Collider* b)
 {
-	if (a->type)
-		TriggerCollisionManagement(a);
-	else
-		TriggerCollisionManagement(b);
+	TriggerCollisionManagement(a);
 }
 
 void Stage3::CreateSceneTriggers()

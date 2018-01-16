@@ -60,7 +60,7 @@ UpdateStatus EntityManager::Update(float dt)
 		if (elapsed_msec >= upd_logic_msec)
 			upd_logic = true;
 
-		entities.sort(Entity::ptrEntityDepthComparison());
+
 		unsigned int msecInt = static_cast<uint>(elapsed_msec);
 		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end();)
 		{
@@ -77,7 +77,6 @@ UpdateStatus EntityManager::Update(float dt)
 			}
 			else
 			{
-				(*it)->updateAnimAndDraw(dt);
 				++it;
 			}
 		}
@@ -88,9 +87,11 @@ UpdateStatus EntityManager::Update(float dt)
 			upd_logic = false;
 		}
 	}
-	if (player == nullptr)
+
+	entities.sort(Entity::ptrEntityDepthComparison());
+	for (auto& e : entities)
 	{
-		App->getSceneManager().SwapScene(SceneManager::SceneId::Intro);
+		e->updateAnimAndDraw(dt);
 	}
 	
 	CheatCodes();
