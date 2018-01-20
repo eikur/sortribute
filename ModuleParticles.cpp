@@ -7,8 +7,6 @@
 #include "ModuleCollision.h"
 #include "TextureFontsHelper.h"
 
-//#include "3rdparty/SDL/include/SDL_timer.h"
-
 ModuleParticles::ModuleParticles()
 {}
 
@@ -19,7 +17,6 @@ ModuleParticles::~ModuleParticles()
 bool ModuleParticles::Start()
 {
 	LOG("Loading particles");
-	//graphics = App->getTextures().Load("rtype/particles.png");
 	return true;
 }
 
@@ -27,7 +24,6 @@ bool ModuleParticles::Start()
 bool ModuleParticles::CleanUp()
 {
 	LOG("Unloading particles");
-//	App->getTextures().Unload(graphics);
 
 	for (std::list<Particle*>::iterator it = active.begin(); it != active.end(); ++it)
 		RELEASE(*it);
