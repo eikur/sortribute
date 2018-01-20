@@ -103,6 +103,9 @@
     <ClInclude Include="TextureHelper.h">
       <Filter>Utils</Filter>
     </ClInclude>
+    <ClInclude Include="EntityInput.hpp">
+      <Filter>Game Modules</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">

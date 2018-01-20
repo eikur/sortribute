@@ -77,6 +77,7 @@
     <ClInclude Include="ConfigurationLoader.h" />
     <ClInclude Include="EnemyGarcia.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="EntityInput.hpp" />
     <ClInclude Include="EntityManager.h" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Apple.h" />

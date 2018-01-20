@@ -18,16 +18,6 @@ class EntityManager;
 class Timer;
 class ConfigurationLoader;
 class SceneManager;
-
-// Defines a unique ptr of a class member, and its getter
-#define MEMBER_DECL( _CLASS_, _NAME_, _GETTER_ )	\
-		private:								\
-			std::unique_ptr<_CLASS_> _NAME_;	\
-		public:									\
-			_CLASS_& _GETTER_() const	\
-			{							\
-				return *_NAME_.get();	\
-			}
 				
 class Application
 {

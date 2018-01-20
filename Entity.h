@@ -1,5 +1,4 @@
-#ifndef __ENTITY_H__
-#define __ENTITY_H__
+#pragma once
 
 #include <math.h>
 #include "3rdparty/parson/parson.h"
@@ -239,5 +238,3 @@ protected:
 	iPoint AI_move_destination = { 0,0 };
 
 };
-
-#endif // __ENTITY_H__

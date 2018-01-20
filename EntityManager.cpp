@@ -33,8 +33,10 @@ bool EntityManager::Init()
 		LOG("Entity Manager: failed to initialise\n");
 		return false;
 	}
-	else 
+	else
+	{
 		return true;
+	}
 }
 
 bool EntityManager::Start()
