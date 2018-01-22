@@ -8,8 +8,7 @@ struct SDL_Texture;
 class SceneIntro : public Scene
 {
 public:
-	SceneIntro(SceneManager& manager);
-	~SceneIntro();
+	SceneIntro(SceneManager& manager, EntityManager& entityManager);
 
 	bool Init(); 
 	bool Start();

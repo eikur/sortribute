@@ -2,14 +2,14 @@
 
 #include "Globals.h"
 #include "SceneManager.h"
+#include "EntityManager.h"
 
 struct Collider;
 
 class Scene
 {
 public:
-	Scene(SceneManager& manager);
-	virtual ~Scene() = default;
+	Scene(SceneManager& manager, EntityManager& entityManager);
 
 	virtual bool Init();
 	virtual bool Start();
@@ -18,9 +18,14 @@ public:
 	virtual UpdateStatus PostUpdate();
 	virtual bool CleanUp();
 	
-	SceneManager& getManager() const;
 	virtual void HandleCollision(Collider*, Collider*) {}
 
+	SceneManager& getManager();
+	EntityManager& getEntityManager();
 private:
 	SceneManager& _manager;
+	EntityManager& _entityManager;
+
+	const float totalRemainingTimeMsec = 81999.0f;
+	const float remainingTimeMsec = 0;
 };

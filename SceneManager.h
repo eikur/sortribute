@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Module.h"
+#include "EntityManager.h"
 #include <memory>
 
 class Stage3;
@@ -35,8 +36,7 @@ public:
 	};
 
 public:
-	SceneManager(bool active = true);
-	~SceneManager();
+	SceneManager(EntityManager& entityManager, bool active = true);
 
 	bool Init() override;
 	bool Start() override;

@@ -46,10 +46,11 @@ bool EntityManager::Start()
 
 UpdateStatus EntityManager::Update(float dt)
 {
+	bool isUpdateLogicLoop = false;
 	if (App->getTimer().isRunning())
 	{
 		float dtMsec = dt * 1000.0f;
-		elapsed_msec += dtMsec;
+		logicLoopAccumMsec += dtMsec;
 		time_left_msec -= dtMsec;
 
 		if (time_left_msec <= 0 && player != nullptr)
@@ -59,14 +60,12 @@ UpdateStatus EntityManager::Update(float dt)
 			time_left_msec = 0;
 		}
 
-		if (elapsed_msec >= upd_logic_msec)
-			upd_logic = true;
+		isUpdateLogicLoop = logicLoopAccumMsec >= logicLoopUpdatePeriodMsec;
 
-
-		unsigned int msecInt = static_cast<uint>(elapsed_msec);
+		unsigned int msecInt = static_cast<uint>(logicLoopAccumMsec);
 		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end();)
 		{
-			if ((*it)->Update(msecInt, upd_logic) == false)
+			if ((*it)->Update(msecInt, isUpdateLogicLoop) == false)
 			{
 				if (*it == player)
 					player = nullptr;
@@ -82,12 +81,6 @@ UpdateStatus EntityManager::Update(float dt)
 				++it;
 			}
 		}
-
-		if (upd_logic == true)
-		{
-			elapsed_msec = 0;
-			upd_logic = false;
-		}
 	}
 
 	entities.sort(Entity::ptrEntityDepthComparison());
@@ -96,6 +89,8 @@ UpdateStatus EntityManager::Update(float dt)
 		e->updateAnimAndDraw(dt);
 	}
 	
+	logicLoopAccumMsec = isUpdateLogicLoop ? 0 : logicLoopAccumMsec;
+
 	CheatCodes();
 
 	return UpdateStatus::Continue;

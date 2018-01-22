@@ -1,6 +1,6 @@
 #include "Scene.h"
 
-Scene::Scene(SceneManager& manager) : _manager(manager)
+Scene::Scene(SceneManager& manager, EntityManager& entityManager) : _manager(manager), _entityManager(entityManager)
 {}
 
 bool Scene::Init()
@@ -32,7 +32,11 @@ bool Scene::CleanUp()
 	return true;
 }
 
-SceneManager& Scene::getManager() const
+SceneManager& Scene::getManager()
 {
 	return _manager;
+}
+EntityManager& Scene::getEntityManager()
+{
+	return _entityManager;
 }

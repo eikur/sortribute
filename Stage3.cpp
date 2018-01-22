@@ -12,12 +12,9 @@
 
 #include "Stage3.h"
 
-Stage3::Stage3(SceneManager& manager) : Scene(manager)
+Stage3::Stage3(SceneManager& manager, EntityManager& entityManager) : Scene(manager, entityManager)
 {
 }
-
-Stage3::~Stage3()
-{}
 
 bool Stage3::Init()
 {
@@ -40,8 +37,8 @@ bool Stage3::Start()
 	App->getAudio().PlayMusic(music_path.c_str(), 1.0F);	
 	App->getAudio().PlayFx(fx_waves);
 	
-	App->getEntityManager().Enable();
-	App->getEntityManager().player = App->getEntityManager().CreateEntity(Entity::Types::player);
+	getEntityManager().Enable();
+	getEntityManager().player = getEntityManager().CreateEntity(Entity::Types::player);
 
 	App->getUI().Enable();
 	
@@ -65,7 +62,7 @@ UpdateStatus Stage3::Update(float dt)
 {
 	App->getRenderer().Blit(graphics, wave_splash_pos.x, wave_splash_pos.y, &(wave_splash.getCurrentFrame()), 1.0F);
 
-	const auto& entityManager = App->getEntityManager();
+	const auto& entityManager =getEntityManager();
 	if (entityManager.player == nullptr || battle_zone4 == nullptr && entityManager.boss == nullptr)
 	{
 		getManager().SwapScene(SceneManager::SceneId::Intro);
@@ -131,13 +128,13 @@ void Stage3::DeleteSceneTriggers()
 void Stage3::PlaceSceneItems()
 {
 	Entity *tmp = nullptr;
-	tmp = App->getEntityManager().CreateEntity(Entity::Types::item_apple);
+	tmp = getEntityManager().CreateEntity(Entity::Types::item_apple);
 	tmp->SetPosition({ 400,180 });
-	tmp = App->getEntityManager().CreateEntity(Entity::Types::item_apple);
+	tmp = getEntityManager().CreateEntity(Entity::Types::item_apple);
 	tmp->SetPosition({ 1155,180 });
-	tmp = App->getEntityManager().CreateEntity(Entity::Types::item_chicken);
+	tmp = getEntityManager().CreateEntity(Entity::Types::item_chicken);
 	tmp->SetPosition({1824,170});
-	tmp = App->getEntityManager().CreateEntity(Entity::Types::item_apple);
+	tmp = getEntityManager().CreateEntity(Entity::Types::item_apple);
 	tmp->SetPosition({ 1950,170 });
 }
 
@@ -150,7 +147,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	
 	if (trigger == spawn1)
 	{
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn1->getRect().x -170, 200 });
 		spawn1 = nullptr;
@@ -158,7 +155,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn2)
 	{
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp!= nullptr)
 			tmp->SetPosition({ spawn2->getRect().x + 170, 216 });
 		spawn2 = nullptr;
@@ -166,7 +163,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn3)
 	{
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn3->getRect().x + 170, 162 });
 		spawn3 = nullptr;
@@ -174,10 +171,10 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == cam_lock1)
 	{
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock1->getRect().x -180, 162 });
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock1->getRect().x +170 , 210 });
 		App->getRenderer().locked = true;
@@ -186,14 +183,14 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == battle_zone1)
 	{
-		if (cam_lock1 == nullptr && App->getEntityManager().GetEnemyCount() == 0)
+		if (cam_lock1 == nullptr && getEntityManager().GetEnemyCount() == 0)
 		{
 			App->getRenderer().locked = false;
 			App->getAudio().PlayFx(fx_waves);
-			tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+			tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 			if (tmp != nullptr)
 				tmp->SetPosition({battle_zone1->getRect().x +battle_zone1->getRect().w + 340, 210});
-			App->getEntityManager().RestoreTimeLeft();
+			getEntityManager().RestoreTimeLeft();
 			App->getUI().ShowGoArrow();
 			battle_zone1 = nullptr;
 			trigger->to_delete = true;
@@ -201,7 +198,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn4)
 	{
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn4->getRect().x + 170, 162 });
 		spawn4 = nullptr;
@@ -209,7 +206,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn5)
 	{
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn5->getRect().x -170, 216 });
 		spawn5 = nullptr;
@@ -218,10 +215,10 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	else if (trigger == cam_lock2)
 	{
 		App->getRenderer().locked = true;
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock2->getRect().x - 170, 162 });
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock2->getRect().x + 250, 210 });
 		cam_lock2 = nullptr;
@@ -229,14 +226,14 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == battle_zone2)
 	{
-		if (cam_lock2 == nullptr && App->getEntityManager().GetEnemyCount() == 0)
+		if (cam_lock2 == nullptr && getEntityManager().GetEnemyCount() == 0)
 		{
 			App->getRenderer().locked = false;
 			App->getAudio().PlayFx(fx_waves);
-			tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+			tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 			if (tmp != nullptr)
 				tmp->SetPosition({ battle_zone2->getRect().x + battle_zone2->getRect().w + 300, 210 });
-			App->getEntityManager().RestoreTimeLeft();
+			getEntityManager().RestoreTimeLeft();
 			App->getUI().ShowGoArrow();
 			battle_zone2 = nullptr;
 			trigger->to_delete = true;
@@ -244,7 +241,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn6)
 	{
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn6->getRect().x + 180, 210 });
 		spawn6 = nullptr;
@@ -252,10 +249,10 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn7)
 	{
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn7->getRect().x + 180, 175 });
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn7->getRect().x + 250, 175 });
 		spawn7 = nullptr;
@@ -263,7 +260,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn8)
 	{
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn8->getRect().x + 170, 210 });
 		spawn8 = nullptr;
@@ -272,16 +269,16 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	else if (trigger == cam_lock3)
 	{
 		App->getRenderer().locked = true;
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock3->getRect().x - 180, 162 });
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock3->getRect().x + 250, 210 });
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock3->getRect().x - 340, 202 });
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock3->getRect().x + 420, 170 });
 		cam_lock3 = nullptr;
@@ -289,11 +286,11 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == battle_zone3)
 	{
-		if (cam_lock3 == nullptr && App->getEntityManager().GetEnemyCount() == 0)
+		if (cam_lock3 == nullptr && getEntityManager().GetEnemyCount() == 0)
 		{
 			App->getRenderer().locked = false;
 			App->getAudio().PlayFx(fx_waves);
-			App->getEntityManager().RestoreTimeLeft();
+			getEntityManager().RestoreTimeLeft();
 			App->getUI().ShowGoArrow();
 			battle_zone3 = nullptr;
 			trigger->to_delete = true;
@@ -301,7 +298,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn9)
 	{
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn9->getRect().x + 180, 180 });
 		spawn9 = nullptr;
@@ -309,7 +306,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == spawn10)
 	{
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn10->getRect().x + 180, 210 });
 		spawn10 = nullptr;
@@ -318,7 +315,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	else if (trigger == cam_lock4)
 	{
 		App->getRenderer().locked = true;
-		tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_garcia);
+		tmp = getEntityManager().CreateEntity(Entity::Types::npc_garcia);
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock4->getRect().x - 180, 210 });
 		cam_lock4 = nullptr;
@@ -326,15 +323,15 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 	}
 	else if (trigger == battle_zone4)
 	{
-		if (cam_lock4 == nullptr && App->getEntityManager().GetEnemyCount() == 0)
+		if (cam_lock4 == nullptr && getEntityManager().GetEnemyCount() == 0)
 		{
 			App->getAudio().PlayMusic(boss_music_path.c_str(),0.0F);
-			App->getEntityManager().RestoreTimeLeft();
+			getEntityManager().RestoreTimeLeft();
 			do {
-				tmp = App->getEntityManager().CreateEntity(Entity::Types::npc_boss);
+				tmp = getEntityManager().CreateEntity(Entity::Types::npc_boss);
 			} while (tmp == nullptr);
 			tmp->SetPosition({ battle_zone4->getRect().x + battle_zone4->getRect().w + 300, 180 });
-			App->getEntityManager().boss = tmp;
+			getEntityManager().boss = tmp;
 			battle_zone4 = nullptr;
 			trigger->to_delete = true;
 		}

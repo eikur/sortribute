@@ -13,10 +13,7 @@
 
 #include "SceneIntro.h"
 
-SceneIntro::SceneIntro(SceneManager& sceneManager) : Scene(sceneManager)
-{}
-
-SceneIntro::~SceneIntro()
+SceneIntro::SceneIntro(SceneManager& sceneManager, EntityManager& entityManager) : Scene(sceneManager, entityManager)
 {}
 
 bool SceneIntro::Init()
@@ -34,10 +31,14 @@ bool SceneIntro::Init()
 bool SceneIntro::Start()
 {
 	App->getRenderer().camera.x = App->getRenderer().camera.y = 0;
-	if (App->getEntityManager().IsEnabled())
-		App->getEntityManager().Disable();
+	if (getEntityManager().IsEnabled())
+	{
+		getEntityManager().Disable();
+	}
 	if (App->getUI().IsEnabled())
+	{
 		App->getUI().Disable();
+	}
 	App->getAudio().PlayMusic(music_path.c_str());
 	elapsed_msec = 0;
 	return true;

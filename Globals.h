@@ -68,6 +68,16 @@ typedef unsigned int uint;
 				return _NAME_;	\
 			} 
 
+// Defines a member, its const getter 
+#define MEMBER_GET( _CLASS_, _NAME_, _GETTER_)	\
+		private:								\
+			_CLASS_ _NAME_;	\
+		public:									\
+			_CLASS_& _GETTER_()	\
+			{							\
+				return _NAME_;	\
+			} 
+
 //config file
 #define CONFIG_FILE "config.json"
 

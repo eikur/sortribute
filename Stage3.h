@@ -10,8 +10,7 @@ class Player;
 class Stage3 : public Scene 
 {
 public:
-	Stage3(SceneManager& manager);
-	~Stage3();
+	Stage3(SceneManager& manager, EntityManager& entityManager);
 
 	bool Init() override;
 	bool Start() override;

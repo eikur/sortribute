@@ -44,9 +44,8 @@ public:
 private:
 	std::list<Entity*> entities;
 	
-	float elapsed_msec = 0.0f;
-	float upd_logic_msec = 20.0f;
-	bool upd_logic = false;
+	const float logicLoopUpdatePeriodMsec = 20.0f;
+	float logicLoopAccumMsec = 0.0f;
 
 	//collision check
 	int layer_depth = 0;

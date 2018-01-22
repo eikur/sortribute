@@ -6,13 +6,11 @@
 #include "Stage3.h"
 #include <algorithm>
 
-SceneManager::SceneManager(bool active) : Module(active)
+SceneManager::SceneManager(EntityManager& entityManager, bool active) : Module(active)
 {
-	_intro = std::make_unique<SceneIntro>(*this);
-	_stage3 = std::make_unique<Stage3>(*this);
+	_intro = std::make_unique<SceneIntro>(*this, entityManager);
+	_stage3 = std::make_unique<Stage3>(*this, entityManager);
 }
-
-SceneManager::~SceneManager() {}
 
 bool SceneManager::Init()
 {

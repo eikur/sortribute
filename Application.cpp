@@ -29,7 +29,7 @@ Application::Application()
 	_ui = std::make_unique<ModuleUI>(false);
 	//Specific game modules
 	_entityManager = std::make_unique<EntityManager>(false);
-	_sceneManager = std::make_unique<SceneManager>();
+	_sceneManager = std::make_unique<SceneManager>(getEntityManager());
 	// Modules on top of game logic
 	_collision = std::make_unique<ModuleCollision>(getEntityManager(), getSceneManager());
 	_particles = std::make_unique<ModuleParticles>();
