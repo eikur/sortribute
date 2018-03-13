@@ -223,7 +223,7 @@ bool ModuleUI::LoadConfigFromFile()
 	JSON_Object *ui_object = App->getConfig().GetJSONObject("hud"); 
 	if (ui_object == nullptr) { return false;  }
 	
-	hud_graphics = App->getTextures().Load(App->getConfig().GetStringFromJSONObject(ui_object, "graphics_file"));
+	hud_graphics = App->getTextures().loadTexture(App->getConfig().GetStringFromJSONObject(ui_object, "graphics_file"));
 	if (hud_graphics == nullptr) { return false; }
 
 	if (App->getConfig().LoadSDLRectFromJSONObject(ui_object, "section", &hud_section) == false) { return false; }

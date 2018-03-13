@@ -8,14 +8,9 @@ struct SDL_Texture;
 class TextureHelper
 {
 public:
-	TextureHelper();
-	~TextureHelper();
-
-	bool Init();
-	bool CleanUp();
-
-	SDL_Texture* const Load(const std::string& path);
-	void Unload(SDL_Texture* texture);
+	bool init();
+	bool cleanUp();
+	SDL_Texture* const loadTexture(const std::string& path);
 
 private:
 	std::map<std::string, SDL_Texture*> _textureMap;

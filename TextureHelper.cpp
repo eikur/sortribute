@@ -6,22 +6,8 @@
 #include "3rdparty/SDL_image/include/SDL_image.h"
 #pragma comment( lib, "3rdparty/SDL_image/libx86/SDL2_image.lib" )
 
-using namespace std;
-
-TextureHelper::TextureHelper()
+bool TextureHelper::init()
 {
-}
-
-// Destructor
-TextureHelper::~TextureHelper()
-{
-	IMG_Quit();
-}
-
-// Called before render is available
-bool TextureHelper::Init()
-{
-	LOG("Init Image library");
 	bool ret = true;
 
 	// load support for the PNG image format
@@ -37,22 +23,19 @@ bool TextureHelper::Init()
 	return ret;
 }
 
-// Called before quitting
-bool TextureHelper::CleanUp()
+bool TextureHelper::cleanUp()
 {
-	LOG("Freeing textures and Image library");
-
 	for (auto& kvp : _textureMap)
 	{
 		SDL_DestroyTexture(kvp.second);
 	}
 	_textureMap.clear();
 
+	IMG_Quit();
 	return true;
 }
 
-// Load new texture from file path
-SDL_Texture* const TextureHelper::Load(const std::string& path)
+SDL_Texture* const TextureHelper::loadTexture(const std::string& path)
 {
 	SDL_Texture* texture = nullptr;
 	SDL_Surface* surface = nullptr; 

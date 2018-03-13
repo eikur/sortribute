@@ -87,7 +87,7 @@ bool SceneIntro::LoadConfigFromFile()
 	JSON_Object *json_intro = App->getConfig().GetJSONObject("intro");
 	if (json_intro == nullptr) { return false;  }
 
-	background = App->getTextures().Load(App->getConfig().GetStringFromJSONObject(json_intro, "graphics_file"));
+	background = App->getTextures().loadTexture(App->getConfig().GetStringFromJSONObject(json_intro, "graphics_file"));
 	if (background == nullptr) { return false; }
 
 	music_path = App->getConfig().GetStringFromJSONObject(json_intro, "music_file");

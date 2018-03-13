@@ -23,7 +23,7 @@ bool TextureFontsHelper::Init()
 	}
 	else
 	{
-		graphics = App->getTextures().Load(asset_file.c_str());
+		graphics = App->getTextures().loadTexture(asset_file.c_str());
 	}
 	return res;
 }

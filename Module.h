@@ -22,15 +22,14 @@ public:
 	Module(bool active = true) : active(active)
 	{}
 
-	virtual ~Module()
-	{}
+	virtual ~Module() = default;
 
 	bool IsEnabled() const
 	{
 		return active;
 	}
 
-	 bool Enable()
+	bool Enable()
 	{
 		if(active == false)
 			return active = Start();

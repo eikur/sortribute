@@ -252,7 +252,7 @@ bool Boss3::LoadFromConfigFile(const char* file_path)
 		root_object = json_object(root_value);
 
 	if (json_object_dothas_value_of_type(root_object, "boss.graphics_file", JSONString))
-		graphics = App->getTextures().Load(json_object_dotget_string(root_object, "boss.graphics_file"));
+		graphics = App->getTextures().loadTexture(json_object_dotget_string(root_object, "boss.graphics_file"));
 	if (graphics == nullptr)
 	{
 		json_value_free(root_value);
