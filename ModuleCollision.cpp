@@ -23,7 +23,7 @@ UpdateStatus ModuleCollision::PreUpdate()
 	// Remove all colliders scheduled for deletion
 	for (auto&& it = _colliders.begin(); it != _colliders.end();)
 	{
-		if ((*it)->to_delete == true)
+		if ((*it)->hasToBeDeleted())
 		{
 			it->reset();
 			it = _colliders.erase(it);
@@ -45,13 +45,14 @@ UpdateStatus ModuleCollision::Update(float)
 		{
 			if (c1->CheckCollision(c2->getRect()) == true && c1 != c2)
 			{
-				if (collision_matrix[c1->type][c2->type] == 1)
+				if (collision_matrix[c1->getType()][c2->getType()] == 1)
 				{
-					if (c1->type != colliderType::SCENE_TRIGGER && c2->type != colliderType::SCENE_TRIGGER )
+					if (c1->getType() != colliderType::SCENE_TRIGGER && c2->getType() != colliderType::SCENE_TRIGGER )
 						entitiesReporter.HandleCollision(c1.get(), c2.get());
 					else
 						scenesReporter.HandleCollision(c1.get(), c2.get());
-					
+					c1->safeCallback(c2->getType());
+					c2->safeCallback(c1->getType());
 				}
 			}
 		}
@@ -78,15 +79,15 @@ void ModuleCollision::DebugDraw()
 		{
 			continue;
 		}
-		if (collider->type == colliderType::PLAYER_ATTACK)
+		if (collider->getType() == colliderType::PLAYER_ATTACK)
 			App->getRenderer().DrawQuad(collider->getRect(), 0, 0, 255, 120);
-		else if (collider->type == colliderType::PLAYER)
+		else if (collider->getType() == colliderType::PLAYER)
 			App->getRenderer().DrawQuad(collider->getRect(), 0, 0, 255, 80);
-		else if (collider->type == colliderType::ENEMY)
+		else if (collider->getType() == colliderType::ENEMY)
 			App->getRenderer().DrawQuad(collider->getRect(), 255, 0, 0, 80);
-		else if (collider->type == colliderType::ENEMY_ATTACK)
+		else if (collider->getType() == colliderType::ENEMY_ATTACK)
 			App->getRenderer().DrawQuad(collider->getRect(), 255, 0, 0, 120);
-		else if (collider->type == colliderType::ITEMS)
+		else if (collider->getType() == colliderType::ITEMS)
 			App->getRenderer().DrawQuad(collider->getRect(), 0, 255, 0, 80);
 		else 
 			App->getRenderer().DrawQuad(collider->getRect(), 255, 0, 255, 40);
@@ -109,13 +110,64 @@ bool ModuleCollision::CleanUp()
 	return true;
 }
 
-Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, colliderType type, Entity* parent)
+Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, colliderType type, Entity* parent, const CollisionCallback& callback)
 {
-	_colliders.push_back(std::make_unique<Collider>(rect, type, parent));
+	_colliders.push_back(std::make_unique<Collider>(rect, type, parent, callback));
 	return _colliders.back().get();
 }
 
 // -----------------------------------------------------
+colliderType Collider::getType() const
+{
+	return _type;
+}
+
+Entity* Collider::getParent() const
+{
+	return _parent;
+}
+
+
+void Collider::setPos(iPoint pos)
+{
+	rect.x = pos.x;
+	rect.y = pos.y;
+}
+
+void Collider::SetRect(const SDL_Rect& r)
+{
+	rect.x = r.x;
+	rect.y = r.y;
+	rect.h = r.h;
+	rect.w = r.w;
+}
+const SDL_Rect& Collider::getRect() const
+{
+	return rect;
+}
+
+void Collider::setActive(bool value)
+{
+	_active = value;
+}
+
+bool Collider::isActive() const
+{
+	return _active;
+}
+
+bool Collider::hasCallback() const
+{
+	return _callback != nullptr;
+}
+
+void Collider::safeCallback(colliderType param)
+{
+	if (hasCallback())
+	{
+		_callback(param);
+	}
+}
 
 bool Collider::CheckCollision(const SDL_Rect& r) const
 {
@@ -136,4 +188,14 @@ bool Collider::CheckCollision(const SDL_Rect& r) const
 		collision = true;
 	return collision;
 
+}
+
+bool Collider::hasToBeDeleted() const
+{
+	return _toBeDeleted;
+}
+
+void Collider::setToBeDeleted()
+{
+	_toBeDeleted = true;
 }

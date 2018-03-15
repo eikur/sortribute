@@ -117,7 +117,7 @@ void Stage3::DeleteSceneTriggers()
 	for (std::vector<Collider*>::iterator it = triggers.begin(); it != triggers.end(); ++it)
 	{
 		if ((*it) != nullptr) {
-			(*it)->to_delete = true;
+			(*it)->setToBeDeleted();
 			*it = nullptr;
 		}
 	}
@@ -151,7 +151,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn1->getRect().x -170, 200 });
 		spawn1 = nullptr;
-		trigger->to_delete = true;
+		trigger->setToBeDeleted();
 	}
 	else if (trigger == spawn2)
 	{
@@ -159,7 +159,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 		if (tmp!= nullptr)
 			tmp->SetPosition({ spawn2->getRect().x + 170, 216 });
 		spawn2 = nullptr;
-		trigger->to_delete = true;
+		trigger->setToBeDeleted();
 	}
 	else if (trigger == spawn3)
 	{
@@ -167,7 +167,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn3->getRect().x + 170, 162 });
 		spawn3 = nullptr;
-		trigger->to_delete = true;
+		trigger->setToBeDeleted();
 	}
 	else if (trigger == cam_lock1)
 	{
@@ -179,7 +179,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 			tmp->SetPosition({ cam_lock1->getRect().x +170 , 210 });
 		App->getRenderer().locked = true;
 		cam_lock1 = nullptr;
-		trigger->to_delete = true;
+		trigger->setToBeDeleted();
 	}
 	else if (trigger == battle_zone1)
 	{
@@ -193,7 +193,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 			getEntityManager().RestoreTimeLeft();
 			App->getUI().ShowGoArrow();
 			battle_zone1 = nullptr;
-			trigger->to_delete = true;
+			trigger->setToBeDeleted();
 		}
 	}
 	else if (trigger == spawn4)
@@ -202,7 +202,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn4->getRect().x + 170, 162 });
 		spawn4 = nullptr;
-		trigger->to_delete = true;
+		trigger->setToBeDeleted();
 	}
 	else if (trigger == spawn5)
 	{
@@ -210,7 +210,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn5->getRect().x -170, 216 });
 		spawn5 = nullptr;
-		trigger->to_delete = true;
+		trigger->setToBeDeleted();
 	}
 	else if (trigger == cam_lock2)
 	{
@@ -222,7 +222,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock2->getRect().x + 250, 210 });
 		cam_lock2 = nullptr;
-		trigger->to_delete = true;
+		trigger->setToBeDeleted();
 	}
 	else if (trigger == battle_zone2)
 	{
@@ -236,7 +236,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 			getEntityManager().RestoreTimeLeft();
 			App->getUI().ShowGoArrow();
 			battle_zone2 = nullptr;
-			trigger->to_delete = true;
+			trigger->setToBeDeleted();
 		}
 	}
 	else if (trigger == spawn6)
@@ -245,7 +245,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn6->getRect().x + 180, 210 });
 		spawn6 = nullptr;
-		trigger->to_delete = true;
+		trigger->setToBeDeleted();
 	}
 	else if (trigger == spawn7)
 	{
@@ -256,7 +256,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn7->getRect().x + 250, 175 });
 		spawn7 = nullptr;
-		trigger->to_delete = true;
+		trigger->setToBeDeleted();
 	}
 	else if (trigger == spawn8)
 	{
@@ -264,7 +264,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn8->getRect().x + 170, 210 });
 		spawn8 = nullptr;
-		trigger->to_delete = true;
+		trigger->setToBeDeleted();
 	}
 	else if (trigger == cam_lock3)
 	{
@@ -282,7 +282,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock3->getRect().x + 420, 170 });
 		cam_lock3 = nullptr;
-		trigger->to_delete = true;
+		trigger->setToBeDeleted();
 	}
 	else if (trigger == battle_zone3)
 	{
@@ -293,7 +293,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 			getEntityManager().RestoreTimeLeft();
 			App->getUI().ShowGoArrow();
 			battle_zone3 = nullptr;
-			trigger->to_delete = true;
+			trigger->setToBeDeleted();
 		}
 	}
 	else if (trigger == spawn9)
@@ -302,7 +302,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn9->getRect().x + 180, 180 });
 		spawn9 = nullptr;
-		trigger->to_delete = true;
+		trigger->setToBeDeleted();
 	}
 	else if (trigger == spawn10)
 	{
@@ -310,7 +310,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 		if (tmp != nullptr)
 			tmp->SetPosition({ spawn10->getRect().x + 180, 210 });
 		spawn10 = nullptr;
-		trigger->to_delete = true;
+		trigger->setToBeDeleted();
 	}
 	else if (trigger == cam_lock4)
 	{
@@ -319,7 +319,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 		if (tmp != nullptr)
 			tmp->SetPosition({ cam_lock4->getRect().x - 180, 210 });
 		cam_lock4 = nullptr;
-		trigger->to_delete = true;
+		trigger->setToBeDeleted();
 	}
 	else if (trigger == battle_zone4)
 	{
@@ -333,7 +333,7 @@ void Stage3::TriggerCollisionManagement(Collider *trigger)
 			tmp->SetPosition({ battle_zone4->getRect().x + battle_zone4->getRect().w + 300, 180 });
 			getEntityManager().boss = tmp;
 			battle_zone4 = nullptr;
-			trigger->to_delete = true;
+			trigger->setToBeDeleted();
 		}
 	}
 

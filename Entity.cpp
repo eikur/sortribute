@@ -340,12 +340,12 @@ void Entity::RemoveColliders()
 {
 	if (hit_collider != nullptr)
 	{
-		hit_collider->to_delete = true;
+		hit_collider->setToBeDeleted();
 		hit_collider = nullptr;
 	}
 	if (attack_collider != nullptr)
 	{
-		attack_collider->to_delete = true;
+		attack_collider->setToBeDeleted();
 		attack_collider = nullptr;
 	}
 }
@@ -365,6 +365,12 @@ void Entity::UpdateAIState(AIState new_state)
 void Entity::UpdateAIDestinationPoint(AIState )
 {
 
+}
+
+void Entity::handleCollision(colliderType type)
+{
+	// override with the collision type of every entity
+	LOG("PAREEENT");
 }
 
 //-------------------    Interaction between entities ---------------------------------

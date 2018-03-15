@@ -6,8 +6,8 @@
 #include "Point.h"
 
 class Animation;
+class Collider;
 struct SDL_Rect;
-struct Collider;
 
 class ConfigurationLoader {
 

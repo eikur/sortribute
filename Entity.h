@@ -6,7 +6,7 @@
 #include "Globals.h"
 #include "Animation.h"
 
-struct Collider;
+class Collider;
 enum colliderType;
 struct SDL_Texture;
 struct SDL_Rect;	
@@ -87,6 +87,8 @@ public:
 	virtual void CheatCodes();
 
 protected:
+	virtual void handleCollision(colliderType type);
+
 	virtual void UpdateAIDestinationPoint(AIState new_state);
 	
 	virtual bool LoadFromConfigFile(const char* file_path);

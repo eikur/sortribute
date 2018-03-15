@@ -36,7 +36,7 @@ public:
 	MEMBER_CONST_GET(Input, _previousInput, getPreviousInput)
 
   public:
-	virtual void updateInput(){}
+	virtual void updateInput() = 0;
 	void reset() 
 	{
 		_currentInput.reset();

@@ -63,7 +63,7 @@ UpdateStatus EntityManager::Update(float dt)
 		isUpdateLogicLoop = logicLoopAccumMsec >= logicLoopUpdatePeriodMsec;
 
 		unsigned int msecInt = static_cast<uint>(logicLoopAccumMsec);
-		for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end();)
+		for (std::list<Entity*>::iterator it = _entities.begin(); it != _entities.end();)
 		{
 			if ((*it)->Update(msecInt, isUpdateLogicLoop) == false)
 			{
@@ -74,7 +74,7 @@ UpdateStatus EntityManager::Update(float dt)
 				if (*it == boss)
 					boss = nullptr;
 				RELEASE(*it);
-				it = entities.erase(it);
+				it = _entities.erase(it);
 			}
 			else
 			{
@@ -83,10 +83,10 @@ UpdateStatus EntityManager::Update(float dt)
 		}
 	}
 
-	entities.sort(Entity::ptrEntityDepthComparison());
-	for (auto& e : entities)
+	_entities.sort(Entity::ptrEntityDepthComparison());
+	for (auto& entity : _entities)
 	{
-		e->updateAnimAndDraw(dt);
+		entity->updateAnimAndDraw(dt);
 	}
 	
 	logicLoopAccumMsec = isUpdateLogicLoop ? 0 : logicLoopAccumMsec;
@@ -98,13 +98,11 @@ UpdateStatus EntityManager::Update(float dt)
 
 bool EntityManager::CleanUp()
 {
-	LOG("EntityManager: Removing entities from application\n");
-
-	for (std::list<Entity*>::iterator it = entities.begin(); it != entities.end(); ++it)
+	for (std::list<Entity*>::iterator it = _entities.begin(); it != _entities.end(); ++it)
 	{
 		(*it)->CleanUp(); (*it)->RemoveColliders();	delete *it;
 	}
-	entities.clear();
+	_entities.clear();
 	enemy_queue.clear();
 
 	return true;
@@ -134,14 +132,14 @@ Entity* EntityManager::CreateEntity(Entity::Types type)
 		}
 		else
 		{
-			entities.push_back(ret);
+			_entities.push_back(ret);
 		}
 	}
 	return ret;
 }
 
 void EntityManager::KnockDownAllEnemies(bool wipeout)  {
-	for (std::list<Entity*>::const_iterator it = entities.cbegin(); it != entities.cend();++it)
+	for (std::list<Entity*>::const_iterator it = _entities.cbegin(); it != _entities.cend();++it)
 	{
 		if ((*it)->m_type == Entity::Types::npc_garcia || (*it)->m_type == Entity::Types::npc_boss)
 		{
@@ -158,7 +156,7 @@ void EntityManager::KnockDownAllEnemies(bool wipeout)  {
 
 int EntityManager::GetEnemyCount() {
 	int ret = 0;
-	for (std::list<Entity*>::const_iterator it = entities.cbegin(); it != entities.cend(); ++it)
+	for (std::list<Entity*>::const_iterator it = _entities.cbegin(); it != _entities.cend(); ++it)
 		if ((*it)->m_type == Entity::Types::npc_garcia)
 			ret += 1;
 	return ret;
@@ -177,15 +175,15 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 	Collider* second_col = nullptr;
 		
 	// order by type to ease the logic
-	if (a->type <= b->type)
+	if (a->getType() <= b->getType())
 	{
-		first = a->parent; first_col = a;
-		second = b->parent; second_col = b;
+		first = a->getParent(); first_col = a;
+		second = b->getParent(); second_col = b;
 	}
 	else
 	{
-		first = b->parent; first_col = b;
-		second = a->parent; second_col = a;
+		first = b->getParent(); first_col = b;
+		second = a->getParent(); second_col = a;
 	}
 
 	int depth_difference = first->GetDepth() - second->GetDepth();
@@ -193,14 +191,14 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 		return;
 
 
-	switch (first_col->type)
+	switch (first_col->getType())
 	{
 		case colliderType::PLAYER:
-			if (second_col->type == colliderType::ITEMS)	
+			if (second_col->getType() == colliderType::ITEMS)	
 			{
 				first->SetReachableItem(second);
 			}
-			else if (second_col->type == colliderType::ENEMY)
+			else if (second_col->getType() == colliderType::ENEMY)
 			{
 				if (first->IsGrounded() && !first->IsHoldingSomeone() && first->AllowAnimationInterruption() &&
 					second->IsGrounded() && !second->is_being_thrown_back && second->IsAlive() &&
@@ -227,7 +225,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 					}
 				}
 			}
-			else if (second_col->type == colliderType::ENEMY_ATTACK)
+			else if (second_col->getType() == colliderType::ENEMY_ATTACK)
 			{
 				if (second->is_attacking && first->is_hittable && first->IsGrounded() && first->IsAlive())
 				{
@@ -252,7 +250,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 		break;
 
 		case colliderType::PLAYER_ATTACK:
-			if (second_col->type == colliderType::ENEMY)
+			if (second_col->getType() == colliderType::ENEMY)
 			{
 				if (first->is_attacking  && second->is_hittable && second->IsAlive() )	
 				{
@@ -289,7 +287,7 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 			break;
 
 		case colliderType::ENEMY:
-			if (second_col->type == colliderType::ENEMY) 
+			if (second_col->getType() == colliderType::ENEMY)
 			{
 				if (first->is_being_thrown_front && first->IsGrounded() == false && second->is_hittable && second->IsAlive() )
 					second->SetBeingKnocked(first->throw_dmg);

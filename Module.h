@@ -6,7 +6,7 @@
 
 class Application;
 class Entity;
-struct Collider;
+class Collider;
 
 enum class UpdateStatus
 {

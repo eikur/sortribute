@@ -79,6 +79,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityInput.hpp" />
     <ClInclude Include="EntityManager.h" />
+    <ClInclude Include="EntityStatus.hpp" />
     <ClInclude Include="Globals.h" />
     <ClInclude Include="Apple.h" />
     <ClInclude Include="MemLeaks.h" />

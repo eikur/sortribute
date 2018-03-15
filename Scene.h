@@ -4,7 +4,7 @@
 #include "SceneManager.h"
 #include "EntityManager.h"
 
-struct Collider;
+class Collider;
 
 class Scene
 {

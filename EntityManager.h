@@ -1,9 +1,8 @@
-#ifndef __ENTITYMANAGER_H__
-#define __ENTITYMANAGER_H__
+#pragma once
 
-#include <list>
-#include "Module.h"
 #include "Entity.h"
+#include "Module.h"
+#include <list>
 #include <math.h>
 
 class Timer;
@@ -42,7 +41,7 @@ public:
 	float time_left_msec = 81999.0f;
 
 private:
-	std::list<Entity*> entities;
+	std::list<Entity*> _entities;
 	
 	const float logicLoopUpdatePeriodMsec = 20.0f;
 	float logicLoopAccumMsec = 0.0f;
@@ -54,5 +53,3 @@ private:
 	bool debug = false;
 
 };
-
-#endif // __ENTITYMANAGER_H__
