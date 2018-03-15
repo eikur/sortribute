@@ -1,10 +1,11 @@
 #pragma once
 
-#include <math.h>
 #include "3rdparty/parson/parson.h"
 #include "Point.h"
 #include "Globals.h"
 #include "Animation.h"
+#include <math.h>
+
 
 class Collider;
 enum colliderType;
@@ -87,8 +88,7 @@ public:
 	virtual void CheatCodes();
 
 protected:
-	virtual void handleCollision(colliderType type);
-
+	virtual void handleCollision(Collider& other);
 	virtual void UpdateAIDestinationPoint(AIState new_state);
 	
 	virtual bool LoadFromConfigFile(const char* file_path);

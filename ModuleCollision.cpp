@@ -51,8 +51,8 @@ UpdateStatus ModuleCollision::Update(float)
 						entitiesReporter.HandleCollision(c1.get(), c2.get());
 					else
 						scenesReporter.HandleCollision(c1.get(), c2.get());
-					c1->safeCallback(c2->getType());
-					c2->safeCallback(c1->getType());
+					c1->safeCallback(*c2);
+					c2->safeCallback(*c1);
 				}
 			}
 		}
@@ -110,7 +110,7 @@ bool ModuleCollision::CleanUp()
 	return true;
 }
 
-Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, colliderType type, Entity* parent, const CollisionCallback& callback)
+Collider* ModuleCollision::AddCollider(const SDL_Rect& rect, colliderType type, Entity* parent, const Collider::CollisionCallback& callback)
 {
 	_colliders.push_back(std::make_unique<Collider>(rect, type, parent, callback));
 	return _colliders.back().get();
@@ -161,9 +161,9 @@ bool Collider::hasCallback() const
 	return _callback != nullptr;
 }
 
-void Collider::safeCallback(colliderType param)
+void Collider::safeCallback(Collider& param)
 {
-	if (hasCallback())
+	if (isActive() && hasCallback() && !hasToBeDeleted())
 	{
 		_callback(param);
 	}
@@ -171,7 +171,7 @@ void Collider::safeCallback(colliderType param)
 
 bool Collider::CheckCollision(const SDL_Rect& r) const
 {
-	if (_active == false)
+	if (!_active)
 	{
 		return false;
 	}

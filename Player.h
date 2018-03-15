@@ -1,6 +1,4 @@
-#ifndef __PLAYER_H__
-#define __PLAYER_H__
-
+#pragma once
 #include "Entity.h"
 
 class Player : public Entity {
@@ -15,6 +13,9 @@ public:
 	void AddScore(int addition);
 	void IncreaseHelp(int amount);
 	void CheatCodes();
+
+protected:
+	void handleCollision(Collider& other) override;
 
 private:
 	void ModifyLives(int mod_to_add);
@@ -52,5 +53,3 @@ private:
 	//debug
 	bool debug = false;
 };
-
-#endif // __PLAYER_H__

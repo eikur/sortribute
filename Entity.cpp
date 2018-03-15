@@ -1,10 +1,10 @@
 #include "Application.h"
+#include "Entity.h"
 #include "ModuleRender.h"
 #include "ModuleAudio.h"
 #include "ModuleCollision.h"
 #include "TextureHelper.h"
-
-#include "Entity.h"
+#include <functional>
 
 Entity::Entity(Types type) : m_type(type)
 {}
@@ -367,10 +367,9 @@ void Entity::UpdateAIDestinationPoint(AIState )
 
 }
 
-void Entity::handleCollision(colliderType type)
+void Entity::handleCollision(Collider& other)
 {
-	// override with the collision type of every entity
-	LOG("PAREEENT");
+	// override when inheriting to determine behaviour
 }
 
 //-------------------    Interaction between entities ---------------------------------
@@ -523,7 +522,7 @@ Collider* Entity::LoadColliderFromJSONObject(JSON_Object* j_object, const char *
 	*offset = { (int)json_array_get_number(j_array, 0), (int)json_array_get_number(j_array, 1) };
 	ret = App->getCollision().AddCollider(
 	{ offset->x + position.x, offset->y + position.y, (int)json_array_get_number(j_array, 2) , (int)json_array_get_number(j_array, 3) },
-		type, (Entity*) this);
+		type, (Entity*) this, std::bind(&Entity::handleCollision, this, std::placeholders::_1));
 	json_array_clear(j_array);
 	return ret;
 }

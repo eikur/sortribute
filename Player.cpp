@@ -664,3 +664,20 @@ void Player::CheatCodes()
 		App->getUI().ShowPlayerDebugMode();
 	}
 }
+
+//collision handling
+void Player::handleCollision(Collider& other)
+{
+	colliderType type = other.getType();
+	switch (type)
+	{
+	case colliderType::ITEMS:
+		SetReachableItem(other.getParent());
+		break;
+
+	default:
+		// not implemented yet
+		break;
+		
+	}
+}

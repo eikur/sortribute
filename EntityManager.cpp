@@ -196,7 +196,8 @@ void EntityManager::HandleCollision(Collider* a, Collider* b)
 		case colliderType::PLAYER:
 			if (second_col->getType() == colliderType::ITEMS)	
 			{
-				first->SetReachableItem(second);
+				// moved to player collider
+				//first->SetReachableItem(second);
 			}
 			else if (second_col->getType() == colliderType::ENEMY)
 			{

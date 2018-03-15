@@ -13,9 +13,6 @@ public:
 	bool Update(unsigned int msec_elapsed, const bool upd_logic);
 	void DecreaseHealth(int amount);
 
-protected:
-	void handleCollision(colliderType type) override;
-
 private:
 	bool LoadFromConfigFile(const char* file_path);
 };

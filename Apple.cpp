@@ -39,14 +39,6 @@ void Apple::DecreaseHealth(int amount)
 	health = MAX(health - amount, 0);
 }
 
-void Apple::handleCollision(colliderType type)
-{
-	if (type == colliderType::PLAYER)
-	{
-		LOG("***pandibu** I'm using the callback bitches \n")
-	}
-}
-
 // ------------ Load config from file ---------
 bool Apple::LoadFromConfigFile(const char* file_path)
 {

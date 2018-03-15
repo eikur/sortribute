@@ -17,17 +17,17 @@ enum colliderType {
 
 class Collider
 {
-	using CollisionCallback = std::function<void(colliderType)>;
+public:
+	using CollisionCallback = std::function<void(Collider&)>;
+	SDL_Rect rect = { 0,0,0,0 }; // TODO make private 
 
+private:
 	bool _toBeDeleted = false;
 	colliderType _type;
 	Entity* _parent = nullptr;
 	bool _active = true;
 	CollisionCallback _callback = nullptr;
-
-  public: 
-	  SDL_Rect rect = { 0,0,0,0 };
-
+	  
   public:
 	Collider() {}
 	Collider(SDL_Rect rectangle, colliderType t, Entity* parent = nullptr, const CollisionCallback& callback = nullptr) :
@@ -48,15 +48,13 @@ class Collider
 	void setToBeDeleted();
 
 	bool hasCallback() const;
-	void safeCallback(colliderType param);
+	void safeCallback(Collider& param);
 
 	bool CheckCollision(const SDL_Rect& r) const;
 };
 
 class ModuleCollision : public Module
 {
-	using CollisionCallback = std::function<void(colliderType)>;
-
 public:
 
 	ModuleCollision(Module& entitiesReporter, Module& sceneReporter);
@@ -67,7 +65,7 @@ public:
 
 	bool CleanUp();
 
-	Collider* AddCollider(const SDL_Rect& rect, colliderType type, Entity* parent = nullptr, const CollisionCallback& callback = nullptr);
+	Collider* AddCollider(const SDL_Rect& rect, colliderType type, Entity* parent = nullptr, const Collider::CollisionCallback& callback = nullptr);
 	void DebugDraw();
 
 private:
